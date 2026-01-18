@@ -3,6 +3,55 @@
 ## Introduction
 Sorting is the process of arranging elements in a specific order, typically in ascending or descending order. Understanding sorting algorithms is crucial as they form the basis for many other algorithms and are frequently used in real-world applications.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (in-place sorting, array manipulation)
+- Basic comparison operations
+- [Recursion](recursion.md) (for divide-and-conquer algorithms like merge sort, quick sort)
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md), [Recursion](recursion.md) (divide and conquer)
+- **Used by**: [Heap/Priority Queue](heap-pq.md) (heap sort), [Intervals](intervals.md), [Greedy](greedy.md)
+- **Enables**: Binary search, Two Pointers technique
+- **See also**: [Cyclic Sort](cyclic-sort.md) (O(n) for specific cases), [Counting/Radix sort](bit-manipulation.md)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Sorting
+**Keywords in problem**: "sorted order", "arrange", "organize", "k-th largest/smallest", "merge"
+
+**Use Sorting when you see**:
+- Need to process elements in order
+- Finding k-th element problems
+- Merge-related problems
+- Interval problems (sort by start/end)
+- Problems simplified by ordering
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Algorithm Choice |
+|---------|---------------|------------------|
+| General sorting | "sort array", "arrange in order" | Quick Sort (avg), Merge Sort (stable) |
+| K-th element | "k-th largest", "k-th smallest" | Quick Select O(n), or Heap O(n log k) |
+| Nearly sorted | "k positions away", "almost sorted" | Insertion Sort O(nk) |
+| Limited range | "values 0 to k", "age/grade sorting" | Counting Sort O(n+k) |
+| Stability needed | "preserve original order for ties" | Merge Sort, Counting Sort |
+| Custom ordering | "sort by multiple keys", "special order" | Custom comparator |
+
+### Common Sorting Applications
+| Problem Type | Why Sort? | Example |
+|--------------|-----------|---------|
+| Two Pointers | Enables O(n) two-pointer technique | Two Sum II (sorted) |
+| Intervals | Process in order by start/end | Merge Intervals |
+| Greedy | Sort to make greedy choices | Activity Selection |
+| Binary Search | Enables O(log n) search | Search in Sorted Array |
+
+### ❌ When NOT to Use
+- Already sorted or order doesn't matter
+- Need to maintain insertion order → preserve original
+- Hash-based solution is O(n) vs sort O(n log n)
+- Streaming data that can't be fully loaded
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -58,6 +107,38 @@ def quick_sort(arr, low, high):
         quick_sort(arr, pi + 1, high)
 ```
 
+```java
+public void quickSort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+private int partition(int[] arr, int low, int high) {
+    int pivot = arr[high], i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) { i++; int t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+    }
+    int t = arr[i+1]; arr[i+1] = arr[high]; arr[high] = t;
+    return i + 1;
+}
+```
+
+```cpp
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pivot = arr[high], i = low - 1;
+        for (int j = low; j < high; j++)
+            if (arr[j] <= pivot) swap(arr[++i], arr[j]);
+        swap(arr[i + 1], arr[high]);
+        int pi = i + 1;
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+```
+
 ### 2. Merge Sort
 ```python
 def merge_sort(arr):
@@ -87,6 +168,46 @@ def merge(left, right):
     return result
 ```
 
+```java
+public void mergeSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+private void merge(int[] arr, int left, int mid, int right) {
+    int[] temp = new int[right - left + 1];
+    int i = left, j = mid + 1, k = 0;
+    while (i <= mid && j <= right)
+        temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
+    while (i <= mid) temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
+    System.arraycopy(temp, 0, arr, left, temp.length);
+}
+```
+
+```cpp
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+void merge(vector<int>& arr, int left, int mid, int right) {
+    vector<int> temp;
+    int i = left, j = mid + 1;
+    while (i <= mid && j <= right)
+        temp.push_back(arr[i] <= arr[j] ? arr[i++] : arr[j++]);
+    while (i <= mid) temp.push_back(arr[i++]);
+    while (j <= right) temp.push_back(arr[j++]);
+    for (int k = 0; k < temp.size(); k++) arr[left + k] = temp[k];
+}
+```
+
 ### 3. Heap Sort
 ```python
 def heap_sort(arr):
@@ -114,6 +235,43 @@ def heap_sort(arr):
     for i in range(n - 1, 0, -1):
         arr[0], arr[i] = arr[i], arr[0]
         heapify(i, 0)
+```
+
+```java
+public void heapSort(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i >= 0; i--) heapify(arr, n, i);
+    for (int i = n - 1; i > 0; i--) {
+        int temp = arr[0]; arr[0] = arr[i]; arr[i] = temp;
+        heapify(arr, i, 0);
+    }
+}
+private void heapify(int[] arr, int n, int i) {
+    int largest = i, left = 2 * i + 1, right = 2 * i + 2;
+    if (left < n && arr[left] > arr[largest]) largest = left;
+    if (right < n && arr[right] > arr[largest]) largest = right;
+    if (largest != i) {
+        int temp = arr[i]; arr[i] = arr[largest]; arr[largest] = temp;
+        heapify(arr, n, largest);
+    }
+}
+```
+
+```cpp
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = n / 2 - 1; i >= 0; i--) heapify(arr, n, i);
+    for (int i = n - 1; i > 0; i--) {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i, left = 2 * i + 1, right = 2 * i + 2;
+    if (left < n && arr[left] > arr[largest]) largest = left;
+    if (right < n && arr[right] > arr[largest]) largest = right;
+    if (largest != i) { swap(arr[i], arr[largest]); heapify(arr, n, largest); }
+}
 ```
 
 ### 4. Counting Sort
@@ -148,6 +306,40 @@ def counting_sort(arr):
     return output
 ```
 
+```java
+public int[] countingSort(int[] arr) {
+    if (arr.length == 0) return arr;
+    int maxVal = Arrays.stream(arr).max().getAsInt();
+    int minVal = Arrays.stream(arr).min().getAsInt();
+    int range = maxVal - minVal + 1;
+    int[] count = new int[range], output = new int[arr.length];
+    for (int num : arr) count[num - minVal]++;
+    for (int i = 1; i < range; i++) count[i] += count[i - 1];
+    for (int i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i] - minVal] - 1] = arr[i];
+        count[arr[i] - minVal]--;
+    }
+    return output;
+}
+```
+
+```cpp
+vector<int> countingSort(vector<int>& arr) {
+    if (arr.empty()) return arr;
+    int maxVal = *max_element(arr.begin(), arr.end());
+    int minVal = *min_element(arr.begin(), arr.end());
+    int range = maxVal - minVal + 1;
+    vector<int> count(range, 0), output(arr.size());
+    for (int num : arr) count[num - minVal]++;
+    for (int i = 1; i < range; i++) count[i] += count[i - 1];
+    for (int i = arr.size() - 1; i >= 0; i--) {
+        output[count[arr[i] - minVal] - 1] = arr[i];
+        count[arr[i] - minVal]--;
+    }
+    return output;
+}
+```
+
 ## Common Techniques
 
 ### 1. Three-Way Partitioning (Dutch National Flag)
@@ -168,6 +360,29 @@ def sort_colors(nums):
             high -= 1
 ```
 
+```java
+public void sortColors(int[] nums) {
+    int low = 0, mid = 0, high = nums.length - 1;
+    while (mid <= high) {
+        if (nums[mid] == 0) { swap(nums, low++, mid++); }
+        else if (nums[mid] == 1) { mid++; }
+        else { swap(nums, mid, high--); }
+    }
+}
+private void swap(int[] nums, int i, int j) { int t = nums[i]; nums[i] = nums[j]; nums[j] = t; }
+```
+
+```cpp
+void sortColors(vector<int>& nums) {
+    int low = 0, mid = 0, high = nums.size() - 1;
+    while (mid <= high) {
+        if (nums[mid] == 0) swap(nums[low++], nums[mid++]);
+        else if (nums[mid] == 1) mid++;
+        else swap(nums[mid], nums[high--]);
+    }
+}
+```
+
 ### 2. Custom Comparator
 ```python
 def custom_sort(arr):
@@ -176,6 +391,24 @@ def custom_sort(arr):
 # Example: Sort strings by length then lexicographically
 strings = ["banana", "apple", "cherry"]
 sorted_strings = sorted(strings, key=lambda x: (len(x), x))
+```
+
+```java
+// Example: Sort strings by length then lexicographically
+String[] strings = {"banana", "apple", "cherry"};
+Arrays.sort(strings, (a, b) -> {
+    if (a.length() != b.length()) return a.length() - b.length();
+    return a.compareTo(b);
+});
+```
+
+```cpp
+// Example: Sort strings by length then lexicographically
+vector<string> strings = {"banana", "apple", "cherry"};
+sort(strings.begin(), strings.end(), [](const string& a, const string& b) {
+    if (a.size() != b.size()) return a.size() < b.size();
+    return a < b;
+});
 ```
 
 ## Edge Cases to Consider
@@ -249,6 +482,23 @@ sorted_strings = sorted(strings, key=lambda x: (len(x), x))
 3. [Comparison of Sorting Algorithms](https://www.geeksforgeeks.org/comparison-of-different-sorting-algorithms/)
 4. [External Sorting Tutorial](https://www.geeksforgeeks.org/external-sorting/)
 5. [Parallel Sorting Algorithms](https://www.geeksforgeeks.org/parallel-sorting-algorithms/)
+
+## ❓ FAQ Section
+
+**Q: Which sorting algorithm should I use?**
+A: Quick Sort for general purpose (fast average case). Merge Sort when stability is needed or for linked lists. Heap Sort for guaranteed O(n log n) with O(1) space. Counting/Radix Sort for integers in known range. In practice, use built-in sort (Timsort).
+
+**Q: What does "stable" sorting mean and when does it matter?**
+A: Stable sort preserves the relative order of equal elements. It matters when you sort by multiple keys (sort by name, then by age - stable sort keeps name order for same ages) or when original order has meaning.
+
+**Q: When is O(n²) sorting acceptable?**
+A: For small arrays (n < 50), insertion sort is often faster than O(n log n) algorithms due to lower overhead. It's also good when array is nearly sorted. That's why Timsort uses insertion sort for small runs.
+
+**Q: How do I sort custom objects?**
+A: Define a comparison function or key function. In Python: `sorted(arr, key=lambda x: x.attr)`. In Java: implement Comparable or pass Comparator. Sort by tuple for multiple criteria: `key=lambda x: (x.age, x.name)`.
+
+**Q: What's the lower bound for comparison-based sorting?**
+A: Ω(n log n). You can't do better with comparisons alone. Non-comparison sorts (counting, radix, bucket) can achieve O(n) for restricted inputs (integers in range, uniform distribution).
 
 ## Interview Tips
 1. Clarify input constraints

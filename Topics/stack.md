@@ -3,6 +3,54 @@
 ## Introduction
 A stack is a fundamental data structure that follows the Last-In-First-Out (LIFO) principle. Think of it like a stack of plates - you can only add or remove plates from the top.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (array-based stack implementation)
+- Basic understanding of LIFO concept
+
+### Related Topics
+- **Compare with**: [Queue](queue.md) (FIFO counterpart)
+- **Essential for**: [Recursion](recursion.md) (call stack), [Graph](graph.md) (DFS), [Tree](tree.md) (iterative traversals)
+- **Used in**: [Strings](strings.md) (parentheses matching, expression evaluation), [Backtracking](backtracking.md)
+- **See also**: [Monotonic Stack](arrays.md) (next greater element problems)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Stack
+**Keywords in problem**: "matching", "nested", "reverse", "undo", "previous/next greater/smaller"
+
+**Use Stack when you see**:
+- Matching pairs (parentheses, tags)
+- Reverse order processing
+- Undo operations or history
+- Next/previous greater/smaller element
+- Expression evaluation or parsing
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Parentheses Matching | "valid parentheses", "balanced brackets" | Valid Parentheses, Longest Valid |
+| Monotonic Stack | "next greater", "previous smaller", "span" | Daily Temperatures, Stock Span |
+| Expression Evaluation | "calculator", "evaluate expression", "RPN" | Basic Calculator, Evaluate RPN |
+| Nested Structures | "decode string", "flatten nested", "nested tags" | Decode String, Flatten Nested List |
+| Undo/History | "backspace", "remove adjacent", "simplify path" | Backspace String Compare |
+| DFS Iterative | "iterative DFS", "avoid recursion" | Tree/Graph DFS without recursion |
+
+### ❌ When NOT to Use
+- FIFO (first-in-first-out) needed → use [Queue](queue.md)
+- Need random access → use [Arrays](arrays.md)
+- Priority-based retrieval → use [Heap](heap-pq.md)
+- BFS traversal → use [Queue](queue.md)
+
+### 💡 Monotonic Stack Pattern
+```
+For "next greater element":
+- Use decreasing stack
+- Pop when current > stack top
+- Popped elements found their next greater
+```
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -57,6 +105,51 @@ class Stack:
         return len(self.items)
 ```
 
+```java
+class Stack<T> {
+    private List<T> items = new ArrayList<>();
+    
+    public void push(T item) { items.add(item); }
+    
+    public T pop() {
+        if (isEmpty()) throw new RuntimeException("Pop from empty stack");
+        return items.remove(items.size() - 1);
+    }
+    
+    public T peek() {
+        if (isEmpty()) throw new RuntimeException("Peek at empty stack");
+        return items.get(items.size() - 1);
+    }
+    
+    public boolean isEmpty() { return items.isEmpty(); }
+    public int size() { return items.size(); }
+}
+```
+
+```cpp
+template<typename T>
+class Stack {
+    vector<T> items;
+public:
+    void push(T item) { items.push_back(item); }
+    
+    T pop() {
+        if (isEmpty()) throw runtime_error("Pop from empty stack");
+        T item = items.back();
+        items.pop_back();
+        return item;
+    }
+    
+    T peek() {
+        if (isEmpty()) throw runtime_error("Peek at empty stack");
+        return items.back();
+    }
+    
+    bool isEmpty() { return items.empty(); }
+    int size() { return items.size(); }
+};
+```
+
 ### MinStack Implementation
 ```python
 class MinStack:
@@ -79,6 +172,41 @@ class MinStack:
         return self.min_stack[-1] if self.min_stack else None
 ```
 
+```java
+class MinStack {
+    Stack<Integer> stack = new Stack<>();
+    Stack<Integer> minStack = new Stack<>();
+    
+    public void push(int val) {
+        stack.push(val);
+        if (minStack.isEmpty() || val <= minStack.peek()) minStack.push(val);
+    }
+    public void pop() {
+        if (stack.peek().equals(minStack.peek())) minStack.pop();
+        stack.pop();
+    }
+    public int top() { return stack.peek(); }
+    public int getMin() { return minStack.peek(); }
+}
+```
+
+```cpp
+class MinStack {
+    stack<int> stk, minStk;
+public:
+    void push(int val) {
+        stk.push(val);
+        if (minStk.empty() || val <= minStk.top()) minStk.push(val);
+    }
+    void pop() {
+        if (stk.top() == minStk.top()) minStk.pop();
+        stk.pop();
+    }
+    int top() { return stk.top(); }
+    int getMin() { return minStk.top(); }
+};
+```
+
 ## Common Applications
 
 ### 1. Expression Evaluation
@@ -98,6 +226,41 @@ def evaluate_rpn(tokens):
     return stack[0]
 ```
 
+```java
+public int evalRPN(String[] tokens) {
+    Stack<Integer> stack = new Stack<>();
+    for (String token : tokens) {
+        if ("+-*/".contains(token)) {
+            int b = stack.pop(), a = stack.pop();
+            switch (token) {
+                case "+": stack.push(a + b); break;
+                case "-": stack.push(a - b); break;
+                case "*": stack.push(a * b); break;
+                case "/": stack.push(a / b); break;
+            }
+        } else stack.push(Integer.parseInt(token));
+    }
+    return stack.pop();
+}
+```
+
+```cpp
+int evalRPN(vector<string>& tokens) {
+    stack<int> stk;
+    for (string& token : tokens) {
+        if (token == "+" || token == "-" || token == "*" || token == "/") {
+            int b = stk.top(); stk.pop();
+            int a = stk.top(); stk.pop();
+            if (token == "+") stk.push(a + b);
+            else if (token == "-") stk.push(a - b);
+            else if (token == "*") stk.push(a * b);
+            else stk.push(a / b);
+        } else stk.push(stoi(token));
+    }
+    return stk.top();
+}
+```
+
 ### 2. Parentheses Matching
 ```python
 def is_valid_parentheses(s):
@@ -112,6 +275,33 @@ def is_valid_parentheses(s):
                 return False
     
     return len(stack) == 0
+```
+
+```java
+public boolean isValid(String s) {
+    Stack<Character> stack = new Stack<>();
+    Map<Character, Character> pairs = Map.of(')', '(', '}', '{', ']', '[');
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '{' || c == '[') stack.push(c);
+        else if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
+    }
+    return stack.isEmpty();
+}
+```
+
+```cpp
+bool isValid(string s) {
+    stack<char> stk;
+    unordered_map<char, char> pairs = {{')', '('}, {'}', '{'}, {']', '['}};
+    for (char c : s) {
+        if (c == '(' || c == '{' || c == '[') stk.push(c);
+        else {
+            if (stk.empty() || stk.top() != pairs[c]) return false;
+            stk.pop();
+        }
+    }
+    return stk.empty();
+}
 ```
 
 ## Common Patterns
@@ -129,6 +319,35 @@ def next_greater_element(nums):
         stack.append(i)
     
     return result
+```
+
+```java
+public int[] nextGreaterElement(int[] nums) {
+    int[] result = new int[nums.length];
+    Arrays.fill(result, -1);
+    Stack<Integer> stack = new Stack<>();
+    for (int i = 0; i < nums.length; i++) {
+        while (!stack.isEmpty() && nums[i] > nums[stack.peek()])
+            result[stack.pop()] = nums[i];
+        stack.push(i);
+    }
+    return result;
+}
+```
+
+```cpp
+vector<int> nextGreaterElement(vector<int>& nums) {
+    vector<int> result(nums.size(), -1);
+    stack<int> stk;
+    for (int i = 0; i < nums.size(); i++) {
+        while (!stk.empty() && nums[i] > nums[stk.top()]) {
+            result[stk.top()] = nums[i];
+            stk.pop();
+        }
+        stk.push(i);
+    }
+    return result;
+}
 ```
 
 ### 2. Calculator Pattern
@@ -149,6 +368,36 @@ def calculate(s):
             sign = 1 if char == '+' else -1
     
     return result
+```
+
+```java
+public int calculate(String s) {
+    int result = 0, num = 0, sign = 1;
+    for (char c : (s + "+").toCharArray()) {
+        if (Character.isDigit(c)) num = num * 10 + (c - '0');
+        else if (c == '+' || c == '-') {
+            result += sign * num;
+            num = 0;
+            sign = (c == '+') ? 1 : -1;
+        }
+    }
+    return result;
+}
+```
+
+```cpp
+int calculate(string s) {
+    int result = 0, num = 0, sign = 1;
+    for (char c : s + "+") {
+        if (isdigit(c)) num = num * 10 + (c - '0');
+        else if (c == '+' || c == '-') {
+            result += sign * num;
+            num = 0;
+            sign = (c == '+') ? 1 : -1;
+        }
+    }
+    return result;
+}
 ```
 
 ## Edge Cases to Consider
@@ -206,6 +455,23 @@ def calculate(s):
 3. [Stack Implementation Guide](https://www.programiz.com/dsa/stack)
 4. [Stack Applications](https://www.geeksforgeeks.org/applications-of-stack-data-structure/)
 5. [Stack in Standard Libraries](https://docs.python.org/3/library/collections.html#collections.deque)
+
+## ❓ FAQ Section
+
+**Q: When should I use a stack vs other data structures?**
+A: Use a stack when you need LIFO (Last-In-First-Out) behavior: matching parentheses, undo operations, function call tracking, DFS traversal, or when you need to process elements in reverse order of their arrival.
+
+**Q: What is a monotonic stack and when do I use it?**
+A: A monotonic stack maintains elements in sorted order (increasing or decreasing). Use it for "next greater/smaller element" problems, histogram problems, or when you need to efficiently find the nearest larger/smaller element for each position.
+
+**Q: How do I implement a stack that supports getMin() in O(1)?**
+A: Use two stacks: one for values and one for minimums. When pushing, also push to min-stack if value ≤ current minimum. When popping, also pop from min-stack if the popped value equals the current minimum.
+
+**Q: Can I use an array as a stack?**
+A: Yes! Arrays with push (append) and pop (remove last) operations work as stacks. In Python, use `list.append()` and `list.pop()`. This is often more efficient than implementing a node-based stack.
+
+**Q: How do I convert recursive solution to iterative using a stack?**
+A: Replace the function call stack with an explicit stack. Push initial state, then loop while stack is not empty: pop state, process it, and push new states for "recursive calls". This is essentially manual DFS.
 
 ## Interview Tips
 1. Always validate input constraints

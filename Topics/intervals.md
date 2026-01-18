@@ -3,6 +3,50 @@
 ## Introduction
 Interval problems involve ranges defined by start and end points. These problems are common in scheduling, resource allocation, and time management applications. Understanding interval manipulation and algorithms is crucial for solving real-world optimization problems.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (for storing intervals)
+- [Sorting](sorting.md) (most interval algorithms require sorting first)
+- Basic comparison operations (start/end point comparisons)
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md), [Sorting](sorting.md) (sort by start/end time)
+- **Often uses**: [Heap/Priority Queue](heap-pq.md) (for meeting rooms, merge K sorted)
+- **Algorithmic approach**: [Greedy](greedy.md) (interval scheduling maximization)
+- **See also**: [Tree](tree.md) (interval trees), [Sweep line algorithms](graph.md)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Interval Techniques
+**Keywords in problem**: "intervals", "meetings", "schedule", "overlap", "merge", "time range"
+
+**Use Interval techniques when you see**:
+- Problems involving ranges [start, end]
+- Scheduling or resource allocation
+- Finding overlaps or gaps
+- Merging time/space ranges
+- Calendar or booking systems
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Merge Intervals | "merge overlapping", "combine ranges" | Merge Intervals, Insert Interval |
+| Meeting Rooms | "minimum rooms", "conflicting meetings", "can attend all" | Meeting Rooms I & II |
+| Interval Scheduling | "maximum non-overlapping", "select most" | Non-overlapping Intervals |
+| Sweep Line | "number of overlaps at time t", "max concurrent" | Maximum Population Year |
+| Interval Intersection | "common time", "overlap of lists" | Interval List Intersections |
+| Insert/Remove | "add interval", "remove range" | Insert Interval, Remove Interval |
+
+### ❌ When NOT to Use
+- Point data, not ranges → use [Arrays](arrays.md) or [Hashing](hashing.md)
+- No time/range aspect to the problem
+- Simple 1D array problems → use basic [Array](arrays.md) techniques
+
+### 💡 Sorting Strategy
+- **Sort by start time**: When merging or checking overlaps sequentially
+- **Sort by end time**: When maximizing number of non-overlapping intervals (greedy)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -57,6 +101,48 @@ def merge_two_intervals(a: Interval, b: Interval) -> Interval:
     return Interval(min(a.start, b.start), max(a.end, b.end))
 ```
 
+```java
+class Interval {
+    int start, end;
+    Interval(int start, int end) { this.start = start; this.end = end; }
+}
+
+boolean doOverlap(Interval a, Interval b) {
+    return Math.max(a.start, b.start) <= Math.min(a.end, b.end);
+}
+
+Interval getOverlap(Interval a, Interval b) {
+    if (!doOverlap(a, b)) return null;
+    return new Interval(Math.max(a.start, b.start), Math.min(a.end, b.end));
+}
+
+Interval mergeTwoIntervals(Interval a, Interval b) {
+    if (!doOverlap(a, b)) return null;
+    return new Interval(Math.min(a.start, b.start), Math.max(a.end, b.end));
+}
+```
+
+```cpp
+struct Interval {
+    int start, end;
+    Interval(int s, int e) : start(s), end(e) {}
+};
+
+bool doOverlap(Interval& a, Interval& b) {
+    return max(a.start, b.start) <= min(a.end, b.end);
+}
+
+Interval* getOverlap(Interval& a, Interval& b) {
+    if (!doOverlap(a, b)) return nullptr;
+    return new Interval(max(a.start, b.start), min(a.end, b.end));
+}
+
+Interval* mergeTwoIntervals(Interval& a, Interval& b) {
+    if (!doOverlap(a, b)) return nullptr;
+    return new Interval(min(a.start, b.start), max(a.end, b.end));
+}
+```
+
 ### 2. Merge Intervals
 ```python
 def merge_intervals(intervals):
@@ -77,6 +163,40 @@ def merge_intervals(intervals):
             merged.append(interval)
     
     return merged
+```
+
+```java
+public int[][] merge(int[][] intervals) {
+    if (intervals.length <= 1) return intervals;
+    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+    List<int[]> result = new ArrayList<>();
+    int[] current = intervals[0];
+    result.add(current);
+    for (int[] interval : intervals) {
+        if (interval[0] <= current[1])
+            current[1] = Math.max(current[1], interval[1]);
+        else {
+            current = interval;
+            result.add(current);
+        }
+    }
+    return result.toArray(new int[result.size()][]);
+}
+```
+
+```cpp
+vector<vector<int>> merge(vector<vector<int>>& intervals) {
+    if (intervals.empty()) return {};
+    sort(intervals.begin(), intervals.end());
+    vector<vector<int>> result = {intervals[0]};
+    for (auto& interval : intervals) {
+        if (interval[0] <= result.back()[1])
+            result.back()[1] = max(result.back()[1], interval[1]);
+        else
+            result.push_back(interval);
+    }
+    return result;
+}
 ```
 
 ### 3. Meeting Rooms
@@ -103,6 +223,34 @@ def min_meeting_rooms(intervals):
         heapq.heappush(rooms, interval[1])
     
     return len(rooms)
+```
+
+```java
+public int minMeetingRooms(int[][] intervals) {
+    if (intervals.length == 0) return 0;
+    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+    heap.offer(intervals[0][1]);
+    for (int i = 1; i < intervals.length; i++) {
+        if (heap.peek() <= intervals[i][0]) heap.poll();
+        heap.offer(intervals[i][1]);
+    }
+    return heap.size();
+}
+```
+
+```cpp
+int minMeetingRooms(vector<vector<int>>& intervals) {
+    if (intervals.empty()) return 0;
+    sort(intervals.begin(), intervals.end());
+    priority_queue<int, vector<int>, greater<int>> heap;
+    heap.push(intervals[0][1]);
+    for (int i = 1; i < intervals.size(); i++) {
+        if (heap.top() <= intervals[i][0]) heap.pop();
+        heap.push(intervals[i][1]);
+    }
+    return heap.size();
+}
 ```
 
 ### 4. Insert Interval
@@ -133,6 +281,40 @@ def insert_interval(intervals, newInterval):
     return result
 ```
 
+```java
+public int[][] insert(int[][] intervals, int[] newInterval) {
+    List<int[]> result = new ArrayList<>();
+    int i = 0;
+    while (i < intervals.length && intervals[i][1] < newInterval[0])
+        result.add(intervals[i++]);
+    while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    result.add(newInterval);
+    while (i < intervals.length) result.add(intervals[i++]);
+    return result.toArray(new int[result.size()][]);
+}
+```
+
+```cpp
+vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+    vector<vector<int>> result;
+    int i = 0;
+    while (i < intervals.size() && intervals[i][1] < newInterval[0])
+        result.push_back(intervals[i++]);
+    while (i < intervals.size() && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = min(newInterval[0], intervals[i][0]);
+        newInterval[1] = max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    result.push_back(newInterval);
+    while (i < intervals.size()) result.push_back(intervals[i++]);
+    return result;
+}
+```
+
 ### 5. Non-overlapping Intervals
 ```python
 def erase_overlap_intervals(intervals):
@@ -151,6 +333,30 @@ def erase_overlap_intervals(intervals):
             end = intervals[i][1]
     
     return len(intervals) - non_overlap
+```
+
+```java
+public int eraseOverlapIntervals(int[][] intervals) {
+    if (intervals.length == 0) return 0;
+    Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+    int count = 1, end = intervals[0][1];
+    for (int i = 1; i < intervals.length; i++) {
+        if (intervals[i][0] >= end) { count++; end = intervals[i][1]; }
+    }
+    return intervals.length - count;
+}
+```
+
+```cpp
+int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+    if (intervals.empty()) return 0;
+    sort(intervals.begin(), intervals.end(), [](auto& a, auto& b) { return a[1] < b[1]; });
+    int count = 1, end = intervals[0][1];
+    for (int i = 1; i < intervals.size(); i++) {
+        if (intervals[i][0] >= end) { count++; end = intervals[i][1]; }
+    }
+    return intervals.size() - count;
+}
 ```
 
 ## Common Techniques
@@ -176,6 +382,40 @@ def sweep_line(intervals):
     return max_overlap
 ```
 
+```java
+public int sweepLine(int[][] intervals) {
+    List<int[]> events = new ArrayList<>();
+    for (int[] interval : intervals) {
+        events.add(new int[]{interval[0], 1});  // start
+        events.add(new int[]{interval[1], -1}); // end
+    }
+    events.sort((a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+    int current = 0, maxOverlap = 0;
+    for (int[] event : events) {
+        current += event[1];
+        maxOverlap = Math.max(maxOverlap, current);
+    }
+    return maxOverlap;
+}
+```
+
+```cpp
+int sweepLine(vector<vector<int>>& intervals) {
+    vector<pair<int, int>> events;
+    for (auto& interval : intervals) {
+        events.push_back({interval[0], 1});  // start
+        events.push_back({interval[1], -1}); // end
+    }
+    sort(events.begin(), events.end());
+    int current = 0, maxOverlap = 0;
+    for (auto& event : events) {
+        current += event.second;
+        maxOverlap = max(maxOverlap, current);
+    }
+    return maxOverlap;
+}
+```
+
 ### 2. Interval Tree
 ```python
 class IntervalNode:
@@ -196,6 +436,38 @@ def insert_interval_tree(root, interval):
     
     root.max_end = max(root.max_end, interval[1])
     return root
+```
+
+```java
+class IntervalNode {
+    int[] interval;
+    int maxEnd;
+    IntervalNode left, right;
+    IntervalNode(int[] interval) { this.interval = interval; this.maxEnd = interval[1]; }
+}
+IntervalNode insertIntervalTree(IntervalNode root, int[] interval) {
+    if (root == null) return new IntervalNode(interval);
+    if (interval[0] < root.interval[0]) root.left = insertIntervalTree(root.left, interval);
+    else root.right = insertIntervalTree(root.right, interval);
+    root.maxEnd = Math.max(root.maxEnd, interval[1]);
+    return root;
+}
+```
+
+```cpp
+struct IntervalNode {
+    vector<int> interval;
+    int maxEnd;
+    IntervalNode *left = nullptr, *right = nullptr;
+    IntervalNode(vector<int>& i) : interval(i), maxEnd(i[1]) {}
+};
+IntervalNode* insertIntervalTree(IntervalNode* root, vector<int>& interval) {
+    if (!root) return new IntervalNode(interval);
+    if (interval[0] < root->interval[0]) root->left = insertIntervalTree(root->left, interval);
+    else root->right = insertIntervalTree(root->right, interval);
+    root->maxEnd = max(root->maxEnd, interval[1]);
+    return root;
+}
 ```
 
 ## Edge Cases to Consider
@@ -278,6 +550,23 @@ def insert_interval_tree(root, interval):
 3. [Interval Tree Tutorial](https://www.geeksforgeeks.org/interval-tree/)
 4. [Meeting Room Problems](https://leetcode.com/problems/meeting-rooms-ii/solution/)
 5. [Segment Tree Applications](https://cp-algorithms.com/data_structures/segment_tree.html)
+
+## ❓ FAQ Section
+
+**Q: Should I sort intervals by start time or end time?**
+A: It depends on the problem. Sort by start time for merging intervals. Sort by end time for activity selection (maximum non-overlapping intervals). When in doubt, try both approaches.
+
+**Q: How do I check if two intervals overlap?**
+A: Two intervals [a,b] and [c,d] overlap if `max(a,c) <= min(b,d)`. Equivalently, they DON'T overlap if one ends before the other starts: `b < c` or `d < a`. Negate this condition.
+
+**Q: What's the sweep line technique?**
+A: Convert intervals to events (start = +1, end = -1), sort by time, and sweep through maintaining a running count. Useful for finding maximum overlap, number of concurrent events, or interval coverage.
+
+**Q: How do I merge overlapping intervals?**
+A: Sort by start time. Iterate through: if current interval overlaps with previous (current.start <= prev.end), merge them (update end to max of both ends). Otherwise, add current to result.
+
+**Q: How do I find minimum meeting rooms needed?**
+A: Use sweep line: create start (+1) and end (-1) events, sort by time (process ends before starts at same time), track max concurrent meetings. Or use min-heap of end times: for each meeting, pop if earliest end ≤ current start, then push current end.
 
 ## Interview Tips
 1. Clarify interval representation

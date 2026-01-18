@@ -8,17 +8,18 @@
 [![GitHub forks](https://img.shields.io/github/forks/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews?style=social)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/issues)
 [![GitHub license](https://img.shields.io/github/license/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/blob/main/LICENSE)
-[![Last Updated](https://img.shields.io/badge/last%20updated-July%202025-blue)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)
+[![Last Updated](https://img.shields.io/badge/last%20updated-January%202026-blue)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)
 
 </div>
 
-**_This handbook is a curated guide to Data Structures and Algorithms (DSA) designed for last-minute coding interview preparation at top tech companies. It includes each topic into a concise, high-impact format covering: key definitions, time complexities, lesser-known concepts, edge cases, common patterns, and the most relevant problems & resources to help you revise DSA smarter, not harder._**
+**_This handbook is a curated guide to Data Structures and Algorithms (DSA) designed for last-minute coding interview preparation at top tech companies. It includes each topic in a concise, high-impact format covering: key definitions, time complexities, multi-language implementations (Python, Java, C++), edge cases, common patterns, FAQs, and the most relevant problems & resources to help you revise DSA smarter, not harder._**
 
 ---
 
 ## 📋 Table of Contents
 
 - [🎯 About This Handbook](#-about-this-handbook)
+- [✨ Key Features](#-key-features)
 - [⚡ Quick Start](#-quick-start)
 - [📚 DSA Topics Covered](#-dsa-topics-covered)
 - [🎯 What You'll Learn](#-what-youll-learn)
@@ -35,21 +36,41 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 
 - 🔑 **Key Definitions** - Core concepts explained clearly
 - ⏱️ **Time Complexities** - Performance analysis for all operations
+- 🔗 **Prerequisites & Related Topics** - Learning path and topic connections
+- 💻 **Multi-Language Implementations** - Code in Python, Java, and C++
 - 💡 **Lesser-Known Concepts** - Advanced techniques and optimizations
 - ⚠️ **Edge Cases** - Common pitfalls and how to handle them
 - 🎯 **Common Patterns** - Reusable problem-solving strategies
-- 📝 **Relevant Problems** - Curated practice questions
+- ❓ **FAQ Section** - Answers to frequently asked interview questions
+- 📝 **Relevant Problems** - Curated practice questions by difficulty
 - 🔗 **Additional Resources** - Further reading and practice materials
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔗 **Prerequisites & Related Topics** | Each topic includes learning prerequisites and connections to related topics for structured learning |
+| 💻 **Multi-Language Code** | Every algorithm includes implementations in **Python**, **Java**, and **C++** |
+| 🎯 **Pattern Recognition Guide** | Keywords and indicators to quickly identify which technique to use |
+| ❓ **FAQ Sections** | Common interview questions answered for each topic |
+| 📊 **Complexity Tables** | Time and space complexity for all operations at a glance |
+| 🏋️ **Practice Problems** | Curated LeetCode problems organized by difficulty (Easy/Medium/Hard) |
+| ⚠️ **Edge Cases & Pitfalls** | Common mistakes and how to avoid them |
+| 🌐 **Real-World Applications** | Understand where these concepts are used in practice |
 
 ---
 
 ## ⚡ Quick Start
 
 1. **Choose your topic** from the list below
-2. **Review the key concepts** and time complexities
-3. **Practice with the provided problems**
-4. **Use the references** for deeper understanding
-5. **Watch the video resources** for visual learning
+2. **Check prerequisites** to ensure you have the foundation
+3. **Review the key concepts** and time complexities
+4. **Study implementations** in your preferred language (Python/Java/C++)
+5. **Read the FAQ section** for common interview questions
+6. **Practice with the provided problems** (Easy → Medium → Hard)
+7. **Use the references** for deeper understanding
 
 ---
 
@@ -83,6 +104,24 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 - [🧮 Bit Manipulation](Topics/bit-manipulation.md) - Binary operations and tricks
 - [➗ Math](Topics/math.md) - Mathematical concepts and number theory
 
+### 📄 **Each Topic Includes**
+```
+├── Introduction
+├── Prerequisites & Related Topics
+├── Pattern Recognition Guide (when to use, keywords, indicators)
+├── Core Concepts & Terminology
+├── Time/Space Complexity Analysis
+├── Implementation (Python, Java, C++)
+├── Common Techniques & Patterns
+├── Edge Cases & Common Pitfalls
+├── Practice Problems (Easy/Medium/Hard)
+├── Real-World Applications
+├── Advanced Topics
+├── Important Resources
+├── FAQ Section
+└── Interview Tips
+```
+
 ---
 
 ## 🎯 What You'll Learn
@@ -98,13 +137,20 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 - Binary Search variations
 - DFS/BFS strategies
 - Topological Sorting
+- Monotonic Stack/Queue
 - And many more...
+
+### 💻 **Multi-Language Support**
+- **Python** - Clean, readable implementations
+- **Java** - Enterprise-standard code
+- **C++** - Performance-optimized solutions
 
 ### 💡 **Interview Strategies**
 - How to approach new problems
 - Communication techniques
 - Code optimization tips
 - Edge case handling
+- FAQ-driven preparation
 
 ---
 

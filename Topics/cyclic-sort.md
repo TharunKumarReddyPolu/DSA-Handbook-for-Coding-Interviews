@@ -3,6 +3,44 @@
 ## Introduction
 Cyclic Sort is a pattern used to solve array problems where the array contains numbers in a given range. It's particularly efficient for problems involving arrays containing numbers from 1 to n, as it sorts the array in O(n) time without using extra space.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (array manipulation and indexing)
+- Basic understanding of in-place algorithms
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md), index-value relationship concepts
+- **Alternative to**: [Hashing](hashing.md) (for finding missing/duplicate numbers)
+- **Related algorithms**: [Sorting](sorting.md) (comparison with other sorting methods)
+- **See also**: [Linked List](linked-list.md) (Floyd's cycle detection uses similar ideas)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Cyclic Sort
+**Keywords in problem**: "numbers from 1 to n", "missing number", "duplicate number", "in range [1, n]"
+
+**Use Cyclic Sort when you see**:
+- Array contains numbers in range 1 to n (or 0 to n-1)
+- Need to find missing or duplicate numbers
+- O(1) space requirement with O(n) time
+- Each number should appear at specific index
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Missing Number | "find missing", "one number missing", "disappeared" | Missing Number, Find Disappeared Numbers |
+| Duplicate Number | "find duplicate", "one number repeats" | Find the Duplicate Number |
+| Multiple Missing/Duplicates | "find all missing", "find all duplicates" | Find All Duplicates in Array |
+| Corrupt Pair | "one missing, one duplicate", "set mismatch" | Set Mismatch |
+| First Missing Positive | "first positive missing", "smallest positive" | First Missing Positive |
+
+### ❌ When NOT to Use
+- Numbers NOT in a continuous range → use [Hashing](hashing.md)
+- Array contains negative numbers or zeros outside expected range
+- Need to preserve original array (cyclic sort modifies in-place)
+- Numbers can repeat more than once (except specific duplicate problems)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -49,6 +87,30 @@ def cyclic_sort(nums):
     return nums
 ```
 
+```java
+public void cyclicSort(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        int correctPos = nums[i] - 1;
+        if (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[correctPos]) {
+            int temp = nums[i]; nums[i] = nums[correctPos]; nums[correctPos] = temp;
+        } else i++;
+    }
+}
+```
+
+```cpp
+void cyclicSort(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        int correctPos = nums[i] - 1;
+        if (nums[i] > 0 && nums[i] <= nums.size() && nums[i] != nums[correctPos])
+            swap(nums[i], nums[correctPos]);
+        else i++;
+    }
+}
+```
+
 ### 2. Find Missing Number
 ```python
 def find_missing_number(nums):
@@ -68,6 +130,32 @@ def find_missing_number(nums):
     return len(nums)
 ```
 
+```java
+public int missingNumber(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        if (nums[i] < nums.length && nums[i] != nums[nums[i]])
+            { int t = nums[i]; nums[i] = nums[t]; nums[t] = t; }
+        else i++;
+    }
+    for (i = 0; i < nums.length; i++) if (nums[i] != i) return i;
+    return nums.length;
+}
+```
+
+```cpp
+int missingNumber(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        if (nums[i] < nums.size() && nums[i] != nums[nums[i]])
+            swap(nums[i], nums[nums[i]]);
+        else i++;
+    }
+    for (i = 0; i < nums.size(); i++) if (nums[i] != i) return i;
+    return nums.size();
+}
+```
+
 ### 3. Find Duplicate Number
 ```python
 def find_duplicate(nums):
@@ -82,6 +170,34 @@ def find_duplicate(nums):
         else:
             i += 1
     return -1
+```
+
+```java
+public int findDuplicate(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        if (nums[i] != i + 1) {
+            int correct = nums[i] - 1;
+            if (nums[i] != nums[correct]) { int t = nums[i]; nums[i] = nums[correct]; nums[correct] = t; }
+            else return nums[i];
+        } else i++;
+    }
+    return -1;
+}
+```
+
+```cpp
+int findDuplicate(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        if (nums[i] != i + 1) {
+            int correct = nums[i] - 1;
+            if (nums[i] != nums[correct]) swap(nums[i], nums[correct]);
+            else return nums[i];
+        } else i++;
+    }
+    return -1;
+}
 ```
 
 ### 4. Find All Missing Numbers
@@ -103,6 +219,34 @@ def find_missing_numbers(nums):
     return missing_numbers
 ```
 
+```java
+public List<Integer> findDisappearedNumbers(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        int correct = nums[i] - 1;
+        if (nums[i] != nums[correct]) { int t = nums[i]; nums[i] = nums[correct]; nums[correct] = t; }
+        else i++;
+    }
+    List<Integer> missing = new ArrayList<>();
+    for (i = 0; i < nums.length; i++) if (nums[i] != i + 1) missing.add(i + 1);
+    return missing;
+}
+```
+
+```cpp
+vector<int> findDisappearedNumbers(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        int correct = nums[i] - 1;
+        if (nums[i] != nums[correct]) swap(nums[i], nums[correct]);
+        else i++;
+    }
+    vector<int> missing;
+    for (i = 0; i < nums.size(); i++) if (nums[i] != i + 1) missing.push_back(i + 1);
+    return missing;
+}
+```
+
 ### 5. Find First Missing Positive
 ```python
 def first_missing_positive(nums):
@@ -121,6 +265,34 @@ def first_missing_positive(nums):
     return len(nums) + 1
 ```
 
+```java
+public int firstMissingPositive(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        int correct = nums[i] - 1;
+        if (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[correct]) {
+            int t = nums[i]; nums[i] = nums[correct]; nums[correct] = t;
+        } else i++;
+    }
+    for (i = 0; i < nums.length; i++) if (nums[i] != i + 1) return i + 1;
+    return nums.length + 1;
+}
+```
+
+```cpp
+int firstMissingPositive(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        int correct = nums[i] - 1;
+        if (nums[i] > 0 && nums[i] <= nums.size() && nums[i] != nums[correct])
+            swap(nums[i], nums[correct]);
+        else i++;
+    }
+    for (i = 0; i < nums.size(); i++) if (nums[i] != i + 1) return i + 1;
+    return nums.size() + 1;
+}
+```
+
 ## Common Techniques
 
 ### 1. Index Mapping
@@ -134,6 +306,30 @@ def index_mapping_sort(nums):
                 nums[i], nums[correct_pos] = nums[correct_pos], nums[i]
             else:
                 break
+```
+
+```java
+public void indexMappingSort(int[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+        while (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= nums.length) {
+            int correct = nums[i] - 1;
+            if (nums[i] != nums[correct]) { int t = nums[i]; nums[i] = nums[correct]; nums[correct] = t; }
+            else break;
+        }
+    }
+}
+```
+
+```cpp
+void indexMappingSort(vector<int>& nums) {
+    for (int i = 0; i < nums.size(); i++) {
+        while (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= nums.size()) {
+            int correct = nums[i] - 1;
+            if (nums[i] != nums[correct]) swap(nums[i], nums[correct]);
+            else break;
+        }
+    }
+}
 ```
 
 ### 2. Corruption Detection
@@ -153,6 +349,36 @@ def find_corrupt_pair(nums):
             return [nums[i], i + 1]
     
     return [-1, -1]
+```
+
+```java
+public int[] findCorruptPair(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        int correct = nums[i] - 1;
+        if (nums[i] != nums[correct]) { int t = nums[i]; nums[i] = nums[correct]; nums[correct] = t; }
+        else i++;
+    }
+    for (i = 0; i < nums.length; i++) {
+        if (nums[i] != i + 1) return new int[]{nums[i], i + 1};
+    }
+    return new int[]{-1, -1};
+}
+```
+
+```cpp
+vector<int> findCorruptPair(vector<int>& nums) {
+    int i = 0;
+    while (i < nums.size()) {
+        int correct = nums[i] - 1;
+        if (nums[i] != nums[correct]) swap(nums[i], nums[correct]);
+        else i++;
+    }
+    for (i = 0; i < nums.size(); i++) {
+        if (nums[i] != i + 1) return {nums[i], i + 1};
+    }
+    return {-1, -1};
+}
 ```
 
 ## Edge Cases to Consider
@@ -231,6 +457,23 @@ def find_corrupt_pair(nums):
 3. [Array Rearrangement](https://www.geeksforgeeks.org/rearrange-array-arrj-becomes-arri-j/)
 4. [Missing Number Problems](https://leetcode.com/problems/missing-number/solution/)
 5. [Duplicate Detection](https://leetcode.com/problems/find-the-duplicate-number/solution/)
+
+## ❓ FAQ Section
+
+**Q: When should I use cyclic sort?**
+A: Use cyclic sort when: (1) Array contains numbers in range [1, n] or [0, n-1], (2) You need O(1) space, (3) Problem asks for missing/duplicate numbers. Keywords: "numbers in range 1 to n", "missing number", "duplicate in array".
+
+**Q: What's the key insight of cyclic sort?**
+A: Each number should be at its "correct" index (number i at index i-1, or number i at index i). Swap each number to its correct position. After sorting, any number at wrong position reveals the missing/duplicate.
+
+**Q: How do I handle duplicates in cyclic sort?**
+A: When swapping, if the number at the target position equals the current number, it's a duplicate - skip the swap and move to the next index. The duplicate will be detected when we find misplaced elements.
+
+**Q: What's the time complexity of cyclic sort?**
+A: O(n). Although there's a nested while loop, each number is swapped at most once to its correct position. Total swaps ≤ n, so overall O(n) despite the nested loop appearance.
+
+**Q: Can cyclic sort work for numbers outside [1,n] range?**
+A: Partially. For finding first missing positive, ignore numbers ≤ 0 or > n (they can't be the answer). Place valid numbers at correct positions. First position with wrong number gives the answer.
 
 ## Interview Tips
 1. Identify range constraints

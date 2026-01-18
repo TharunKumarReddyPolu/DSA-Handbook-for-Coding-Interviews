@@ -3,6 +3,49 @@
 ## Introduction
 A graph is a non-linear data structure consisting of vertices (nodes) and edges that connect these vertices. Graphs are used to represent networks, relationships, and various real-world problems from social networks to computer networks.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (for adjacency list/matrix representation)
+- [Queue](queue.md) (essential for BFS traversal)
+- [Stack](stack.md) (for iterative DFS)
+- [Recursion](recursion.md) (for recursive DFS)
+- [Hashing](hashing.md) (for visited set, adjacency map)
+
+### Related Topics
+- **Builds on**: [Tree](tree.md) (trees are special graphs), [Linked List](linked-list.md) (adjacency lists)
+- **Algorithms use**: [Heap](heap-pq.md) (Dijkstra's), [Dynamic Programming](dynamic-programming.md) (shortest paths)
+- **Traversal relates to**: [Backtracking](backtracking.md) (graph exploration)
+- **See also**: [Matrix](matrix.md) (grid-based graph problems)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Graph Algorithms
+**Keywords in problem**: "connected", "path", "network", "nodes/vertices", "edges", "reachable"
+
+**Use Graphs when you see**:
+- Entities with relationships/connections
+- Network or map traversal problems
+- Dependency relationships (prerequisites)
+- Finding shortest/longest paths
+- Detecting cycles or connectivity
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| BFS | "shortest path (unweighted)", "level order", "minimum steps" | Word Ladder, Rotting Oranges |
+| DFS | "all paths", "connected components", "explore all" | Number of Islands, Clone Graph |
+| Topological Sort | "prerequisites", "ordering", "dependencies", "schedule" | Course Schedule, Alien Dictionary |
+| Union-Find | "connected components", "groups", "union", "redundant" | Number of Provinces, Redundant Connection |
+| Dijkstra | "shortest path (weighted)", "minimum cost", "cheapest" | Network Delay Time, Cheapest Flights |
+| Cycle Detection | "detect cycle", "circular dependency", "valid tree" | Course Schedule, Graph Valid Tree |
+
+### ❌ When NOT to Use
+- Data is strictly hierarchical with single parent → use [Tree](tree.md)
+- Simple sequential processing → use [Arrays](arrays.md)
+- Grid without complex connectivity → may use simpler [Matrix](matrix.md) traversal
+- Problem doesn't involve relationships between entities
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -85,6 +128,72 @@ class Graph:
         return edges
 ```
 
+```java
+class Graph {
+    Map<Integer, List<Integer>> graph = new HashMap<>();
+    boolean directed;
+    
+    Graph(boolean directed) { this.directed = directed; }
+    
+    void addVertex(int v) { graph.putIfAbsent(v, new ArrayList<>()); }
+    
+    void addEdge(int v1, int v2) {
+        addVertex(v1); addVertex(v2);
+        graph.get(v1).add(v2);
+        if (!directed) graph.get(v2).add(v1);
+    }
+    
+    Set<Integer> getVertices() { return graph.keySet(); }
+    
+    List<int[]> getEdges() {
+        List<int[]> edges = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (int v : graph.keySet()) {
+            for (int neighbor : graph.get(v)) {
+                String key = directed ? v + "-" + neighbor : Math.min(v, neighbor) + "-" + Math.max(v, neighbor);
+                if (!seen.contains(key)) { edges.add(new int[]{v, neighbor}); seen.add(key); }
+            }
+        }
+        return edges;
+    }
+}
+```
+
+```cpp
+class Graph {
+    unordered_map<int, vector<int>> graph;
+    bool directed;
+public:
+    Graph(bool directed = false) : directed(directed) {}
+    
+    void addVertex(int v) { if (!graph.count(v)) graph[v] = {}; }
+    
+    void addEdge(int v1, int v2) {
+        addVertex(v1); addVertex(v2);
+        graph[v1].push_back(v2);
+        if (!directed) graph[v2].push_back(v1);
+    }
+    
+    vector<int> getVertices() {
+        vector<int> vertices;
+        for (auto& [v, _] : graph) vertices.push_back(v);
+        return vertices;
+    }
+    
+    vector<pair<int, int>> getEdges() {
+        vector<pair<int, int>> edges;
+        set<pair<int, int>> seen;
+        for (auto& [v, neighbors] : graph) {
+            for (int neighbor : neighbors) {
+                auto key = directed ? make_pair(v, neighbor) : make_pair(min(v, neighbor), max(v, neighbor));
+                if (!seen.count(key)) { edges.push_back({v, neighbor}); seen.insert(key); }
+            }
+        }
+        return edges;
+    }
+};
+```
+
 ### Weighted Graph Implementation
 ```python
 class WeightedGraph:
@@ -107,6 +216,49 @@ class WeightedGraph:
             self.graph[v2][v1] = weight
 ```
 
+```java
+class WeightedGraph {
+    Map<Integer, Map<Integer, Integer>> graph = new HashMap<>();
+    boolean directed;
+    
+    WeightedGraph(boolean directed) { this.directed = directed; }
+    
+    void addVertex(int v) { graph.putIfAbsent(v, new HashMap<>()); }
+    
+    void addEdge(int v1, int v2, int weight) {
+        addVertex(v1); addVertex(v2);
+        graph.get(v1).put(v2, weight);
+        if (!directed) graph.get(v2).put(v1, weight);
+    }
+    
+    int getWeight(int v1, int v2) {
+        return graph.getOrDefault(v1, new HashMap<>()).getOrDefault(v2, Integer.MAX_VALUE);
+    }
+}
+```
+
+```cpp
+class WeightedGraph {
+    unordered_map<int, unordered_map<int, int>> graph;
+    bool directed;
+public:
+    WeightedGraph(bool directed = false) : directed(directed) {}
+    
+    void addVertex(int v) { if (!graph.count(v)) graph[v] = {}; }
+    
+    void addEdge(int v1, int v2, int weight) {
+        addVertex(v1); addVertex(v2);
+        graph[v1][v2] = weight;
+        if (!directed) graph[v2][v1] = weight;
+    }
+    
+    int getWeight(int v1, int v2) {
+        if (graph.count(v1) && graph[v1].count(v2)) return graph[v1][v2];
+        return INT_MAX;
+    }
+};
+```
+
 ## Common Algorithms
 
 ### 1. Depth-First Search (DFS)
@@ -121,6 +273,30 @@ def dfs(graph, start, visited=None):
     for neighbor in graph[start]:
         if neighbor not in visited:
             dfs(graph, neighbor, visited)
+```
+
+```java
+public void dfs(Map<Integer, List<Integer>> graph, int start, Set<Integer> visited) {
+    visited.add(start);
+    System.out.print(start + " ");
+    for (int neighbor : graph.getOrDefault(start, new ArrayList<>())) {
+        if (!visited.contains(neighbor)) {
+            dfs(graph, neighbor, visited);
+        }
+    }
+}
+```
+
+```cpp
+void dfs(unordered_map<int, vector<int>>& graph, int start, unordered_set<int>& visited) {
+    visited.insert(start);
+    cout << start << " ";
+    for (int neighbor : graph[start]) {
+        if (visited.find(neighbor) == visited.end()) {
+            dfs(graph, neighbor, visited);
+        }
+    }
+}
 ```
 
 ### 2. Breadth-First Search (BFS)
@@ -139,6 +315,44 @@ def bfs(graph, start):
             if neighbor not in visited:
                 visited.add(neighbor)
                 queue.append(neighbor)
+```
+
+```java
+public void bfs(Map<Integer, List<Integer>> graph, int start) {
+    Set<Integer> visited = new HashSet<>();
+    Queue<Integer> queue = new LinkedList<>();
+    visited.add(start);
+    queue.offer(start);
+    while (!queue.isEmpty()) {
+        int vertex = queue.poll();
+        System.out.print(vertex + " ");
+        for (int neighbor : graph.getOrDefault(vertex, new ArrayList<>())) {
+            if (!visited.contains(neighbor)) {
+                visited.add(neighbor);
+                queue.offer(neighbor);
+            }
+        }
+    }
+}
+```
+
+```cpp
+void bfs(unordered_map<int, vector<int>>& graph, int start) {
+    unordered_set<int> visited;
+    queue<int> q;
+    visited.insert(start);
+    q.push(start);
+    while (!q.empty()) {
+        int vertex = q.front(); q.pop();
+        cout << vertex << " ";
+        for (int neighbor : graph[vertex]) {
+            if (visited.find(neighbor) == visited.end()) {
+                visited.insert(neighbor);
+                q.push(neighbor);
+            }
+        }
+    }
+}
 ```
 
 ### 3. Dijkstra's Shortest Path
@@ -166,6 +380,50 @@ def dijkstra(graph, start):
     return distances
 ```
 
+```java
+public int[] dijkstra(int[][] graph, int start) {
+    int n = graph.length;
+    int[] dist = new int[n];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[start] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+    pq.offer(new int[]{start, 0});
+    while (!pq.isEmpty()) {
+        int[] curr = pq.poll();
+        int u = curr[0], d = curr[1];
+        if (d > dist[u]) continue;
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] > 0 && dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+                pq.offer(new int[]{v, dist[v]});
+            }
+        }
+    }
+    return dist;
+}
+```
+
+```cpp
+vector<int> dijkstra(vector<vector<pair<int,int>>>& graph, int start) {
+    int n = graph.size();
+    vector<int> dist(n, INT_MAX);
+    dist[start] = 0;
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;
+    pq.push({0, start});
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d > dist[u]) continue;
+        for (auto [v, w] : graph[u]) {
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+    return dist;
+}
+```
+
 ### 4. Topological Sort
 ```python
 def topological_sort(graph):
@@ -188,6 +446,40 @@ def topological_sort(graph):
     return stack[::-1]
 ```
 
+```java
+public List<Integer> topologicalSort(Map<Integer, List<Integer>> graph) {
+    Set<Integer> visited = new HashSet<>();
+    Stack<Integer> stack = new Stack<>();
+    for (int vertex : graph.keySet())
+        if (!visited.contains(vertex)) dfs(graph, vertex, visited, stack);
+    Collections.reverse(stack);
+    return new ArrayList<>(stack);
+}
+private void dfs(Map<Integer, List<Integer>> graph, int v, Set<Integer> visited, Stack<Integer> stack) {
+    visited.add(v);
+    for (int neighbor : graph.getOrDefault(v, new ArrayList<>()))
+        if (!visited.contains(neighbor)) dfs(graph, neighbor, visited, stack);
+    stack.push(v);
+}
+```
+
+```cpp
+vector<int> topologicalSort(unordered_map<int, vector<int>>& graph) {
+    unordered_set<int> visited;
+    vector<int> result;
+    function<void(int)> dfs = [&](int v) {
+        visited.insert(v);
+        for (int neighbor : graph[v])
+            if (!visited.count(neighbor)) dfs(neighbor);
+        result.push_back(v);
+    };
+    for (auto& [vertex, _] : graph)
+        if (!visited.count(vertex)) dfs(vertex);
+    reverse(result.begin(), result.end());
+    return result;
+}
+```
+
 ### 5. Union-Find (Disjoint Set)
 ```python
 class UnionFind:
@@ -200,6 +492,55 @@ class UnionFind:
             self.parent[item] = self.find(self.parent[item])
         return self.parent[item]
     
+    def union(self, x, y):
+        rootX = self.find(x)
+        rootY = self.find(y)
+```
+
+```java
+class UnionFind {
+    int[] parent, rank;
+    UnionFind(int n) {
+        parent = new int[n]; rank = new int[n];
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    void union(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (rank[px] < rank[py]) parent[px] = py;
+        else if (rank[px] > rank[py]) parent[py] = px;
+        else { parent[py] = px; rank[px]++; }
+    }
+}
+```
+
+```cpp
+class UnionFind {
+    vector<int> parent, rank;
+public:
+    UnionFind(int n) : parent(n), rank(n, 0) {
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    void unite(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return;
+        if (rank[px] < rank[py]) parent[px] = py;
+        else if (rank[px] > rank[py]) parent[py] = px;
+        else { parent[py] = px; rank[px]++; }
+    }
+};
+```
+
+```python
+    # Continuation of union method
     def union(self, x, y):
         rootX = self.find(x)
         rootY = self.find(y)
@@ -333,6 +674,23 @@ def find_connected_components(graph):
 3. [Advanced Graph Algorithms](https://cp-algorithms.com/graph/basic-graph.html)
 4. [Graph Applications](https://www.geeksforgeeks.org/applications-of-graph-data-structure/)
 5. [Graph Visualization Tools](https://graphviz.org/)
+
+## ❓ FAQ Section
+
+**Q: When should I use adjacency list vs adjacency matrix?**
+A: Use adjacency list for sparse graphs (E << V²) - it's more space efficient O(V+E). Use adjacency matrix for dense graphs or when you need O(1) edge lookup. Matrix is also better when you frequently check if an edge exists.
+
+**Q: How do I detect a cycle in a graph?**
+A: For undirected graphs: DFS with parent tracking or Union-Find. For directed graphs: DFS with three colors (white/gray/black) or check if back edge exists. A back edge points to an ancestor in the DFS tree.
+
+**Q: When should I use Dijkstra vs BFS vs Bellman-Ford?**
+A: BFS: unweighted graphs (all edges = 1). Dijkstra: weighted graphs with non-negative edges. Bellman-Ford: graphs with negative edges (also detects negative cycles). For negative edges, Dijkstra fails!
+
+**Q: What's the difference between topological sort and regular DFS?**
+A: Topological sort is DFS that adds nodes to result AFTER processing all descendants (post-order). It only works on DAGs (Directed Acyclic Graphs). Regular DFS can work on any graph.
+
+**Q: How do I choose between DFS and BFS for graph traversal?**
+A: Use BFS for shortest path in unweighted graphs, level-by-level processing, or when solution is likely near the start. Use DFS for path finding, cycle detection, topological sort, or when you need to explore as far as possible before backtracking.
 
 ## Interview Tips
 1. Clarify graph properties

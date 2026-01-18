@@ -3,6 +3,47 @@
 ## Introduction
 A heap is a specialized tree-based data structure that satisfies the heap property. A priority queue is an abstract data type that operates similarly to a regular queue but with each element having a priority. Heaps are commonly used to implement priority queues.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (binary heaps are implemented using arrays)
+- [Tree](tree.md) (conceptual understanding of complete binary trees)
+- Basic understanding of logarithmic operations
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md) (array-based implementation), [Tree](tree.md) (heap is a tree structure)
+- **Used in**: [Sorting](sorting.md) (heap sort), [Graph](graph.md) (Dijkstra's, Prim's algorithms)
+- **Optimizes**: [Greedy](greedy.md) algorithms (efficient selection), [Intervals](intervals.md) (meeting rooms)
+- **See also**: [Queue](queue.md) (regular vs priority queue comparison)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Heap/Priority Queue
+**Keywords in problem**: "k largest", "k smallest", "top k", "median", "schedule", "merge sorted"
+
+**Use Heap when you see**:
+- Need to repeatedly find min/max element
+- K-th largest/smallest element problems
+- Merging K sorted lists/arrays
+- Stream of data with running statistics
+- Priority-based scheduling
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Top K | "k largest", "k smallest", "k most frequent" | Kth Largest, Top K Frequent Elements |
+| Merge K Sorted | "merge k lists", "k sorted arrays" | Merge K Sorted Lists |
+| Running Median | "median from stream", "sliding window median" | Find Median from Data Stream |
+| Scheduling | "minimize wait time", "task scheduling", "CPU" | Task Scheduler, Meeting Rooms II |
+| Greedy + Heap | "minimum cost", "optimal selection" | Minimum Cost to Hire K Workers |
+| Two Heaps | "balance", "median", "smaller/larger half" | Find Median, Sliding Window Median |
+
+### ❌ When NOT to Use
+- Need to access all elements (not just min/max) → use [Arrays](arrays.md)
+- Need sorted iteration → use sorted [Arrays](arrays.md) or BST
+- Simple FIFO/LIFO operations → use [Queue](queue.md)/[Stack](stack.md)
+- K is very small → simple iteration might suffice
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -108,6 +149,96 @@ class BinaryHeap:
             i = largest
 ```
 
+```java
+class BinaryHeap {
+    private List<Integer> heap = new ArrayList<>();
+    private boolean maxHeap;
+    
+    BinaryHeap(boolean maxHeap) { this.maxHeap = maxHeap; }
+    
+    void insert(int key) {
+        heap.add(key);
+        siftUp(heap.size() - 1);
+    }
+    
+    int extractTop() {
+        if (heap.isEmpty()) throw new RuntimeException("Empty heap");
+        int top = heap.get(0);
+        int last = heap.remove(heap.size() - 1);
+        if (!heap.isEmpty()) { heap.set(0, last); siftDown(0); }
+        return top;
+    }
+    
+    private void siftUp(int i) {
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (maxHeap ? heap.get(parent) < heap.get(i) : heap.get(parent) > heap.get(i)) {
+                Collections.swap(heap, i, parent);
+                i = parent;
+            } else break;
+        }
+    }
+    
+    private void siftDown(int i) {
+        int size = heap.size();
+        while (true) {
+            int best = i, left = 2*i+1, right = 2*i+2;
+            if (left < size && (maxHeap ? heap.get(left) > heap.get(best) : heap.get(left) < heap.get(best))) best = left;
+            if (right < size && (maxHeap ? heap.get(right) > heap.get(best) : heap.get(right) < heap.get(best))) best = right;
+            if (best == i) break;
+            Collections.swap(heap, i, best);
+            i = best;
+        }
+    }
+}
+```
+
+```cpp
+class BinaryHeap {
+    vector<int> heap;
+    bool maxHeap;
+public:
+    BinaryHeap(bool maxHeap = false) : maxHeap(maxHeap) {}
+    
+    void insert(int key) {
+        heap.push_back(key);
+        siftUp(heap.size() - 1);
+    }
+    
+    int extractTop() {
+        if (heap.empty()) throw runtime_error("Empty heap");
+        int top = heap[0];
+        heap[0] = heap.back();
+        heap.pop_back();
+        if (!heap.empty()) siftDown(0);
+        return top;
+    }
+    
+private:
+    void siftUp(int i) {
+        while (i > 0) {
+            int parent = (i - 1) / 2;
+            if (maxHeap ? heap[parent] < heap[i] : heap[parent] > heap[i]) {
+                swap(heap[i], heap[parent]);
+                i = parent;
+            } else break;
+        }
+    }
+    
+    void siftDown(int i) {
+        int size = heap.size();
+        while (true) {
+            int best = i, left = 2*i+1, right = 2*i+2;
+            if (left < size && (maxHeap ? heap[left] > heap[best] : heap[left] < heap[best])) best = left;
+            if (right < size && (maxHeap ? heap[right] > heap[best] : heap[right] < heap[best])) best = right;
+            if (best == i) break;
+            swap(heap[i], heap[best]);
+            i = best;
+        }
+    }
+};
+```
+
 ### Priority Queue using heapq
 ```python
 import heapq
@@ -132,6 +263,52 @@ class PriorityQueue:
         return len(self._queue) == 0
 ```
 
+```java
+class PriorityQueueWrapper<T> {
+    private PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+    private Map<Integer, T> items = new HashMap<>();
+    private int index = 0;
+    
+    void push(T item, int priority) {
+        queue.offer(new int[]{priority, index});
+        items.put(index++, item);
+    }
+    
+    T pop() {
+        int[] top = queue.poll();
+        return items.remove(top[1]);
+    }
+    
+    boolean isEmpty() { return queue.isEmpty(); }
+}
+// Note: Java's PriorityQueue can be used directly: new PriorityQueue<>() for min-heap
+// or new PriorityQueue<>(Collections.reverseOrder()) for max-heap
+```
+
+```cpp
+// C++ has built-in priority_queue in <queue>
+// Min-heap: priority_queue<int, vector<int>, greater<int>> minHeap;
+// Max-heap: priority_queue<int> maxHeap;
+
+// Custom priority queue with item and priority
+template<typename T>
+class PriorityQueueWrapper {
+    priority_queue<pair<int, pair<int, T>>, vector<pair<int, pair<int, T>>>, 
+                   greater<pair<int, pair<int, T>>>> pq;
+    int index = 0;
+public:
+    void push(T item, int priority) {
+        pq.push({priority, {index++, item}});
+    }
+    T pop() {
+        T item = pq.top().second.second;
+        pq.pop();
+        return item;
+    }
+    bool isEmpty() { return pq.empty(); }
+};
+```
+
 ## Common Applications
 
 ### 1. K-th Largest Element
@@ -143,6 +320,28 @@ def find_kth_largest(nums, k):
         if len(heap) > k:
             heapq.heappop(heap)
     return heap[0]
+```
+
+```java
+public int findKthLargest(int[] nums, int k) {
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+    for (int num : nums) {
+        heap.offer(num);
+        if (heap.size() > k) heap.poll();
+    }
+    return heap.peek();
+}
+```
+
+```cpp
+int findKthLargest(vector<int>& nums, int k) {
+    priority_queue<int, vector<int>, greater<int>> heap;
+    for (int num : nums) {
+        heap.push(num);
+        if (heap.size() > k) heap.pop();
+    }
+    return heap.top();
+}
 ```
 
 ### 2. Merge K Sorted Lists
@@ -165,6 +364,37 @@ def merge_k_sorted_lists(lists):
             heapq.heappush(heap, (next_elem, list_idx, elem_idx + 1))
     
     return result
+```
+
+```java
+public ListNode mergeKLists(ListNode[] lists) {
+    PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+    for (ListNode node : lists) if (node != null) pq.offer(node);
+    ListNode dummy = new ListNode(0), curr = dummy;
+    while (!pq.isEmpty()) {
+        ListNode node = pq.poll();
+        curr.next = node;
+        curr = curr.next;
+        if (node.next != null) pq.offer(node.next);
+    }
+    return dummy.next;
+}
+```
+
+```cpp
+ListNode* mergeKLists(vector<ListNode*>& lists) {
+    auto cmp = [](ListNode* a, ListNode* b) { return a->val > b->val; };
+    priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> pq(cmp);
+    for (auto node : lists) if (node) pq.push(node);
+    ListNode dummy(0), *curr = &dummy;
+    while (!pq.empty()) {
+        ListNode* node = pq.top(); pq.pop();
+        curr->next = node;
+        curr = curr->next;
+        if (node->next) pq.push(node->next);
+    }
+    return dummy.next;
+}
 ```
 
 ### 3. Running Median
@@ -197,6 +427,40 @@ class MedianFinder:
         if len(self.large) > len(self.small):
             return self.large[0]
         return (-self.small[0] + self.large[0]) / 2
+```
+
+```java
+class MedianFinder {
+    PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());
+    PriorityQueue<Integer> large = new PriorityQueue<>();
+    
+    public void addNum(int num) {
+        small.offer(num);
+        large.offer(small.poll());
+        if (large.size() > small.size()) small.offer(large.poll());
+    }
+    
+    public double findMedian() {
+        return small.size() > large.size() ? small.peek() : (small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+```cpp
+class MedianFinder {
+    priority_queue<int> small;  // max heap
+    priority_queue<int, vector<int>, greater<int>> large;  // min heap
+public:
+    void addNum(int num) {
+        small.push(num);
+        large.push(small.top()); small.pop();
+        if (large.size() > small.size()) { small.push(large.top()); large.pop(); }
+    }
+    
+    double findMedian() {
+        return small.size() > large.size() ? small.top() : (small.top() + large.top()) / 2.0;
+    }
+};
 ```
 
 ## Edge Cases to Consider
@@ -270,6 +534,23 @@ class MedianFinder:
 3. [Priority Queue Tutorial](https://www.programiz.com/dsa/priority-queue)
 4. [Advanced Heap Structures](https://en.wikipedia.org/wiki/Heap_(data_structure))
 5. [Fibonacci Heap Guide](https://www.geeksforgeeks.org/fibonacci-heap-set-1-introduction/)
+
+## ❓ FAQ Section
+
+**Q: When should I use a heap vs sorting?**
+A: Use heap when you need the k smallest/largest elements (O(n log k) vs O(n log n)), streaming data, or repeated min/max extraction. Sort when you need all elements in order or will access by index.
+
+**Q: How do I implement a max heap when the library only provides min heap?**
+A: Negate the values: push `-value` and negate when popping. In Python: `heapq.heappush(heap, -value)`. Alternatively, use tuples with negated priority: `(-priority, value)`.
+
+**Q: What's the difference between heap and priority queue?**
+A: Priority queue is the abstract data type (ADT) - elements with priorities, highest priority served first. Heap is the most common implementation of priority queue. Other implementations: sorted array, unsorted array, BST.
+
+**Q: Why is building a heap O(n) instead of O(n log n)?**
+A: Using heapify (sift-down from bottom), most nodes are near the bottom and need few swaps. Mathematical analysis shows total work is O(n). Inserting n elements one by one is O(n log n).
+
+**Q: How do I find the kth largest element efficiently?**
+A: Use a min-heap of size k. For each element: if heap size < k, push it; else if element > heap top, pop and push. After processing all elements, heap top is kth largest. Time: O(n log k).
 
 ## Interview Tips
 1. Clarify heap type requirements

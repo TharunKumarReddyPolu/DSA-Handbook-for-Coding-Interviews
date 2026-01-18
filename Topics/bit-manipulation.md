@@ -3,6 +3,46 @@
 ## Introduction
 Bit manipulation involves working with individual bits in numbers. It's essential for optimizing space usage, performing fast arithmetic operations, and solving various algorithmic problems efficiently.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- Binary number system (base-2 representation)
+- Basic programming concepts (integers, operators)
+- Understanding of signed vs unsigned integers
+
+### Related Topics
+- **Builds on**: [Math](math.md) (number theory basics)
+- **Used in**: [Dynamic Programming](dynamic-programming.md) (bitmask DP), [Backtracking](backtracking.md) (subset generation)
+- **Optimizes**: [Arrays](arrays.md) operations, space-efficient data storage
+- **See also**: [Hashing](hashing.md) (hash functions use bit operations)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Bit Manipulation
+**Keywords in problem**: "binary", "bits", "XOR", "single number", "power of two", "bitmask"
+
+**Use Bit Manipulation when you see**:
+- Problems involving binary representations
+- Finding unique elements (XOR properties)
+- Subset generation with bitmasks
+- Space optimization (flags, states)
+- Problems with exactly two states per element
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| XOR Properties | "single number", "appears once", "missing number" | Single Number, Missing Number |
+| Power of Two | "power of 2", "binary representation", "count 1s" | Power of Two, Number of 1 Bits |
+| Bitmask DP | "subset states", "visit states", "all combinations" | Traveling Salesman, Subsets |
+| Bit Flags | "toggle", "on/off", "binary states" | Counting Bits, Reverse Bits |
+| Fast Operations | "multiply by 2", "divide by 2", "modulo 2" | Any arithmetic optimization |
+
+### ❌ When NOT to Use
+- Working with floating-point numbers
+- Problem doesn't involve discrete/binary states
+- Simpler arithmetic solution exists
+- Language doesn't handle bit operations well for large integers
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -67,6 +107,20 @@ def update_bit(num: int, i: int, value: bool) -> int:
     return (num & mask) | (value << i)
 ```
 
+```java
+// Basic Bit Operations
+public int getBit(int num, int i) { return (num >> i) & 1; }
+public int setBit(int num, int i) { return num | (1 << i); }
+public int clearBit(int num, int i) { return num & ~(1 << i); }
+```
+
+```cpp
+// Basic Bit Operations
+int getBit(int num, int i) { return (num >> i) & 1; }
+int setBit(int num, int i) { return num | (1 << i); }
+int clearBit(int num, int i) { return num & ~(1 << i); }
+```
+
 ### 2. Counting Set Bits
 ```python
 def count_set_bits(n: int) -> int:
@@ -89,6 +143,28 @@ def count_bits_lookup(n: int) -> int:
             table[n >> 24])
 ```
 
+```java
+public int countSetBits(int n) {
+    int count = 0;
+    while (n != 0) {
+        n &= (n - 1);
+        count++;
+    }
+    return count;
+}
+```
+
+```cpp
+int countSetBits(int n) {
+    int count = 0;
+    while (n) {
+        n &= (n - 1);
+        count++;
+    }
+    return count;
+}
+```
+
 ### 3. Power of Two
 ```python
 def is_power_of_two(n: int) -> bool:
@@ -109,6 +185,18 @@ def next_power_of_two(n: int) -> int:
     return n + 1
 ```
 
+```java
+public boolean isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+```
+
+```cpp
+bool isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+```
+
 ### 4. Subset Generation
 ```python
 def generate_subsets(nums: List[int]) -> List[List[int]]:
@@ -125,6 +213,34 @@ def generate_subsets(nums: List[int]) -> List[List[int]]:
     return subsets
 ```
 
+```java
+public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    int n = nums.length;
+    for (int i = 0; i < (1 << n); i++) {
+        List<Integer> subset = new ArrayList<>();
+        for (int j = 0; j < n; j++)
+            if ((i & (1 << j)) != 0) subset.add(nums[j]);
+        result.add(subset);
+    }
+    return result;
+}
+```
+
+```cpp
+vector<vector<int>> subsets(vector<int>& nums) {
+    vector<vector<int>> result;
+    int n = nums.size();
+    for (int i = 0; i < (1 << n); i++) {
+        vector<int> subset;
+        for (int j = 0; j < n; j++)
+            if (i & (1 << j)) subset.push_back(nums[j]);
+        result.push_back(subset);
+    }
+    return result;
+}
+```
+
 ### 5. Bit Manipulation Tricks
 ```python
 def bit_tricks(n: int) -> dict:
@@ -138,6 +254,26 @@ def bit_tricks(n: int) -> dict:
         'clear_rightmost_bits': n & (n + 1),
         'swap_values': lambda x, y: (x := x ^ y, y := x ^ y, x := x ^ y)
     }
+```
+
+```java
+// Bit Manipulation Tricks
+boolean isEven(int n) { return (n & 1) == 0; }
+int multiplyBy2(int n) { return n << 1; }
+int divideBy2(int n) { return n >> 1; }
+int clearRightmostSetBit(int n) { return n & (n - 1); }
+int getRightmostSetBit(int n) { return n & (-n); }
+void swap(int[] arr, int i, int j) { arr[i] ^= arr[j]; arr[j] ^= arr[i]; arr[i] ^= arr[j]; }
+```
+
+```cpp
+// Bit Manipulation Tricks
+bool isEven(int n) { return (n & 1) == 0; }
+int multiplyBy2(int n) { return n << 1; }
+int divideBy2(int n) { return n >> 1; }
+int clearRightmostSetBit(int n) { return n & (n - 1); }
+int getRightmostSetBit(int n) { return n & (-n); }
+void swap(int& a, int& b) { a ^= b; b ^= a; a ^= b; }
 ```
 
 ## Common Techniques
@@ -169,6 +305,22 @@ def xor_techniques(nums: List[int]) -> dict:
     }
 ```
 
+```java
+public int singleNumber(int[] nums) {
+    int result = 0;
+    for (int num : nums) result ^= num;
+    return result;
+}
+```
+
+```cpp
+int singleNumber(vector<int>& nums) {
+    int result = 0;
+    for (int num : nums) result ^= num;
+    return result;
+}
+```
+
 ### 2. Bit Masking
 ```python
 def bit_masking_examples() -> dict:
@@ -189,6 +341,20 @@ def bit_masking_examples() -> dict:
         'clear_right_3': clear_rightmost_bits(0b1111, 3),  # 1000
         'clear_msb_to_2': clear_msb_to_i(0b1111, 2)       # 0011
     }
+```
+
+```java
+// Bit Masking Operations
+int createMask(int n) { return (1 << n) - 1; }
+int clearRightmostBits(int x, int n) { return x & (-1 << n); }
+int clearMsbToI(int x, int i) { return x & ((1 << i) - 1); }
+```
+
+```cpp
+// Bit Masking Operations
+int createMask(int n) { return (1 << n) - 1; }
+int clearRightmostBits(int x, int n) { return x & (-1 << n); }
+int clearMsbToI(int x, int i) { return x & ((1 << i) - 1); }
 ```
 
 ## Edge Cases to Consider
@@ -274,6 +440,23 @@ def bit_masking_examples() -> dict:
 3. [Advanced Bit Manipulation](https://www.geeksforgeeks.org/advanced-bit-manipulation/)
 4. [Bitwise Operators in Detail](https://www.hackerearth.com/practice/basic-programming/bit-manipulation/basics-of-bit-manipulation/tutorial/)
 5. [Bit Manipulation Patterns](https://leetcode.com/discuss/general-discussion/1073221/bit-manipulation-patterns)
+
+## ❓ FAQ Section
+
+**Q: How do I check if a number is a power of 2?**
+A: Use `n > 0 && (n & (n-1)) == 0`. Powers of 2 have exactly one bit set. Subtracting 1 flips all bits after that bit, so AND gives 0. Example: 8 (1000) & 7 (0111) = 0.
+
+**Q: What does n & (n-1) do?**
+A: It clears the rightmost set bit. This is useful for counting set bits (Brian Kernighan's algorithm: count how many times you can do this before n becomes 0).
+
+**Q: How do I get/set/clear a specific bit?**
+A: Get bit i: `(n >> i) & 1`. Set bit i: `n | (1 << i)`. Clear bit i: `n & ~(1 << i)`. Toggle bit i: `n ^ (1 << i)`. These are the fundamental operations for bit manipulation.
+
+**Q: When should I use bit manipulation in interviews?**
+A: For problems involving: subsets (2^n possibilities), single number among duplicates (XOR), checking powers of 2, compact state representation, or when the problem explicitly involves binary/bits.
+
+**Q: How does XOR help find the single number?**
+A: XOR properties: a^a=0, a^0=a, XOR is commutative and associative. If all numbers appear twice except one, XOR all of them - pairs cancel out (a^a=0), leaving the single number.
 
 ## Interview Tips
 1. Draw bit patterns

@@ -3,6 +3,46 @@
 ## Introduction
 Arrays are fundamental data structures that store elements in contiguous memory locations. They are the building blocks for many other data structures and algorithms.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- Basic programming concepts (variables, loops, functions)
+- Understanding of memory and indexing
+
+### Related Topics
+- **Builds on**: Basic programming fundamentals
+- **Used in**: [Hashing](hashing.md), [Sorting](sorting.md), [Matrix](matrix.md), [Heap](heap-pq.md), [Stack](stack.md), [Queue](queue.md)
+- **Techniques often combined**: Two Pointers, Sliding Window, Prefix Sum
+- **See also**: [Strings](strings.md) (character arrays), [Linked List](linked-list.md) (alternative linear structure)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Arrays
+**Keywords in problem**: "contiguous", "subarray", "consecutive", "in-place", "rotate", "reverse"
+
+**Use Arrays when you see**:
+- Need O(1) random access by index
+- Working with fixed-size collections
+- Problems involving subarrays or subsequences
+- Sliding window problems (fixed or variable size)
+- Two pointer problems on sorted data
+- Prefix/suffix computations
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Two Pointers | "sorted array", "pair with sum", "remove duplicates" | Two Sum II, Container With Most Water |
+| Sliding Window | "subarray of size k", "longest/shortest substring", "maximum sum" | Max Sum Subarray, Minimum Window |
+| Prefix Sum | "range sum", "cumulative", "sum between indices" | Range Sum Query, Subarray Sum Equals K |
+| Kadane's | "maximum subarray", "contiguous sum" | Maximum Subarray |
+| In-place | "O(1) space", "modify in place", "without extra space" | Rotate Array, Move Zeroes |
+
+### ❌ When NOT to Use
+- Frequent insertions/deletions in middle → use [Linked List](linked-list.md)
+- Need fast lookups by value → use [Hashing](hashing.md)
+- Data is hierarchical → use [Tree](tree.md)
+- Need sorted order with dynamic insertions → use [Heap](heap-pq.md)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -43,6 +83,32 @@ def twoSum(nums, target):
     return []
 ```
 
+```java
+public int[] twoSum(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+```
+
+```cpp
+vector<int> twoSum(vector<int>& nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if (sum == target) return {left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return {};
+}
+```
+
 ### 2. Sliding Window
 Useful for problems involving contiguous subarrays.
 ```python
@@ -57,6 +123,32 @@ def maxSumSubarray(nums, k):
     return max_sum
 ```
 
+```java
+public int maxSumSubarray(int[] nums, int k) {
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += nums[i];
+    int maxSum = windowSum;
+    for (int i = k; i < nums.length; i++) {
+        windowSum += nums[i] - nums[i - k];
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
+```cpp
+int maxSumSubarray(vector<int>& nums, int k) {
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += nums[i];
+    int maxSum = windowSum;
+    for (int i = k; i < nums.size(); i++) {
+        windowSum += nums[i] - nums[i - k];
+        maxSum = max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
 ### 3. Prefix Sum
 Optimal for range queries and cumulative computations.
 ```python
@@ -65,6 +157,26 @@ def buildPrefixSum(nums):
     for i in range(len(nums)):
         prefix[i + 1] = prefix[i] + nums[i]
     return prefix
+```
+
+```java
+public int[] buildPrefixSum(int[] nums) {
+    int[] prefix = new int[nums.length + 1];
+    for (int i = 0; i < nums.length; i++) {
+        prefix[i + 1] = prefix[i] + nums[i];
+    }
+    return prefix;
+}
+```
+
+```cpp
+vector<int> buildPrefixSum(vector<int>& nums) {
+    vector<int> prefix(nums.size() + 1, 0);
+    for (int i = 0; i < nums.size(); i++) {
+        prefix[i + 1] = prefix[i] + nums[i];
+    }
+    return prefix;
+}
 ```
 
 ### 4. Kadane's Algorithm
@@ -76,6 +188,28 @@ def kadane(nums):
         current_sum = max(num, current_sum + num)
         max_sum = max(max_sum, current_sum)
     return max_sum
+```
+
+```java
+public int kadane(int[] nums) {
+    int maxSum = nums[0], currentSum = nums[0];
+    for (int i = 1; i < nums.length; i++) {
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+    return maxSum;
+}
+```
+
+```cpp
+int kadane(vector<int>& nums) {
+    int maxSum = nums[0], currentSum = nums[0];
+    for (int i = 1; i < nums.size(); i++) {
+        currentSum = max(nums[i], currentSum + nums[i]);
+        maxSum = max(maxSum, currentSum);
+    }
+    return maxSum;
+}
 ```
 
 ## Edge Cases to Consider
@@ -134,6 +268,23 @@ def kadane(nums):
 3. [Sliding Window Technique](https://leetcode.com/problems/minimum-size-subarray-sum/solution/)
 4. [Prefix Sum Array Tutorial](https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/)
 5. [Two Pointer Technique](https://leetcode.com/articles/two-pointer-technique/)
+
+## ❓ FAQ Section
+
+**Q: When should I use Two Pointers vs Sliding Window?**
+A: Use Two Pointers when you need to find pairs or compare elements from both ends (e.g., sorted array, palindrome). Use Sliding Window for problems involving contiguous subarrays of fixed or variable size (e.g., max sum subarray, longest substring).
+
+**Q: How do I decide between O(n²) brute force and O(n) optimized solution?**
+A: Check constraints. If n ≤ 1000, O(n²) is usually acceptable. For n ≤ 10⁵ or 10⁶, you need O(n) or O(n log n). Always start with brute force to understand the problem, then optimize.
+
+**Q: What's the difference between subarray and subsequence?**
+A: Subarray is contiguous (elements must be adjacent), e.g., [2,3] in [1,2,3,4]. Subsequence maintains relative order but doesn't need to be contiguous, e.g., [1,3] in [1,2,3,4].
+
+**Q: How do I handle array index out of bounds errors?**
+A: Always validate indices before accessing. Use conditions like `if (i >= 0 && i < n)`. For sliding windows, ensure `right < n` before expansion and `left <= right` during contraction.
+
+**Q: When should I sort the array first?**
+A: Sort when the problem involves finding pairs/triplets with target sum, removing duplicates, or when ordering doesn't affect the answer but enables efficient algorithms like binary search or two pointers.
 
 ## Interview Tips
 1. Always clarify input constraints and array properties

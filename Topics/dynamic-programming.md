@@ -3,6 +3,47 @@
 ## Introduction
 Dynamic Programming (DP) is a method for solving complex problems by breaking them down into simpler subproblems. It is applicable when subproblems overlap and have optimal substructure. DP combines the solutions to subproblems to solve the original problem.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Recursion](recursion.md) (essential for top-down/memoization approach)
+- [Arrays](arrays.md) (for tabulation and state storage)
+- [Math](math.md) (for understanding recurrence relations)
+
+### Related Topics
+- **Builds on**: [Recursion](recursion.md) (memoization), [Math](math.md) (optimal substructure)
+- **Compare with**: [Greedy](greedy.md) (when greedy choice property doesn't hold)
+- **Often combined with**: [Strings](strings.md) (LCS, edit distance), [Graph](graph.md) (shortest paths), [Tree](tree.md) (tree DP)
+- **See also**: [Bit Manipulation](bit-manipulation.md) (bitmask DP), [Matrix](matrix.md) (grid DP)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Dynamic Programming
+**Keywords in problem**: "minimum/maximum", "count ways", "longest/shortest", "is it possible", "optimal"
+
+**Use DP when you see**:
+- Overlapping subproblems (same computation repeated)
+- Optimal substructure (optimal solution uses optimal sub-solutions)
+- Counting problems (number of ways to...)
+- Optimization problems (min/max cost, length, etc.)
+- Decision problems (can we achieve X?)
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Linear DP | "climbing stairs", "house robber", "sequence" | Climbing Stairs, House Robber |
+| 2D Grid DP | "grid path", "minimum path sum", "unique paths" | Unique Paths, Minimum Path Sum |
+| String DP | "edit distance", "longest common", "palindrome" | Edit Distance, LCS, Longest Palindrome |
+| Knapsack | "capacity", "weight limit", "select items", "subset sum" | 0/1 Knapsack, Coin Change |
+| Interval DP | "merge", "burst", "range", "partition" | Burst Balloons, Matrix Chain |
+| State Machine | "buy/sell stock", "states", "cooldown" | Best Time to Buy and Sell Stock |
+
+### ❌ When NOT to Use
+- Problem has greedy choice property → use [Greedy](greedy.md) (simpler)
+- No overlapping subproblems → use [Recursion](recursion.md) or [Backtracking](backtracking.md)
+- Need all solutions, not just count/optimal → use [Backtracking](backtracking.md)
+- State space is too large even with memoization
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -79,6 +120,32 @@ def fib_tab(n):
     return dp[n]
 ```
 
+```java
+// Bottom-up (Tabulation)
+public int fib(int n) {
+    if (n <= 1) return n;
+    int[] dp = new int[n + 1];
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i-1] + dp[i-2];
+    }
+    return dp[n];
+}
+```
+
+```cpp
+// Bottom-up (Tabulation)
+int fib(int n) {
+    if (n <= 1) return n;
+    vector<int> dp(n + 1);
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i-1] + dp[i-2];
+    }
+    return dp[n];
+}
+```
+
 ### 2. 0/1 Knapsack
 ```python
 def knapsack(values, weights, capacity):
@@ -98,6 +165,38 @@ def knapsack(values, weights, capacity):
     return dp[n][capacity]
 ```
 
+```java
+public int knapsack(int[] values, int[] weights, int capacity) {
+    int n = values.length;
+    int[][] dp = new int[n + 1][capacity + 1];
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (weights[i-1] <= w)
+                dp[i][w] = Math.max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w]);
+            else
+                dp[i][w] = dp[i-1][w];
+        }
+    }
+    return dp[n][capacity];
+}
+```
+
+```cpp
+int knapsack(vector<int>& values, vector<int>& weights, int capacity) {
+    int n = values.size();
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (weights[i-1] <= w)
+                dp[i][w] = max(values[i-1] + dp[i-1][w - weights[i-1]], dp[i-1][w]);
+            else
+                dp[i][w] = dp[i-1][w];
+        }
+    }
+    return dp[n][capacity];
+}
+```
+
 ### 3. Longest Common Subsequence
 ```python
 def lcs(text1: str, text2: str) -> int:
@@ -112,6 +211,38 @@ def lcs(text1: str, text2: str) -> int:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
     
     return dp[m][n]
+```
+
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+    int m = text1.length(), n = text2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1.charAt(i-1) == text2.charAt(j-1))
+                dp[i][j] = dp[i-1][j-1] + 1;
+            else
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+    return dp[m][n];
+}
+```
+
+```cpp
+int longestCommonSubsequence(string text1, string text2) {
+    int m = text1.size(), n = text2.size();
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1[i-1] == text2[j-1])
+                dp[i][j] = dp[i-1][j-1] + 1;
+            else
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+        }
+    }
+    return dp[m][n];
+}
 ```
 
 ### 4. Matrix Path Problems
@@ -140,6 +271,34 @@ def min_path_sum(grid):
     return dp[m-1][n-1]
 ```
 
+```java
+public int minPathSum(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    int[][] dp = new int[m][n];
+    dp[0][0] = grid[0][0];
+    for (int j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + grid[0][j];
+    for (int i = 1; i < m; i++) dp[i][0] = dp[i-1][0] + grid[i][0];
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + grid[i][j];
+    return dp[m-1][n-1];
+}
+```
+
+```cpp
+int minPathSum(vector<vector<int>>& grid) {
+    int m = grid.size(), n = grid[0].size();
+    vector<vector<int>> dp(m, vector<int>(n));
+    dp[0][0] = grid[0][0];
+    for (int j = 1; j < n; j++) dp[0][j] = dp[0][j-1] + grid[0][j];
+    for (int i = 1; i < m; i++) dp[i][0] = dp[i-1][0] + grid[i][0];
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j];
+    return dp[m-1][n-1];
+}
+```
+
 ### 5. State Compression DP
 ```python
 def can_partition(nums):
@@ -154,6 +313,34 @@ def can_partition(nums):
         dp |= (dp << num) & ((1 << (target + 1)) - 1)
     
     return dp & (1 << target)
+```
+
+```java
+public boolean canPartition(int[] nums) {
+    int total = Arrays.stream(nums).sum();
+    if (total % 2 != 0) return false;
+    int target = total / 2;
+    boolean[] dp = new boolean[target + 1];
+    dp[0] = true;
+    for (int num : nums)
+        for (int j = target; j >= num; j--)
+            dp[j] = dp[j] || dp[j - num];
+    return dp[target];
+}
+```
+
+```cpp
+bool canPartition(vector<int>& nums) {
+    int total = accumulate(nums.begin(), nums.end(), 0);
+    if (total % 2 != 0) return false;
+    int target = total / 2;
+    vector<bool> dp(target + 1, false);
+    dp[0] = true;
+    for (int num : nums)
+        for (int j = target; j >= num; j--)
+            dp[j] = dp[j] || dp[j - num];
+    return dp[target];
+}
 ```
 
 ## Common DP Patterns
@@ -264,6 +451,23 @@ def can_partition(nums):
 3. [TopCoder DP Tutorial](https://www.topcoder.com/community/competitive-programming/tutorials/dynamic-programming-from-novice-to-advanced/)
 4. [Algorithms Live! DP](https://www.youtube.com/watch?v=YBSt1jYwVfU)
 5. [MIT OpenCourseWare DP](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-19-dynamic-programming-i-fibonacci-shortest-paths/)
+
+## ❓ FAQ Section
+
+**Q: How do I know if a problem can be solved with DP?**
+A: Look for two properties: (1) Overlapping subproblems - same subproblems are solved multiple times, (2) Optimal substructure - optimal solution can be built from optimal solutions of subproblems. Keywords: "minimum", "maximum", "count ways", "longest", "shortest".
+
+**Q: When should I use top-down (memoization) vs bottom-up (tabulation)?**
+A: Top-down is easier to write (just add caching to recursion) and only computes needed states. Bottom-up is more efficient (no recursion overhead), avoids stack overflow, and is easier to optimize for space. Start with top-down, convert to bottom-up if needed.
+
+**Q: How do I define the DP state?**
+A: Ask "What information do I need to uniquely identify a subproblem?" Common states: current index, remaining capacity, previous choice, substring indices. State should capture everything needed to make the next decision.
+
+**Q: How can I optimize DP space complexity?**
+A: If current state only depends on previous row/state, use rolling arrays. For 2D DP that only uses dp[i-1], use two 1D arrays or a single array traversed carefully. For Fibonacci-like, use just 2-3 variables.
+
+**Q: What's the difference between DP and Greedy?**
+A: Greedy makes locally optimal choices hoping for global optimum (faster but may not work). DP explores all options and combines optimal subproblems (always works when applicable but slower). If greedy works, prefer it; otherwise use DP.
 
 ## Interview Tips
 1. Identify overlapping subproblems

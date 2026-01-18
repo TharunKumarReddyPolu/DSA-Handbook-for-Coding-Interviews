@@ -3,6 +3,47 @@
 ## Introduction
 A queue is a fundamental data structure that follows the First-In-First-Out (FIFO) principle. Think of it like a line of people waiting - the first person to join the line is the first one to be served.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (array-based queue implementation)
+- [Linked List](linked-list.md) (linked list-based implementation)
+- Basic understanding of FIFO concept
+
+### Related Topics
+- **Compare with**: [Stack](stack.md) (LIFO vs FIFO)
+- **Essential for**: [Graph](graph.md) (BFS traversal), [Tree](tree.md) (level-order traversal)
+- **Extensions**: [Heap/Priority Queue](heap-pq.md) (priority-based ordering)
+- **See also**: [Sliding Window](arrays.md) (deque for window problems)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Queue
+**Keywords in problem**: "FIFO", "first-come-first-serve", "level order", "BFS", "process in order"
+
+**Use Queue when you see**:
+- Breadth-First Search (BFS) traversal
+- Level-order tree traversal
+- Processing in arrival order
+- Sliding window maximum/minimum (with deque)
+- Task scheduling with order preservation
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| BFS Traversal | "shortest path (unweighted)", "minimum moves" | Word Ladder, Open the Lock |
+| Level Order | "level by level", "print levels", "zigzag" | Binary Tree Level Order, Zigzag Traversal |
+| Sliding Window Max/Min | "maximum in window", "sliding maximum" | Sliding Window Maximum |
+| Simulation | "queue of tasks", "process in order" | Number of Recent Calls |
+| Multi-source BFS | "rotting oranges", "walls and gates", "infection" | Rotting Oranges, 01 Matrix |
+| Circular Queue | "ring buffer", "fixed size queue" | Design Circular Queue |
+
+### ❌ When NOT to Use
+- Need LIFO (last-in-first-out) → use [Stack](stack.md)
+- Need priority-based processing → use [Heap](heap-pq.md)
+- Need random access → use [Arrays](arrays.md)
+- DFS traversal → use [Stack](stack.md) or [Recursion](recursion.md)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -57,6 +98,51 @@ class Queue:
         return len(self.items)
 ```
 
+```java
+class Queue<T> {
+    private LinkedList<T> items = new LinkedList<>();
+    
+    public void enqueue(T item) { items.addLast(item); }
+    
+    public T dequeue() {
+        if (isEmpty()) throw new RuntimeException("Dequeue from empty queue");
+        return items.removeFirst();
+    }
+    
+    public T front() {
+        if (isEmpty()) throw new RuntimeException("Front from empty queue");
+        return items.getFirst();
+    }
+    
+    public boolean isEmpty() { return items.isEmpty(); }
+    public int size() { return items.size(); }
+}
+```
+
+```cpp
+template<typename T>
+class Queue {
+    deque<T> items;
+public:
+    void enqueue(T item) { items.push_back(item); }
+    
+    T dequeue() {
+        if (isEmpty()) throw runtime_error("Dequeue from empty queue");
+        T item = items.front();
+        items.pop_front();
+        return item;
+    }
+    
+    T front() {
+        if (isEmpty()) throw runtime_error("Front from empty queue");
+        return items.front();
+    }
+    
+    bool isEmpty() { return items.empty(); }
+    int size() { return items.size(); }
+};
+```
+
 ### Circular Queue Implementation
 ```python
 class CircularQueue:
@@ -92,6 +178,63 @@ class CircularQueue:
         return (self.rear + 1) % self.size == self.front
 ```
 
+```java
+class CircularQueue {
+    int[] queue;
+    int front = -1, rear = -1, size;
+    
+    CircularQueue(int size) {
+        this.size = size;
+        queue = new int[size];
+    }
+    
+    void enqueue(int item) {
+        if (isFull()) throw new RuntimeException("Queue is full");
+        if (front == -1) front = 0;
+        rear = (rear + 1) % size;
+        queue[rear] = item;
+    }
+    
+    int dequeue() {
+        if (isEmpty()) throw new RuntimeException("Queue is empty");
+        int item = queue[front];
+        if (front == rear) { front = rear = -1; }
+        else { front = (front + 1) % size; }
+        return item;
+    }
+    
+    boolean isEmpty() { return front == -1; }
+    boolean isFull() { return (rear + 1) % size == front; }
+}
+```
+
+```cpp
+class CircularQueue {
+    vector<int> queue;
+    int front = -1, rear = -1, size;
+public:
+    CircularQueue(int size) : size(size), queue(size) {}
+    
+    void enqueue(int item) {
+        if (isFull()) throw runtime_error("Queue is full");
+        if (front == -1) front = 0;
+        rear = (rear + 1) % size;
+        queue[rear] = item;
+    }
+    
+    int dequeue() {
+        if (isEmpty()) throw runtime_error("Queue is empty");
+        int item = queue[front];
+        if (front == rear) { front = rear = -1; }
+        else { front = (front + 1) % size; }
+        return item;
+    }
+    
+    bool isEmpty() { return front == -1; }
+    bool isFull() { return (rear + 1) % size == front; }
+};
+```
+
 ### Deque Implementation
 ```python
 from collections import deque
@@ -116,6 +259,31 @@ class Deque:
         return len(self.items) == 0
 ```
 
+```java
+class Deque<T> {
+    private LinkedList<T> items = new LinkedList<>();
+    
+    void addFront(T item) { items.addFirst(item); }
+    void addRear(T item) { items.addLast(item); }
+    T removeFront() { return items.removeFirst(); }
+    T removeRear() { return items.removeLast(); }
+    boolean isEmpty() { return items.isEmpty(); }
+}
+```
+
+```cpp
+template<typename T>
+class Deque {
+    deque<T> items;
+public:
+    void addFront(T item) { items.push_front(item); }
+    void addRear(T item) { items.push_back(item); }
+    T removeFront() { T item = items.front(); items.pop_front(); return item; }
+    T removeRear() { T item = items.back(); items.pop_back(); return item; }
+    bool isEmpty() { return items.empty(); }
+};
+```
+
 ## Common Applications
 
 ### 1. BFS Implementation
@@ -135,6 +303,44 @@ def bfs(graph, start):
             if neighbor not in visited:
                 visited.add(neighbor)
                 queue.append(neighbor)
+```
+
+```java
+public void bfs(Map<Integer, List<Integer>> graph, int start) {
+    Set<Integer> visited = new HashSet<>();
+    Queue<Integer> queue = new LinkedList<>();
+    queue.offer(start);
+    visited.add(start);
+    while (!queue.isEmpty()) {
+        int vertex = queue.poll();
+        System.out.print(vertex + " ");
+        for (int neighbor : graph.getOrDefault(vertex, new ArrayList<>())) {
+            if (!visited.contains(neighbor)) {
+                visited.add(neighbor);
+                queue.offer(neighbor);
+            }
+        }
+    }
+}
+```
+
+```cpp
+void bfs(unordered_map<int, vector<int>>& graph, int start) {
+    unordered_set<int> visited;
+    queue<int> q;
+    q.push(start);
+    visited.insert(start);
+    while (!q.empty()) {
+        int vertex = q.front(); q.pop();
+        cout << vertex << " ";
+        for (int neighbor : graph[vertex]) {
+            if (visited.find(neighbor) == visited.end()) {
+                visited.insert(neighbor);
+                q.push(neighbor);
+            }
+        }
+    }
+}
 ```
 
 ### 2. Sliding Window Maximum
@@ -160,6 +366,34 @@ def max_sliding_window(nums, k):
             result.append(nums[window[0]])
     
     return result
+```
+
+```java
+public int[] maxSlidingWindow(int[] nums, int k) {
+    int[] result = new int[nums.length - k + 1];
+    Deque<Integer> deque = new ArrayDeque<>();
+    for (int i = 0; i < nums.length; i++) {
+        while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) deque.pollFirst();
+        while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) deque.pollLast();
+        deque.offerLast(i);
+        if (i >= k - 1) result[i - k + 1] = nums[deque.peekFirst()];
+    }
+    return result;
+}
+```
+
+```cpp
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+    vector<int> result;
+    deque<int> dq;
+    for (int i = 0; i < nums.size(); i++) {
+        while (!dq.empty() && dq.front() < i - k + 1) dq.pop_front();
+        while (!dq.empty() && nums[dq.back()] < nums[i]) dq.pop_back();
+        dq.push_back(i);
+        if (i >= k - 1) result.push_back(nums[dq.front()]);
+    }
+    return result;
+}
 ```
 
 ## Common Patterns
@@ -191,6 +425,48 @@ def level_order_traversal(root):
     return result
 ```
 
+```java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+        int size = queue.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+```cpp
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector<vector<int>> result;
+    if (!root) return result;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int size = q.size();
+        vector<int> level;
+        for (int i = 0; i < size; i++) {
+            TreeNode* node = q.front(); q.pop();
+            level.push_back(node->val);
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+        result.push_back(level);
+    }
+    return result;
+}
+```
+
 ### 2. Task Scheduling
 ```python
 def task_scheduling(tasks, n):
@@ -198,6 +474,30 @@ def task_scheduling(tasks, n):
     counter = Counter(tasks)
     max_freq = max(counter.values())
     max_freq_tasks = sum(1 for v in counter.values() if v == max_freq)
+```
+
+```java
+public int leastInterval(char[] tasks, int n) {
+    int[] count = new int[26];
+    for (char c : tasks) count[c - 'A']++;
+    int maxFreq = Arrays.stream(count).max().getAsInt();
+    int maxCount = (int) Arrays.stream(count).filter(c -> c == maxFreq).count();
+    return Math.max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount);
+}
+```
+
+```cpp
+int leastInterval(vector<char>& tasks, int n) {
+    vector<int> count(26, 0);
+    for (char c : tasks) count[c - 'A']++;
+    int maxFreq = *max_element(count.begin(), count.end());
+    int maxCount = count_if(count.begin(), count.end(), [maxFreq](int c) { return c == maxFreq; });
+    return max((int)tasks.size(), (maxFreq - 1) * (n + 1) + maxCount);
+}
+```
+
+```python
+def task_scheduling_continued(tasks, n):
     
     return max(len(tasks), (max_freq - 1) * (n + 1) + max_freq_tasks)
 ```
@@ -260,6 +560,23 @@ def task_scheduling(tasks, n):
 3. [Priority Queue Tutorial](https://www.programiz.com/dsa/priority-queue)
 4. [Circular Queue Guide](https://www.programiz.com/dsa/circular-queue)
 5. [Queue in Standard Libraries](https://docs.python.org/3/library/queue.html)
+
+## ❓ FAQ Section
+
+**Q: When should I use a queue vs a stack?**
+A: Use a queue (FIFO) when order of processing matters and you need to process elements in the order they arrived: BFS traversal, task scheduling, buffering. Use a stack (LIFO) when you need reverse order or nested structure handling.
+
+**Q: What's the difference between Queue and Deque?**
+A: Queue allows insertion at rear and removal from front only. Deque (Double-Ended Queue) allows insertion and removal at both ends. Deque is more versatile and can simulate both stack and queue.
+
+**Q: When should I use a Priority Queue?**
+A: Use Priority Queue when elements have different priorities and you need to always process the highest (or lowest) priority element first: Dijkstra's algorithm, task scheduling with priorities, finding kth largest/smallest elements.
+
+**Q: How do I implement a queue using two stacks?**
+A: Use one stack for enqueue (push) and one for dequeue. When dequeuing, if the dequeue stack is empty, pop all elements from enqueue stack and push to dequeue stack, then pop from dequeue stack.
+
+**Q: What's a circular queue and when do I use it?**
+A: Circular queue reuses empty spaces by wrapping around. Use it when you have a fixed-size buffer and want efficient memory usage: CPU scheduling, traffic management, buffer in streaming data.
 
 ## Interview Tips
 1. Clarify queue type requirements

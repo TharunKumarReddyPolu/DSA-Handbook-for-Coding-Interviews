@@ -3,6 +3,53 @@
 ## Introduction
 Recursion is a programming concept where a function solves a problem by calling itself with smaller instances of the same problem. It's a powerful technique for solving problems that can be broken down into smaller, similar sub-problems.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- Functions (function calls, parameters, return values)
+- [Stack](stack.md) concept (understanding call stack)
+- Base case and termination conditions
+
+### Related Topics
+- **Foundation for**: [Backtracking](backtracking.md), [Dynamic Programming](dynamic-programming.md) (memoization)
+- **Essential for**: [Tree](tree.md) traversals, [Graph](graph.md) (DFS)
+- **Can convert to**: [Stack](stack.md) (iterative with explicit stack)
+- **See also**: [Sorting](sorting.md) (merge sort, quick sort), [Math](math.md) (mathematical induction)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Recursion
+**Keywords in problem**: "nested", "tree", "divide", "subproblem", "self-similar"
+
+**Use Recursion when you see**:
+- Problem can be broken into smaller identical subproblems
+- Tree or hierarchical data structures
+- Divide and conquer opportunities
+- Nested structures (parentheses, directories)
+- Mathematical sequences defined recursively
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Tree Traversal | "traverse tree", "tree operations" | All tree traversals, Tree Height |
+| Divide & Conquer | "merge sort", "quick sort", "binary search" | Merge Sort, Quick Sort |
+| Mathematical | "factorial", "fibonacci", "power" | Climbing Stairs, Pow(x,n) |
+| Nested Structures | "nested lists", "flatten", "calculator" | Nested List Iterator, Basic Calculator |
+| Generate All | "combinations", "permutations", "subsets" | Subsets, Permutations |
+| Linked List | "reverse recursively", "merge recursively" | Reverse Linked List (recursive) |
+
+### ❌ When NOT to Use
+- Simple iteration works → avoid recursion overhead
+- Very deep recursion possible → use iteration with [Stack](stack.md)
+- Overlapping subproblems → add memoization or use [DP](dynamic-programming.md)
+- Tail recursion in non-optimizing language → convert to iteration
+
+### 💡 Recursion Checklist
+1. ✅ Define clear base case(s)
+2. ✅ Ensure progress toward base case
+3. ✅ Trust the recursive call works for smaller input
+4. ✅ Consider memoization if subproblems repeat
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -52,6 +99,28 @@ def fibonacci(n):
     return fibonacci(n - 1) + fibonacci(n - 2)
 ```
 
+```java
+public int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+public int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+```
+
+```cpp
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+```
+
 ### 2. Tail Recursion
 ```python
 def factorial_tail(n, accumulator=1):
@@ -63,6 +132,30 @@ def fibonacci_tail(n, a=0, b=1):
     if n == 0:
         return a
     return fibonacci_tail(n - 1, b, a + b)
+```
+
+```java
+public long factorialTail(int n, long accumulator) {
+    if (n <= 1) return accumulator;
+    return factorialTail(n - 1, n * accumulator);
+}
+
+public int fibonacciTail(int n, int a, int b) {
+    if (n == 0) return a;
+    return fibonacciTail(n - 1, b, a + b);
+}
+```
+
+```cpp
+long factorialTail(int n, long accumulator = 1) {
+    if (n <= 1) return accumulator;
+    return factorialTail(n - 1, n * accumulator);
+}
+
+int fibonacciTail(int n, int a = 0, int b = 1) {
+    if (n == 0) return a;
+    return fibonacciTail(n - 1, b, a + b);
+}
 ```
 
 ### 3. Binary Recursion (Divide and Conquer)
@@ -94,6 +187,42 @@ def merge(left, right):
     return result
 ```
 
+```java
+public int[] mergeSort(int[] arr) {
+    if (arr.length <= 1) return arr;
+    int mid = arr.length / 2;
+    int[] left = mergeSort(Arrays.copyOfRange(arr, 0, mid));
+    int[] right = mergeSort(Arrays.copyOfRange(arr, mid, arr.length));
+    return merge(left, right);
+}
+private int[] merge(int[] left, int[] right) {
+    int[] result = new int[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+    while (i < left.length && j < right.length)
+        result[k++] = left[i] <= right[j] ? left[i++] : right[j++];
+    while (i < left.length) result[k++] = left[i++];
+    while (j < right.length) result[k++] = right[j++];
+    return result;
+}
+```
+
+```cpp
+vector<int> mergeSort(vector<int> arr) {
+    if (arr.size() <= 1) return arr;
+    int mid = arr.size() / 2;
+    vector<int> left(arr.begin(), arr.begin() + mid);
+    vector<int> right(arr.begin() + mid, arr.end());
+    left = mergeSort(left); right = mergeSort(right);
+    vector<int> result;
+    int i = 0, j = 0;
+    while (i < left.size() && j < right.size())
+        result.push_back(left[i] <= right[j] ? left[i++] : right[j++]);
+    while (i < left.size()) result.push_back(left[i++]);
+    while (j < right.size()) result.push_back(right[j++]);
+    return result;
+}
+```
+
 ### 4. Tree Recursion
 ```python
 def print_binary_strings(n, string=""):
@@ -114,6 +243,38 @@ def generate_permutations(string, prefix=""):
         generate_permutations(rem, prefix + string[i])
 ```
 
+```java
+void printBinaryStrings(int n, String s) {
+    if (s.length() == n) { System.out.println(s); return; }
+    printBinaryStrings(n, s + "0");
+    printBinaryStrings(n, s + "1");
+}
+
+void generatePermutations(String str, String prefix) {
+    if (str.isEmpty()) { System.out.println(prefix); return; }
+    for (int i = 0; i < str.length(); i++) {
+        String rem = str.substring(0, i) + str.substring(i + 1);
+        generatePermutations(rem, prefix + str.charAt(i));
+    }
+}
+```
+
+```cpp
+void printBinaryStrings(int n, string s = "") {
+    if (s.length() == n) { cout << s << endl; return; }
+    printBinaryStrings(n, s + "0");
+    printBinaryStrings(n, s + "1");
+}
+
+void generatePermutations(string str, string prefix = "") {
+    if (str.empty()) { cout << prefix << endl; return; }
+    for (int i = 0; i < str.size(); i++) {
+        string rem = str.substr(0, i) + str.substr(i + 1);
+        generatePermutations(rem, prefix + str[i]);
+    }
+}
+```
+
 ### 5. Memoization with Recursion
 ```python
 def fibonacci_memo(n, memo=None):
@@ -128,6 +289,26 @@ def fibonacci_memo(n, memo=None):
     
     memo[n] = fibonacci_memo(n-1, memo) + fibonacci_memo(n-2, memo)
     return memo[n]
+```
+
+```java
+Map<Integer, Integer> memo = new HashMap<>();
+int fibonacciMemo(int n) {
+    if (n <= 1) return n;
+    if (memo.containsKey(n)) return memo.get(n);
+    int result = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+    memo.put(n, result);
+    return result;
+}
+```
+
+```cpp
+unordered_map<int, int> memo;
+int fibonacciMemo(int n) {
+    if (n <= 1) return n;
+    if (memo.count(n)) return memo[n];
+    return memo[n] = fibonacciMemo(n - 1) + fibonacciMemo(n - 2);
+}
 ```
 
 ## Common Techniques
@@ -147,6 +328,30 @@ def backtrack(candidates, target, path, results):
         path.pop()
 ```
 
+```java
+void backtrack(int[] candidates, int target, int start, List<Integer> path, List<List<Integer>> results) {
+    if (target < 0) return;
+    if (target == 0) { results.add(new ArrayList<>(path)); return; }
+    for (int i = start; i < candidates.length; i++) {
+        path.add(candidates[i]);
+        backtrack(candidates, target - candidates[i], i, path, results);
+        path.remove(path.size() - 1);
+    }
+}
+```
+
+```cpp
+void backtrack(vector<int>& candidates, int target, int start, vector<int>& path, vector<vector<int>>& results) {
+    if (target < 0) return;
+    if (target == 0) { results.push_back(path); return; }
+    for (int i = start; i < candidates.size(); i++) {
+        path.push_back(candidates[i]);
+        backtrack(candidates, target - candidates[i], i, path, results);
+        path.pop_back();
+    }
+}
+```
+
 ### 2. Tree Traversal
 ```python
 def tree_traversal(root):
@@ -157,6 +362,26 @@ def tree_traversal(root):
     print(root.val)
     tree_traversal(root.left)
     tree_traversal(root.right)
+```
+
+```java
+void treeTraversal(TreeNode root) {
+    if (root == null) return;
+    // Pre-order
+    System.out.println(root.val);
+    treeTraversal(root.left);
+    treeTraversal(root.right);
+}
+```
+
+```cpp
+void treeTraversal(TreeNode* root) {
+    if (!root) return;
+    // Pre-order
+    cout << root->val << endl;
+    treeTraversal(root->left);
+    treeTraversal(root->right);
+}
 ```
 
 ## Edge Cases to Consider
@@ -229,6 +454,23 @@ def tree_traversal(root):
 3. [Tail Call Optimization](https://www.geeksforgeeks.org/tail-recursion/)
 4. [Recursion vs Iteration](https://www.geeksforgeeks.org/recursion-vs-iteration/)
 5. [Memory Management in Recursion](https://www.geeksforgeeks.org/memory-allocation-in-recursion/)
+
+## ❓ FAQ Section
+
+**Q: How do I identify the base case for recursion?**
+A: Ask "What's the smallest/simplest input where I know the answer immediately?" For arrays: empty array or single element. For trees: null node or leaf. For numbers: 0 or 1. The base case should not require further recursion.
+
+**Q: How do I avoid stack overflow in recursion?**
+A: (1) Convert to iteration using explicit stack, (2) Use tail recursion (if language supports optimization), (3) Increase stack size, (4) Ensure base case is reachable and correct. Python has a default recursion limit of ~1000.
+
+**Q: When should I use recursion vs iteration?**
+A: Use recursion for tree/graph traversals, divide-and-conquer, and problems with natural recursive structure. Use iteration for simple loops, when stack space is a concern, or when performance is critical. Any recursion can be converted to iteration.
+
+**Q: What is tail recursion and why does it matter?**
+A: Tail recursion is when the recursive call is the last operation in the function. Some languages (not Python/Java) optimize this to avoid stack growth, making it as efficient as iteration. Structure your recursion this way when possible.
+
+**Q: How do I convert recursion to iteration?**
+A: Use an explicit stack to simulate the call stack. Push initial state, loop while stack not empty: pop state, process it, push new states for "recursive calls". For tree traversal, this is standard iterative DFS.
 
 ## Interview Tips
 1. Always identify base cases first

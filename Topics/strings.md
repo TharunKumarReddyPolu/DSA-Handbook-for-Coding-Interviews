@@ -3,6 +3,54 @@
 ## Introduction
 String manipulation and pattern matching are fundamental in computer science. Understanding string algorithms is crucial for text processing, pattern matching, and many real-world applications like text editors, compilers, and search engines.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (strings are character arrays)
+- Basic understanding of ASCII/Unicode
+- [Hashing](hashing.md) (for rolling hash, pattern matching)
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md) (character array operations)
+- **Often uses**: [Hashing](hashing.md) (anagrams, Rabin-Karp), [Two Pointers](arrays.md), Sliding Window
+- **Advanced structures**: [Trie](trie.md) (prefix-based operations)
+- **See also**: [Dynamic Programming](dynamic-programming.md) (LCS, edit distance), [Stack](stack.md) (parsing)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use String Algorithms
+**Keywords in problem**: "string", "substring", "pattern", "anagram", "palindrome", "parse"
+
+**Use String techniques when you see**:
+- Pattern matching or searching
+- Anagram or permutation detection
+- Palindrome problems
+- String transformation
+- Parsing or tokenization
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Sliding Window | "substring", "longest without repeating", "anagram in" | Longest Substring, Find Anagrams |
+| Two Pointers | "palindrome", "reverse", "compare from ends" | Valid Palindrome, Reverse String |
+| Hashing | "anagram", "frequency", "first unique" | Valid Anagram, Group Anagrams |
+| Pattern Matching | "find pattern", "strStr", "needle in haystack" | Implement strStr, KMP problems |
+| DP on Strings | "edit distance", "longest common", "regex" | Edit Distance, LCS, Regex Match |
+| Trie | "prefix", "autocomplete", "word search" | Implement Trie, Word Search II |
+
+### ❌ When NOT to Use
+- Problem is purely numeric → use [Math](math.md) or [Arrays](arrays.md)
+- Need complex pattern logic → consider [Trie](trie.md) or regex
+- Character-level operations not needed → might be simpler
+
+### 💡 Common String Techniques
+| Technique | When to Use | Complexity |
+|-----------|-------------|------------|
+| Sorting chars | Anagram comparison | O(n log n) |
+| Hash/Counter | Frequency comparison | O(n) |
+| KMP | Multiple pattern searches | O(n + m) |
+| Rabin-Karp | Rolling hash, multiple patterns | O(n + m) avg |
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -87,6 +135,52 @@ def kmp_search(text, pattern):
     return indices
 ```
 
+```java
+public int strStr(String haystack, String needle) {
+    int[] lps = computeLPS(needle);
+    int i = 0, j = 0;
+    while (i < haystack.length()) {
+        if (haystack.charAt(i) == needle.charAt(j)) { i++; j++; }
+        if (j == needle.length()) return i - j;
+        else if (i < haystack.length() && haystack.charAt(i) != needle.charAt(j)) {
+            if (j != 0) j = lps[j - 1];
+            else i++;
+        }
+    }
+    return -1;
+}
+private int[] computeLPS(String pattern) {
+    int[] lps = new int[pattern.length()];
+    int len = 0, i = 1;
+    while (i < pattern.length()) {
+        if (pattern.charAt(i) == pattern.charAt(len)) lps[i++] = ++len;
+        else if (len != 0) len = lps[len - 1];
+        else lps[i++] = 0;
+    }
+    return lps;
+}
+```
+
+```cpp
+int strStr(string haystack, string needle) {
+    vector<int> lps(needle.size(), 0);
+    for (int i = 1, len = 0; i < needle.size();) {
+        if (needle[i] == needle[len]) lps[i++] = ++len;
+        else if (len) len = lps[len - 1];
+        else lps[i++] = 0;
+    }
+    for (int i = 0, j = 0; i < haystack.size();) {
+        if (haystack[i] == needle[j]) { i++; j++; }
+        if (j == needle.size()) return i - j;
+        else if (i < haystack.size() && haystack[i] != needle[j]) {
+            if (j) j = lps[j - 1];
+            else i++;
+        }
+    }
+    return -1;
+}
+```
+
 ### 2. Rabin-Karp Algorithm
 ```python
 def rabin_karp(text, pattern):
@@ -126,6 +220,52 @@ def rabin_karp(text, pattern):
     return result
 ```
 
+```java
+public List<Integer> rabinKarp(String text, String pattern) {
+    List<Integer> result = new ArrayList<>();
+    int n = text.length(), m = pattern.length();
+    if (m > n) return result;
+    long prime = 101, d = 256, h = 1;
+    for (int i = 0; i < m - 1; i++) h = (h * d) % prime;
+    long patHash = 0, winHash = 0;
+    for (int i = 0; i < m; i++) {
+        patHash = (d * patHash + pattern.charAt(i)) % prime;
+        winHash = (d * winHash + text.charAt(i)) % prime;
+    }
+    for (int i = 0; i <= n - m; i++) {
+        if (patHash == winHash && text.substring(i, i + m).equals(pattern)) result.add(i);
+        if (i < n - m) {
+            winHash = (d * (winHash - text.charAt(i) * h) + text.charAt(i + m)) % prime;
+            if (winHash < 0) winHash += prime;
+        }
+    }
+    return result;
+}
+```
+
+```cpp
+vector<int> rabinKarp(string text, string pattern) {
+    vector<int> result;
+    int n = text.size(), m = pattern.size();
+    if (m > n) return result;
+    long long prime = 101, d = 256, h = 1;
+    for (int i = 0; i < m - 1; i++) h = (h * d) % prime;
+    long long patHash = 0, winHash = 0;
+    for (int i = 0; i < m; i++) {
+        patHash = (d * patHash + pattern[i]) % prime;
+        winHash = (d * winHash + text[i]) % prime;
+    }
+    for (int i = 0; i <= n - m; i++) {
+        if (patHash == winHash && text.substr(i, m) == pattern) result.push_back(i);
+        if (i < n - m) {
+            winHash = (d * (winHash - text[i] * h) + text[i + m]) % prime;
+            if (winHash < 0) winHash += prime;
+        }
+    }
+    return result;
+}
+```
+
 ### 3. Palindrome Check
 ```python
 def is_palindrome(s: str) -> bool:
@@ -153,6 +293,33 @@ def longest_palindrome_substring(s: str) -> str:
             end = i + length // 2
     
     return s[start:end + 1]
+```
+
+```java
+public boolean isPalindrome(String s) {
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        while (left < right && !Character.isLetterOrDigit(s.charAt(left))) left++;
+        while (left < right && !Character.isLetterOrDigit(s.charAt(right))) right--;
+        if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right)))
+            return false;
+        left++; right--;
+    }
+    return true;
+}
+```
+
+```cpp
+bool isPalindrome(string s) {
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        while (left < right && !isalnum(s[left])) left++;
+        while (left < right && !isalnum(s[right])) right--;
+        if (tolower(s[left]) != tolower(s[right])) return false;
+        left++; right--;
+    }
+    return true;
+}
 ```
 
 ### 4. Anagram Detection
@@ -184,6 +351,35 @@ def find_all_anagrams(s: str, p: str) -> List[int]:
     return result
 ```
 
+```java
+public List<Integer> findAnagrams(String s, String p) {
+    List<Integer> result = new ArrayList<>();
+    if (s.length() < p.length()) return result;
+    int[] pCount = new int[26], sCount = new int[26];
+    for (char c : p.toCharArray()) pCount[c - 'a']++;
+    for (int i = 0; i < s.length(); i++) {
+        sCount[s.charAt(i) - 'a']++;
+        if (i >= p.length()) sCount[s.charAt(i - p.length()) - 'a']--;
+        if (Arrays.equals(pCount, sCount)) result.add(i - p.length() + 1);
+    }
+    return result;
+}
+```
+
+```cpp
+vector<int> findAnagrams(string s, string p) {
+    vector<int> result, pCount(26, 0), sCount(26, 0);
+    if (s.size() < p.size()) return result;
+    for (char c : p) pCount[c - 'a']++;
+    for (int i = 0; i < s.size(); i++) {
+        sCount[s[i] - 'a']++;
+        if (i >= p.size()) sCount[s[i - p.size()] - 'a']--;
+        if (pCount == sCount) result.push_back(i - p.size() + 1);
+    }
+    return result;
+}
+```
+
 ### 5. String Compression
 ```python
 def compress(chars: List[str]) -> int:
@@ -204,6 +400,40 @@ def compress(chars: List[str]) -> int:
     return write
 ```
 
+```java
+public int compress(char[] chars) {
+    int write = 0, anchor = 0;
+    for (int read = 0; read < chars.length; read++) {
+        if (read + 1 == chars.length || chars[read + 1] != chars[read]) {
+            chars[write++] = chars[anchor];
+            if (read > anchor) {
+                for (char c : String.valueOf(read - anchor + 1).toCharArray())
+                    chars[write++] = c;
+            }
+            anchor = read + 1;
+        }
+    }
+    return write;
+}
+```
+
+```cpp
+int compress(vector<char>& chars) {
+    int write = 0, anchor = 0;
+    for (int read = 0; read < chars.size(); read++) {
+        if (read + 1 == chars.size() || chars[read + 1] != chars[read]) {
+            chars[write++] = chars[anchor];
+            if (read > anchor) {
+                string cnt = to_string(read - anchor + 1);
+                for (char c : cnt) chars[write++] = c;
+            }
+            anchor = read + 1;
+        }
+    }
+    return write;
+}
+```
+
 ## Common Techniques
 
 ### 1. Sliding Window
@@ -222,6 +452,37 @@ def longest_substring_without_repeating(s: str) -> int:
     return max_length
 ```
 
+```java
+public int lengthOfLongestSubstring(String s) {
+    Map<Character, Integer> charIndex = new HashMap<>();
+    int maxLen = 0, start = 0;
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (charIndex.containsKey(c) && charIndex.get(c) >= start)
+            start = charIndex.get(c) + 1;
+        else
+            maxLen = Math.max(maxLen, i - start + 1);
+        charIndex.put(c, i);
+    }
+    return maxLen;
+}
+```
+
+```cpp
+int lengthOfLongestSubstring(string s) {
+    unordered_map<char, int> charIndex;
+    int maxLen = 0, start = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (charIndex.count(s[i]) && charIndex[s[i]] >= start)
+            start = charIndex[s[i]] + 1;
+        else
+            maxLen = max(maxLen, i - start + 1);
+        charIndex[s[i]] = i;
+    }
+    return maxLen;
+}
+```
+
 ### 2. Two Pointers
 ```python
 def reverse_string(s: List[str]) -> None:
@@ -230,6 +491,26 @@ def reverse_string(s: List[str]) -> None:
         s[left], s[right] = s[right], s[left]
         left += 1
         right -= 1
+```
+
+```java
+public void reverseString(char[] s) {
+    int left = 0, right = s.length - 1;
+    while (left < right) {
+        char temp = s[left];
+        s[left++] = s[right];
+        s[right--] = temp;
+    }
+}
+```
+
+```cpp
+void reverseString(vector<char>& s) {
+    int left = 0, right = s.size() - 1;
+    while (left < right) {
+        swap(s[left++], s[right--]);
+    }
+}
 ```
 
 ## Edge Cases to Consider
@@ -315,6 +596,23 @@ def reverse_string(s: List[str]) -> None:
 3. [Rabin-Karp Algorithm](https://www.geeksforgeeks.org/rabin-karp-algorithm-for-pattern-searching/)
 4. [String Matching Patterns](https://www.cs.princeton.edu/~rs/AlgsDS07/21PatternMatching.pdf)
 5. [Unicode Standards](https://www.unicode.org/standard/standard.html)
+
+## ❓ FAQ Section
+
+**Q: When should I use KMP vs Rabin-Karp for pattern matching?**
+A: KMP is better for single pattern search with guaranteed O(n+m). Rabin-Karp is better for multiple pattern search or when you want simpler code (rolling hash). Rabin-Karp has O(nm) worst case due to hash collisions but O(n+m) average.
+
+**Q: How do I efficiently check if two strings are anagrams?**
+A: (1) Sort both and compare - O(n log n), (2) Use character frequency count/hash map - O(n), (3) Use a single array of size 26 for lowercase letters. Method 2/3 is preferred for efficiency.
+
+**Q: How do I handle case sensitivity in string problems?**
+A: Always clarify with interviewer. Common approaches: (1) Convert to lowercase at start, (2) Use case-insensitive comparison, (3) Treat as separate characters. Document your assumption.
+
+**Q: What's the best way to build strings in a loop?**
+A: Use StringBuilder (Java) or list with join (Python) instead of string concatenation. String concatenation creates new string objects each time: O(n²) total. StringBuilder/list.join: O(n) total.
+
+**Q: When should I use Trie vs HashMap for string problems?**
+A: Use Trie for prefix-based operations (autocomplete, prefix search, word validation with wildcards). Use HashMap for exact lookups, frequency counting, or when memory is constrained. Trie has O(m) operations where m is string length.
 
 ## Interview Tips
 1. Clarify string properties

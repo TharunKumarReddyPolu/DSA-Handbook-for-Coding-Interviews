@@ -3,6 +3,47 @@
 ## Introduction
 A linked list is a linear data structure where elements are stored in nodes, and each node points to the next node in the sequence. Unlike arrays, linked lists don't require contiguous memory allocation.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- Basic programming (pointers/references concept)
+- Understanding of memory allocation
+- [Arrays](arrays.md) (for comparison and understanding trade-offs)
+
+### Related Topics
+- **Compare with**: [Arrays](arrays.md) (trade-offs in access vs insertion)
+- **Used in**: [Hashing](hashing.md) (chaining for collision resolution), [Stack](stack.md) and [Queue](queue.md) (alternative implementations)
+- **Techniques**: Two Pointers (fast/slow), [Recursion](recursion.md) (recursive operations)
+- **See also**: [Tree](tree.md) (linked structures), [Graph](graph.md) (adjacency lists)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Linked List
+**Keywords in problem**: "linked list", "node", "next pointer", "reverse", "merge lists", "cycle"
+
+**Use Linked List when you see**:
+- Frequent insertions/deletions at arbitrary positions
+- Unknown size with frequent modifications
+- Need to reverse or reorder nodes
+- Cycle detection problems
+- Merging sorted sequences
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Fast/Slow Pointers | "cycle", "middle element", "palindrome" | Linked List Cycle, Middle of List |
+| Reverse | "reverse list", "reverse between", "k-group" | Reverse Linked List, Reverse K-Group |
+| Merge | "merge sorted lists", "combine lists" | Merge Two Sorted Lists, Merge K Lists |
+| Two Pointers | "nth from end", "remove nth", "intersection" | Remove Nth From End, Intersection Point |
+| Dummy Node | "insert/delete at head", "simplify edge cases" | Add Two Numbers, Remove Duplicates |
+| In-place Modify | "reorder", "partition", "rearrange" | Reorder List, Partition List |
+
+### ❌ When NOT to Use
+- Need random access by index → use [Arrays](arrays.md)
+- Frequent lookups by value → use [Hashing](hashing.md)
+- Need sorted order with fast search → use BST or sorted [Arrays](arrays.md)
+- Memory overhead is a concern (pointers add overhead)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -65,6 +106,68 @@ class SinglyLinkedList:
         return self.size
 ```
 
+```java
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int val) { this.val = val; }
+}
+
+class SinglyLinkedList {
+    ListNode head;
+    int size = 0;
+    
+    void insertAtHead(int val) {
+        ListNode newNode = new ListNode(val);
+        newNode.next = head;
+        head = newNode;
+        size++;
+    }
+    
+    Integer deleteAtHead() {
+        if (head == null) return null;
+        int val = head.val;
+        head = head.next;
+        size--;
+        return val;
+    }
+    
+    int getSize() { return size; }
+}
+```
+
+```cpp
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+class SinglyLinkedList {
+    ListNode* head = nullptr;
+    int size = 0;
+public:
+    void insertAtHead(int val) {
+        ListNode* newNode = new ListNode(val);
+        newNode->next = head;
+        head = newNode;
+        size++;
+    }
+    
+    int deleteAtHead() {
+        if (!head) return -1;
+        int val = head->val;
+        ListNode* temp = head;
+        head = head->next;
+        delete temp;
+        size--;
+        return val;
+    }
+    
+    int getSize() { return size; }
+};
+```
+
 ### Doubly Linked List
 ```python
 class DoublyListNode:
@@ -100,6 +203,60 @@ class DoublyLinkedList:
         self.size += 1
 ```
 
+```java
+class DoublyListNode {
+    int val;
+    DoublyListNode next, prev;
+    DoublyListNode(int val) { this.val = val; }
+}
+
+class DoublyLinkedList {
+    DoublyListNode head, tail;
+    int size = 0;
+    
+    void insertAtHead(int val) {
+        DoublyListNode newNode = new DoublyListNode(val);
+        if (head == null) { head = tail = newNode; }
+        else { newNode.next = head; head.prev = newNode; head = newNode; }
+        size++;
+    }
+    
+    void insertAtTail(int val) {
+        DoublyListNode newNode = new DoublyListNode(val);
+        if (tail == null) { head = tail = newNode; }
+        else { newNode.prev = tail; tail.next = newNode; tail = newNode; }
+        size++;
+    }
+}
+```
+
+```cpp
+struct DoublyListNode {
+    int val;
+    DoublyListNode *next, *prev;
+    DoublyListNode(int x) : val(x), next(nullptr), prev(nullptr) {}
+};
+
+class DoublyLinkedList {
+    DoublyListNode *head = nullptr, *tail = nullptr;
+    int size = 0;
+public:
+    void insertAtHead(int val) {
+        DoublyListNode* newNode = new DoublyListNode(val);
+        if (!head) { head = tail = newNode; }
+        else { newNode->next = head; head->prev = newNode; head = newNode; }
+        size++;
+    }
+    
+    void insertAtTail(int val) {
+        DoublyListNode* newNode = new DoublyListNode(val);
+        if (!tail) { head = tail = newNode; }
+        else { newNode->prev = tail; tail->next = newNode; tail = newNode; }
+        size++;
+    }
+};
+```
+
 ## Common Techniques
 
 ### 1. Floyd's Cycle Detection (Tortoise and Hare)
@@ -120,6 +277,33 @@ def has_cycle(head):
     return True
 ```
 
+```java
+public boolean hasCycle(ListNode head) {
+    if (head == null) return false;
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+```
+
+```cpp
+bool hasCycle(ListNode* head) {
+    if (!head) return false;
+    ListNode* slow = head;
+    ListNode* fast = head;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+```
+
 ### 2. Reverse Linked List
 ```python
 def reverse_list(head):
@@ -133,6 +317,33 @@ def reverse_list(head):
         curr = next_temp
     
     return prev
+```
+
+```java
+public ListNode reverseList(ListNode head) {
+    ListNode prev = null, curr = head;
+    while (curr != null) {
+        ListNode next = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+```
+
+```cpp
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev = nullptr;
+    ListNode* curr = head;
+    while (curr) {
+        ListNode* next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
 ```
 
 ### 3. Merge Two Sorted Lists
@@ -152,6 +363,32 @@ def merge_two_lists(l1, l2):
     
     curr.next = l1 if l1 else l2
     return dummy.next
+```
+
+```java
+public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0), curr = dummy;
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }
+        else { curr.next = l2; l2 = l2.next; }
+        curr = curr.next;
+    }
+    curr.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+```cpp
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+    ListNode dummy(0), *curr = &dummy;
+    while (l1 && l2) {
+        if (l1->val <= l2->val) { curr->next = l1; l1 = l1->next; }
+        else { curr->next = l2; l2 = l2->next; }
+        curr = curr->next;
+    }
+    curr->next = l1 ? l1 : l2;
+    return dummy.next;
+}
 ```
 
 ## Common Patterns
@@ -181,6 +418,30 @@ def remove_nth_from_end(head, n):
     # Remove nth node
     second.next = second.next.next
     return dummy.next
+```
+
+```java
+public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode first = dummy, second = dummy;
+    for (int i = 0; i <= n; i++) first = first.next;
+    while (first != null) { first = first.next; second = second.next; }
+    second.next = second.next.next;
+    return dummy.next;
+}
+```
+
+```cpp
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+    ListNode dummy(0);
+    dummy.next = head;
+    ListNode *first = &dummy, *second = &dummy;
+    for (int i = 0; i <= n; i++) first = first->next;
+    while (first) { first = first->next; second = second->next; }
+    second->next = second->next->next;
+    return dummy.next;
+}
 ```
 
 ## Edge Cases to Consider
@@ -244,6 +505,23 @@ def remove_nth_from_end(head, n):
 3. [Skip Lists Tutorial](https://www.geeksforgeeks.org/skip-list/)
 4. [XOR Linked List](https://www.geeksforgeeks.org/xor-linked-list-a-memory-efficient-doubly-linked-list-set-1/)
 5. [Self-Organizing Lists](https://www.geeksforgeeks.org/self-organizing-list-set-1-introduction/)
+
+## ❓ FAQ Section
+
+**Q: When should I use linked list vs array?**
+A: Use linked list when you need frequent insertions/deletions at arbitrary positions (O(1) with pointer vs O(n) for array), or when size is unknown and varies significantly. Use arrays when you need random access or memory efficiency.
+
+**Q: What is a dummy/sentinel node and when should I use it?**
+A: A dummy node is a placeholder node at the beginning of the list. Use it when operations might modify the head (deletion, insertion at head) to avoid special cases. Return `dummy.next` as the new head.
+
+**Q: How do I detect a cycle in a linked list?**
+A: Use Floyd's Tortoise and Hare algorithm: two pointers, slow moves 1 step, fast moves 2 steps. If they meet, there's a cycle. To find cycle start, reset one pointer to head and move both at same speed until they meet.
+
+**Q: How do I find the middle of a linked list?**
+A: Use slow and fast pointers. Slow moves 1 step, fast moves 2 steps. When fast reaches end, slow is at the middle. For even-length lists, this gives you the second middle node.
+
+**Q: Should I use singly or doubly linked list?**
+A: Use singly linked list for simpler memory usage and when you only traverse forward. Use doubly linked list when you need to traverse both directions or delete a node given only that node's reference (O(1) deletion).
 
 ## Interview Tips
 1. Always validate input parameters

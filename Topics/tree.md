@@ -3,6 +3,57 @@
 ## Introduction
 A tree is a hierarchical data structure composed of nodes connected by edges. Each node contains a value and references to its child nodes. Trees are widely used for representing hierarchical relationships and optimizing search operations.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Recursion](recursion.md) (essential for tree traversals and operations)
+- [Linked List](linked-list.md) (similar node-pointer concepts)
+- [Queue](queue.md) (for level-order/BFS traversal)
+- [Stack](stack.md) (for iterative DFS traversals)
+
+### Related Topics
+- **Special case of**: [Graph](graph.md) (connected acyclic graph)
+- **Implementations**: [Heap/Priority Queue](heap-pq.md) (complete binary tree), [Trie](trie.md) (prefix tree)
+- **Traversal uses**: [Recursion](recursion.md), [Stack](stack.md), [Queue](queue.md)
+- **See also**: [Dynamic Programming](dynamic-programming.md) (tree DP), [Backtracking](backtracking.md) (tree exploration)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Tree Data Structures
+**Keywords in problem**: "tree", "root", "node", "children", "ancestor", "BST", "binary tree"
+
+**Use Trees when you see**:
+- Hierarchical data representation
+- Binary Search Tree operations
+- Tree traversal problems
+- Lowest Common Ancestor
+- Path-based problems
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| DFS Traversal | "inorder/preorder/postorder", "serialize tree" | Tree Traversals, Serialize Tree |
+| BFS Traversal | "level order", "right side view", "zigzag" | Level Order, Right Side View |
+| BST Operations | "search BST", "insert BST", "validate BST" | Validate BST, Kth Smallest in BST |
+| LCA | "lowest common ancestor", "distance between nodes" | LCA of Binary Tree |
+| Path Problems | "path sum", "max path", "root to leaf" | Path Sum, Binary Tree Max Path Sum |
+| Tree Construction | "build tree from traversals", "construct BST" | Build Tree from Preorder/Inorder |
+| Tree Modification | "invert", "flatten", "prune" | Invert Binary Tree, Flatten to List |
+
+### ❌ When NOT to Use
+- Data has multiple parents → use [Graph](graph.md)
+- Need fast lookup by value → use [Hashing](hashing.md) (unless BST property needed)
+- Simple linear data → use [Arrays](arrays.md) or [Linked List](linked-list.md)
+- Priority-based access → use [Heap](heap-pq.md) (simpler for just min/max)
+
+### 💡 Traversal Choice Guide
+| Need | Traversal | Use Case |
+|------|-----------|----------|
+| Sorted order (BST) | Inorder | Validate BST, Kth smallest |
+| Copy/Serialize | Preorder | Clone tree, serialize |
+| Delete tree | Postorder | Free memory, evaluate expression |
+| Level by level | BFS | Level order, right view |
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -46,6 +97,22 @@ class TreeNode:
         self.right = right
 ```
 
+```java
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+```
+
+```cpp
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+```
+
 ### Binary Search Tree Implementation
 ```python
 class BST:
@@ -77,6 +144,62 @@ class BST:
         return curr
 ```
 
+```java
+class BST {
+    TreeNode root;
+    
+    void insert(int val) {
+        if (root == null) { root = new TreeNode(val); return; }
+        TreeNode curr = root;
+        while (true) {
+            if (val < curr.val) {
+                if (curr.left == null) { curr.left = new TreeNode(val); break; }
+                curr = curr.left;
+            } else {
+                if (curr.right == null) { curr.right = new TreeNode(val); break; }
+                curr = curr.right;
+            }
+        }
+    }
+    
+    TreeNode search(int val) {
+        TreeNode curr = root;
+        while (curr != null && curr.val != val) {
+            curr = val < curr.val ? curr.left : curr.right;
+        }
+        return curr;
+    }
+}
+```
+
+```cpp
+class BST {
+    TreeNode* root = nullptr;
+public:
+    void insert(int val) {
+        if (!root) { root = new TreeNode(val); return; }
+        TreeNode* curr = root;
+        while (true) {
+            if (val < curr->val) {
+                if (!curr->left) { curr->left = new TreeNode(val); break; }
+                curr = curr->left;
+            } else {
+                if (!curr->right) { curr->right = new TreeNode(val); break; }
+                curr = curr->right;
+            }
+        }
+    }
+    
+    TreeNode* search(int val) {
+        TreeNode* curr = root;
+        while (curr && curr->val != val) {
+            curr = val < curr->val ? curr->left : curr->right;
+        }
+        return curr;
+    }
+};
+```
+
 ## Tree Traversal Techniques
 
 ### 1. Depth-First Search (DFS)
@@ -95,6 +218,36 @@ def postorder(root):  # Left -> Right -> Root
     if not root:
         return []
     return postorder(root.left) + postorder(root.right) + [root.val]
+```
+
+```java
+// Inorder Traversal
+public List<Integer> inorder(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    inorderHelper(root, result);
+    return result;
+}
+private void inorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    inorderHelper(node.left, result);
+    result.add(node.val);
+    inorderHelper(node.right, result);
+}
+```
+
+```cpp
+// Inorder Traversal
+vector<int> inorder(TreeNode* root) {
+    vector<int> result;
+    inorderHelper(root, result);
+    return result;
+}
+void inorderHelper(TreeNode* node, vector<int>& result) {
+    if (!node) return;
+    inorderHelper(node->left, result);
+    result.push_back(node->val);
+    inorderHelper(node->right, result);
+}
 ```
 
 ### 2. Breadth-First Search (BFS)
@@ -126,6 +279,48 @@ def level_order(root):
     return result
 ```
 
+```java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+```cpp
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector<vector<int>> result;
+    if (!root) return result;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int levelSize = q.size();
+        vector<int> level;
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode* node = q.front(); q.pop();
+            level.push_back(node->val);
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+        result.push_back(level);
+    }
+    return result;
+}
+```
+
 ## Common Techniques
 
 ### 1. Lowest Common Ancestor (LCA)
@@ -142,6 +337,26 @@ def lowest_common_ancestor(root, p, q):
     return left if left else right
 ```
 
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+    if (left != null && right != null) return root;
+    return left != null ? left : right;
+}
+```
+
+```cpp
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (!root || root == p || root == q) return root;
+    TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    TreeNode* right = lowestCommonAncestor(root->right, p, q);
+    if (left && right) return root;
+    return left ? left : right;
+}
+```
+
 ### 2. Path Sum
 ```python
 def has_path_sum(root, target_sum):
@@ -155,6 +370,22 @@ def has_path_sum(root, target_sum):
             has_path_sum(root.right, target_sum - root.val))
 ```
 
+```java
+public boolean hasPathSum(TreeNode root, int targetSum) {
+    if (root == null) return false;
+    if (root.left == null && root.right == null) return root.val == targetSum;
+    return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val);
+}
+```
+
+```cpp
+bool hasPathSum(TreeNode* root, int targetSum) {
+    if (!root) return false;
+    if (!root->left && !root->right) return root->val == targetSum;
+    return hasPathSum(root->left, targetSum - root->val) || hasPathSum(root->right, targetSum - root->val);
+}
+```
+
 ### 3. Tree Validation
 ```python
 def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
@@ -166,6 +397,25 @@ def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
     
     return (is_valid_bst(root.left, min_val, root.val) and
             is_valid_bst(root.right, root.val, max_val))
+```
+
+```java
+public boolean isValidBST(TreeNode root) {
+    return isValid(root, Long.MIN_VALUE, Long.MAX_VALUE);
+}
+private boolean isValid(TreeNode node, long min, long max) {
+    if (node == null) return true;
+    if (node.val <= min || node.val >= max) return false;
+    return isValid(node.left, min, node.val) && isValid(node.right, node.val, max);
+}
+```
+
+```cpp
+bool isValidBST(TreeNode* root, long minVal = LONG_MIN, long maxVal = LONG_MAX) {
+    if (!root) return true;
+    if (root->val <= minVal || root->val >= maxVal) return false;
+    return isValidBST(root->left, minVal, root->val) && isValidBST(root->right, root->val, maxVal);
+}
 ```
 
 ## Edge Cases to Consider
@@ -234,6 +484,23 @@ def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
 3. [AVL Tree Tutorial](https://www.geeksforgeeks.org/avl-tree-set-1-insertion/)
 4. [Red-Black Tree Guide](https://www.geeksforgeeks.org/red-black-tree-set-1-introduction-2/)
 5. [B-Tree and B+ Tree](https://www.geeksforgeeks.org/introduction-of-b-tree-2/)
+
+## ❓ FAQ Section
+
+**Q: When should I use DFS vs BFS for tree problems?**
+A: Use DFS (recursion/stack) for problems involving paths, depth, or when you need to process nodes before their children (preorder) or after (postorder). Use BFS (queue) for level-by-level processing, shortest path in unweighted trees, or when you need to process nodes at the same level together.
+
+**Q: How do I choose between recursive and iterative tree traversal?**
+A: Recursive is cleaner and easier to write for most tree problems. Use iterative when you're worried about stack overflow (very deep trees) or need more control over the traversal order. Morris traversal is O(1) space but modifies the tree temporarily.
+
+**Q: What's the difference between a complete, full, and perfect binary tree?**
+A: Complete: all levels filled except possibly the last, which fills left-to-right. Full: every node has 0 or 2 children. Perfect: all internal nodes have 2 children and all leaves at same level. A perfect tree is both complete and full.
+
+**Q: How do I handle null nodes in tree problems?**
+A: Always check for null at the start of recursive functions (`if not root: return`). This is your base case. For iterative solutions, check before adding children to queue/stack.
+
+**Q: When should I use a parent pointer?**
+A: Use parent pointers when you need to traverse upward (e.g., finding ancestors, LCA with given node references) or when the problem requires bidirectional movement. Otherwise, avoid them to save space.
 
 ## Interview Tips
 1. Clarify tree type and properties

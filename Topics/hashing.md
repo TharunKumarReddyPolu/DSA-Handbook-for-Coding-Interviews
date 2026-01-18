@@ -3,6 +3,46 @@
 ## Introduction
 Hashing is a technique that maps data of arbitrary size to fixed-size values. Hash tables use hashing to implement associative arrays, providing fast data access. Understanding hashing is crucial for efficient data storage and retrieval.
 
+## Prerequisites & Related Topics
+
+### Prerequisites
+- [Arrays](arrays.md) (hash tables are built on arrays)
+- Basic understanding of modular arithmetic
+
+### Related Topics
+- **Builds on**: [Arrays](arrays.md), [Linked List](linked-list.md) (for chaining)
+- **Used in**: [Strings](strings.md) (anagram detection, pattern matching), [Graph](graph.md) (adjacency representation)
+- **Alternative to**: [Cyclic Sort](cyclic-sort.md) (for finding missing/duplicates in ranges)
+- **See also**: [Two Pointers](arrays.md) (sometimes used together for optimization)
+
+## Pattern Recognition Guide
+
+### 🎯 When to Use Hashing
+**Keywords in problem**: "find", "lookup", "duplicate", "frequency", "count", "unique", "anagram"
+
+**Use Hashing when you see**:
+- Need O(1) average lookup/insert/delete
+- Counting frequencies of elements
+- Finding duplicates or unique elements
+- Checking if element exists
+- Grouping elements by some property
+
+### 🔑 Problem Indicators
+| Pattern | Keywords/Clues | Example Problems |
+|---------|---------------|------------------|
+| Two Sum Pattern | "pair with sum", "complement exists" | Two Sum, Four Sum |
+| Frequency Count | "most frequent", "top k", "count occurrences" | Top K Frequent, First Unique Character |
+| Grouping | "group by", "anagrams", "same pattern" | Group Anagrams, Isomorphic Strings |
+| Duplicate Detection | "contains duplicate", "find duplicate" | Contains Duplicate, Find Duplicate |
+| Subarray Sum | "subarray with sum k", "continuous sum" | Subarray Sum Equals K |
+| Sliding Window + Hash | "distinct in window", "anagram in string" | Longest Substring Without Repeating |
+
+### ❌ When NOT to Use
+- Need sorted order → use [Sorting](sorting.md) or [Tree](tree.md)-based structures
+- Range queries needed → use [Prefix Sum](arrays.md) or Segment Trees
+- Memory is extremely limited → consider [Bit Manipulation](bit-manipulation.md)
+- Numbers are in range [1, n] → consider [Cyclic Sort](cyclic-sort.md)
+
 ## Core Concepts
 
 ### Important Terminologies
@@ -83,6 +123,79 @@ class HashMap:
                 return
 ```
 
+```java
+class HashMap<K, V> {
+    private List<List<Map.Entry<K, V>>> table;
+    private int size;
+    
+    HashMap(int size) {
+        this.size = size;
+        table = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) table.add(new ArrayList<>());
+    }
+    
+    private int hash(K key) { return Math.abs(key.hashCode()) % size; }
+    
+    void put(K key, V value) {
+        int idx = hash(key);
+        List<Map.Entry<K, V>> bucket = table.get(idx);
+        for (int i = 0; i < bucket.size(); i++) {
+            if (bucket.get(i).getKey().equals(key)) {
+                bucket.set(i, Map.entry(key, value));
+                return;
+            }
+        }
+        bucket.add(Map.entry(key, value));
+    }
+    
+    V get(K key, V defaultVal) {
+        int idx = hash(key);
+        for (Map.Entry<K, V> entry : table.get(idx)) {
+            if (entry.getKey().equals(key)) return entry.getValue();
+        }
+        return defaultVal;
+    }
+    
+    void remove(K key) {
+        int idx = hash(key);
+        table.get(idx).removeIf(e -> e.getKey().equals(key));
+    }
+}
+```
+
+```cpp
+template<typename K, typename V>
+class HashMap {
+    vector<list<pair<K, V>>> table;
+    int size;
+    
+    int hash(const K& key) { return std::hash<K>{}(key) % size; }
+public:
+    HashMap(int size = 1000) : size(size), table(size) {}
+    
+    void put(const K& key, const V& value) {
+        int idx = hash(key);
+        for (auto& [k, v] : table[idx]) {
+            if (k == key) { v = value; return; }
+        }
+        table[idx].push_back({key, value});
+    }
+    
+    V get(const K& key, const V& defaultVal = V{}) {
+        int idx = hash(key);
+        for (auto& [k, v] : table[idx]) {
+            if (k == key) return v;
+        }
+        return defaultVal;
+    }
+    
+    void remove(const K& key) {
+        int idx = hash(key);
+        table[idx].remove_if([&](auto& p) { return p.first == key; });
+    }
+};
+```
+
 ### 2. Custom Hash Function
 ```python
 class CustomHash:
@@ -101,6 +214,53 @@ class CustomHash:
         for item in lst:
             hash_value = (hash_value * self.multiplier + hash(item)) % self.modulus
         return hash_value
+```
+
+```java
+class CustomHash {
+    private static final int MULTIPLIER = 31;
+    private static final long MOD = (long) 1e9 + 7;
+    
+    long hashString(String s) {
+        long hash = 0;
+        for (char c : s.toCharArray()) {
+            hash = (hash * MULTIPLIER + c) % MOD;
+        }
+        return hash;
+    }
+    
+    long hashList(List<?> lst) {
+        long hash = 0;
+        for (Object item : lst) {
+            hash = (hash * MULTIPLIER + item.hashCode()) % MOD;
+        }
+        return hash;
+    }
+}
+```
+
+```cpp
+class CustomHash {
+    static const int MULTIPLIER = 31;
+    static const long long MOD = 1e9 + 7;
+public:
+    long long hashString(const string& s) {
+        long long hash = 0;
+        for (char c : s) {
+            hash = (hash * MULTIPLIER + c) % MOD;
+        }
+        return hash;
+    }
+    
+    template<typename T>
+    long long hashVector(const vector<T>& v) {
+        long long hash = 0;
+        for (const T& item : v) {
+            hash = (hash * MULTIPLIER + std::hash<T>{}(item)) % MOD;
+        }
+        return hash;
+    }
+};
 ```
 
 ### 3. Rolling Hash
@@ -135,6 +295,35 @@ def rolling_hash(text: str, pattern_length: int) -> List[int]:
     return result
 ```
 
+```java
+public long[] rollingHash(String text, int patternLen) {
+    long base = 26, mod = (long)1e9 + 7;
+    long hash = 0, power = 1;
+    for (int i = 0; i < patternLen - 1; i++) power = (power * base) % mod;
+    long[] result = new long[text.length() - patternLen + 1];
+    for (int i = 0; i < text.length(); i++) {
+        hash = (hash * base + text.charAt(i)) % mod;
+        if (i >= patternLen) hash = (hash - text.charAt(i - patternLen) * power % mod + mod) % mod;
+        if (i >= patternLen - 1) result[i - patternLen + 1] = hash;
+    }
+    return result;
+}
+```
+
+```cpp
+vector<long long> rollingHash(string text, int patternLen) {
+    long long base = 26, mod = 1e9 + 7, hash = 0, power = 1;
+    for (int i = 0; i < patternLen - 1; i++) power = (power * base) % mod;
+    vector<long long> result;
+    for (int i = 0; i < text.size(); i++) {
+        hash = (hash * base + text[i]) % mod;
+        if (i >= patternLen) hash = (hash - text[i - patternLen] * power % mod + mod) % mod;
+        if (i >= patternLen - 1) result.push_back(hash);
+    }
+    return result;
+}
+```
+
 ### 4. Frequency Counter
 ```python
 from collections import Counter
@@ -160,6 +349,53 @@ def frequency_analysis(items):
     }
 ```
 
+```java
+Map<String, Object> frequencyAnalysis(int[] items) {
+    Map<Integer, Integer> freq = new HashMap<>();
+    for (int item : items) freq.merge(item, 1, Integer::sum);
+    
+    // Find most common
+    List<int[]> sorted = new ArrayList<>();
+    for (var e : freq.entrySet()) sorted.add(new int[]{e.getKey(), e.getValue()});
+    sorted.sort((a, b) -> b[1] - a[1]);
+    
+    // Find unique and duplicates
+    List<Integer> unique = new ArrayList<>(), duplicates = new ArrayList<>();
+    for (var e : freq.entrySet()) {
+        if (e.getValue() == 1) unique.add(e.getKey());
+        else duplicates.add(e.getKey());
+    }
+    
+    return Map.of("frequencies", freq, "mostCommon", sorted.subList(0, Math.min(3, sorted.size())),
+                  "unique", unique, "duplicates", duplicates);
+}
+```
+
+```cpp
+struct FrequencyResult {
+    unordered_map<int, int> frequencies;
+    vector<pair<int, int>> mostCommon;
+    vector<int> unique, duplicates;
+};
+
+FrequencyResult frequencyAnalysis(vector<int>& items) {
+    FrequencyResult result;
+    for (int item : items) result.frequencies[item]++;
+    
+    // Find most common
+    for (auto& [k, v] : result.frequencies) result.mostCommon.push_back({k, v});
+    sort(result.mostCommon.begin(), result.mostCommon.end(), [](auto& a, auto& b) { return b.second < a.second; });
+    if (result.mostCommon.size() > 3) result.mostCommon.resize(3);
+    
+    // Find unique and duplicates
+    for (auto& [k, v] : result.frequencies) {
+        if (v == 1) result.unique.push_back(k);
+        else result.duplicates.push_back(k);
+    }
+    return result;
+}
+```
+
 ### 5. Two Sum Pattern
 ```python
 def two_sum(nums: List[int], target: int) -> List[int]:
@@ -170,6 +406,32 @@ def two_sum(nums: List[int], target: int) -> List[int]:
             return [seen[complement], i]
         seen[num] = i
     return []
+```
+
+```java
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (seen.containsKey(complement))
+            return new int[]{seen.get(complement), i};
+        seen.put(nums[i], i);
+    }
+    return new int[]{};
+}
+```
+
+```cpp
+vector<int> twoSum(vector<int>& nums, int target) {
+    unordered_map<int, int> seen;
+    for (int i = 0; i < nums.size(); i++) {
+        int complement = target - nums[i];
+        if (seen.count(complement))
+            return {seen[complement], i};
+        seen[nums[i]] = i;
+    }
+    return {};
+}
 ```
 
 ## Common Techniques
@@ -304,6 +566,23 @@ class DynamicHashTable:
 3. [Consistent Hashing](https://www.toptal.com/big-data/consistent-hashing)
 4. [Perfect Hashing](https://www.geeksforgeeks.org/perfect-hashing/)
 5. [Bloom Filters](https://llimllib.github.io/bloomfilter-tutorial/)
+
+## ❓ FAQ Section
+
+**Q: When should I use a hash map vs other data structures?**
+A: Use hash map when you need O(1) average lookup/insert/delete by key: counting frequencies, checking existence, grouping by key. Use tree map when you need sorted order. Use array when keys are small integers.
+
+**Q: How do I handle hash collisions?**
+A: Two main approaches: (1) Chaining - each bucket holds a linked list of entries, (2) Open addressing - probe for next empty slot (linear, quadratic, or double hashing). Built-in implementations handle this for you.
+
+**Q: What makes a good hash function?**
+A: (1) Deterministic - same input always gives same output, (2) Uniform distribution - spreads keys evenly across buckets, (3) Fast to compute, (4) Minimizes collisions. For interviews, use built-in hash functions.
+
+**Q: What is the Two Sum pattern?**
+A: Store complement (target - current) in hash map as you iterate. For each element, check if it exists in map. This converts O(n²) brute force to O(n). Applicable to many "find pair/triplet with sum" problems.
+
+**Q: When should I use a Set vs a Map?**
+A: Use Set when you only need to track existence (no associated values): checking for duplicates, membership testing. Use Map when you need to associate values with keys: counting, storing indices, grouping.
 
 ## Interview Tips
 1. Choose appropriate hash function
