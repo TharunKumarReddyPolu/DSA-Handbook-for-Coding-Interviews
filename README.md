@@ -34,16 +34,19 @@
 
 This handbook is a **curated guide to Data Structures and Algorithms (DSA)** designed for **last-minute coding interview preparation** at top tech companies. Each topic is presented in a concise, high-impact format covering:
 
-- 🔑 **Key Definitions** - Core concepts explained clearly
-- ⏱️ **Time Complexities** - Performance analysis for all operations
+- 🔑 **Key Definitions** - Core concepts and terminology explained clearly
+- ⏱️ **Time/Space Complexities** - Performance analysis tables for all operations
 - 🔗 **Prerequisites & Related Topics** - Learning path and topic connections
+- 🎯 **Pattern Recognition** - When to use, problem indicators, and when NOT to use
+- 📝 **Pseudocode** - Step-by-step algorithmic logic before implementation
 - 💻 **Multi-Language Implementations** - Code in Python, Java, and C++
-- 💡 **Lesser-Known Concepts** - Advanced techniques and optimizations
-- ⚠️ **Edge Cases** - Common pitfalls and how to handle them
-- 🎯 **Common Patterns** - Reusable problem-solving strategies
+- ⚠️ **Edge Cases & Pitfalls** - Common mistakes and how to handle them
+- 📊 **Practice Problems** - Curated LeetCode problems by difficulty (Easy/Medium/Hard)
+- 🌐 **Real-World Applications** - Practical use cases for each concept
+- 💡 **Advanced Topics** - Further exploration and optimizations
 - ❓ **FAQ Section** - Answers to frequently asked interview questions
-- 📝 **Relevant Problems** - Curated practice questions by difficulty
-- 🔗 **Additional Resources** - Further reading and practice materials
+- 🔗 **Important Resources** - Further reading and practice materials
+- 💬 **Interview Tips** - Communication and problem-solving strategies
 
 ---
 
@@ -52,13 +55,15 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 | Feature | Description |
 |---------|-------------|
 | 🔗 **Prerequisites & Related Topics** | Each topic includes learning prerequisites and connections to related topics for structured learning |
+| 📝 **Pseudocode First** | Step-by-step algorithmic logic explained before diving into code |
 | 💻 **Multi-Language Code** | Every algorithm includes implementations in **Python**, **Java**, and **C++** |
-| 🎯 **Pattern Recognition Guide** | Keywords and indicators to quickly identify which technique to use |
+| 🎯 **Pattern Recognition Guide** | Keywords, indicators, and "when NOT to use" guidance to quickly identify techniques |
 | ❓ **FAQ Sections** | Common interview questions answered for each topic |
 | 📊 **Complexity Tables** | Time and space complexity for all operations at a glance |
 | 🏋️ **Practice Problems** | Curated LeetCode problems organized by difficulty (Easy/Medium/Hard) |
-| ⚠️ **Edge Cases & Pitfalls** | Common mistakes and how to avoid them |
+| ⚠️ **Edge Cases & Pitfalls** | Comprehensive lists of edge cases and common mistakes to avoid |
 | 🌐 **Real-World Applications** | Understand where these concepts are used in practice |
+| 💡 **Interview Tips** | Practical advice for communicating solutions during interviews |
 
 ---
 
@@ -66,11 +71,14 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 
 1. **Choose your topic** from the list below
 2. **Check prerequisites** to ensure you have the foundation
-3. **Review the key concepts** and time complexities
-4. **Study implementations** in your preferred language (Python/Java/C++)
-5. **Read the FAQ section** for common interview questions
-6. **Practice with the provided problems** (Easy → Medium → Hard)
-7. **Use the references** for deeper understanding
+3. **Use the Pattern Recognition Guide** to understand when to apply the technique
+4. **Review the key concepts** and time/space complexities
+5. **Understand the pseudocode** before diving into implementations
+6. **Study implementations** in your preferred language (Python/Java/C++)
+7. **Review edge cases and pitfalls** to avoid common mistakes
+8. **Read the FAQ section** for common interview questions
+9. **Practice with the provided problems** (Easy → Medium → Hard)
+10. **Use the resources** for deeper understanding
 
 ---
 
@@ -108,13 +116,23 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 ```
 ├── Introduction
 ├── Prerequisites & Related Topics
-├── Pattern Recognition Guide (when to use, keywords, indicators)
-├── Core Concepts & Terminology
-├── Time/Space Complexity Analysis
-├── Implementation (Python, Java, C++)
-├── Common Techniques & Patterns
-├── Edge Cases & Common Pitfalls
-├── Practice Problems (Easy/Medium/Hard)
+├── Pattern Recognition Guide
+│   ├── When to Use (keywords, indicators)
+│   ├── Problem Indicators Table
+│   └── When NOT to Use
+├── Core Concepts
+│   ├── Important Terminologies
+│   ├── Time Complexity Analysis
+│   └── Space Complexity
+├── Common Techniques
+│   ├── Pseudocode (step-by-step logic)
+│   └── Implementation (Python, Java, C++)
+├── Edge Cases to Consider
+├── Common Pitfalls
+├── Practice Problems by Difficulty
+│   ├── Easy
+│   ├── Medium
+│   └── Hard
 ├── Real-World Applications
 ├── Advanced Topics
 ├── Important Resources
