@@ -85,6 +85,18 @@ Recursion is a programming concept where a function solves a problem by calling 
 ## Implementation Patterns
 
 ### 1. Basic Linear Recursion
+
+**Pseudocode:**
+```
+Factorial:
+1. Base case: if n <= 1, return 1
+2. Recursive case: return n × factorial(n - 1)
+
+Fibonacci:
+1. Base case: if n <= 1, return n
+2. Recursive case: return fib(n-1) + fib(n-2)
+```
+
 ```python
 def factorial(n):
     # Base case
@@ -122,6 +134,19 @@ int fibonacci(int n) {
 ```
 
 ### 2. Tail Recursion
+
+**Pseudocode:**
+```
+Tail-recursive factorial (uses accumulator):
+1. Base case: if n <= 1, return accumulator
+2. Recursive case: return factorial(n-1, n × accumulator)
+(Recursive call is last operation - enables optimization)
+
+Tail-recursive fibonacci:
+1. Base case: if n == 0, return a
+2. Recursive case: return fib(n-1, b, a+b)
+```
+
 ```python
 def factorial_tail(n, accumulator=1):
     if n <= 1:
@@ -159,6 +184,18 @@ int fibonacciTail(int n, int a = 0, int b = 1) {
 ```
 
 ### 3. Binary Recursion (Divide and Conquer)
+
+**Pseudocode:**
+```
+Merge Sort:
+1. Base case: if length <= 1, return array
+2. Split array into two halves at midpoint
+3. Recursively sort left half and right half
+4. Merge two sorted halves:
+   a. Compare elements from both, take smaller
+   b. Append remaining elements from non-empty half
+```
+
 ```python
 def merge_sort(arr):
     if len(arr) <= 1:
@@ -224,6 +261,21 @@ vector<int> mergeSort(vector<int> arr) {
 ```
 
 ### 4. Tree Recursion
+
+**Pseudocode:**
+```
+Generate all binary strings of length n:
+1. Base case: if string length == n, output string
+2. Recursive case: 
+   - Recurse with string + "0"
+   - Recurse with string + "1"
+
+Generate permutations:
+1. Base case: if string empty, output prefix
+2. For each character in string:
+   - Remove character, recurse with remaining and prefix + char
+```
+
 ```python
 def print_binary_strings(n, string=""):
     if len(string) == n:
@@ -276,6 +328,17 @@ void generatePermutations(string str, string prefix = "") {
 ```
 
 ### 5. Memoization with Recursion
+
+**Pseudocode:**
+```
+Fibonacci with memoization:
+1. If n in memo, return memo[n]
+2. Base case: if n <= 1, return n
+3. Compute: memo[n] = fib(n-1, memo) + fib(n-2, memo)
+4. Return memo[n]
+(Transforms O(2^n) to O(n) by caching results)
+```
+
 ```python
 def fibonacci_memo(n, memo=None):
     if memo is None:
@@ -314,6 +377,18 @@ int fibonacciMemo(int n) {
 ## Common Techniques
 
 ### 1. Backtracking Template
+
+**Pseudocode:**
+```
+Backtracking with target sum:
+1. If target < 0: return (overshot, prune this path)
+2. If target == 0: add current path to results (found valid combination)
+3. For each candidate starting from current position:
+   a. Add candidate to path
+   b. Recurse with reduced target and same/next start position
+   c. Remove candidate from path (backtrack)
+```
+
 ```python
 def backtrack(candidates, target, path, results):
     if target < 0:
@@ -353,6 +428,17 @@ void backtrack(vector<int>& candidates, int target, int start, vector<int>& path
 ```
 
 ### 2. Tree Traversal
+
+**Pseudocode:**
+```
+Pre-order traversal:
+1. If node is null, return
+2. Process node (print value)
+3. Recurse on left subtree
+4. Recurse on right subtree
+(In-order: left, process, right; Post-order: left, right, process)
+```
+
 ```python
 def tree_traversal(root):
     if not root:

@@ -77,6 +77,22 @@ A linked list is a linear data structure where elements are stored in nodes, and
 ## Implementation
 
 ### Singly Linked List
+
+**Pseudocode:**
+```
+Node: value, next pointer
+
+Insert at head:
+1. Create new node with value
+2. new_node.next = head
+3. head = new_node
+
+Delete at head:
+1. Store head value
+2. head = head.next
+3. Return stored value
+```
+
 ```python
 class ListNode:
     def __init__(self, val=0, next=None):
@@ -169,6 +185,24 @@ public:
 ```
 
 ### Doubly Linked List
+
+**Pseudocode:**
+```
+Node: value, next pointer, prev pointer
+
+Insert at head:
+1. Create new node
+2. new_node.next = head
+3. If head exists: head.prev = new_node
+4. head = new_node, update tail if needed
+
+Insert at tail:
+1. Create new node
+2. new_node.prev = tail
+3. If tail exists: tail.next = new_node
+4. tail = new_node, update head if needed
+```
+
 ```python
 class DoublyListNode:
     def __init__(self, val=0, next=None, prev=None):
@@ -260,6 +294,17 @@ public:
 ## Common Techniques
 
 ### 1. Floyd's Cycle Detection (Tortoise and Hare)
+
+**Pseudocode:**
+```
+1. Initialize slow = head, fast = head
+2. While fast and fast.next exist:
+   a. slow = slow.next (move 1 step)
+   b. fast = fast.next.next (move 2 steps)
+   c. If slow == fast: cycle detected, return true
+3. Return false (no cycle - fast reached end)
+```
+
 ```python
 def has_cycle(head):
     if not head or not head.next:
@@ -305,6 +350,18 @@ bool hasCycle(ListNode* head) {
 ```
 
 ### 2. Reverse Linked List
+
+**Pseudocode:**
+```
+1. Initialize prev = null, curr = head
+2. While curr is not null:
+   a. Store next = curr.next
+   b. Reverse pointer: curr.next = prev
+   c. Move prev = curr
+   d. Move curr = next
+3. Return prev (new head)
+```
+
 ```python
 def reverse_list(head):
     prev = None
@@ -347,6 +404,18 @@ ListNode* reverseList(ListNode* head) {
 ```
 
 ### 3. Merge Two Sorted Lists
+
+**Pseudocode:**
+```
+1. Create dummy node, set curr = dummy
+2. While both lists have nodes:
+   a. If l1.val <= l2.val: curr.next = l1, l1 = l1.next
+   b. Else: curr.next = l2, l2 = l2.next
+   c. curr = curr.next
+3. Attach remaining list: curr.next = l1 or l2
+4. Return dummy.next
+```
+
 ```python
 def merge_two_lists(l1, l2):
     dummy = ListNode(0)
@@ -399,6 +468,18 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 - Parallel traversal
 
 ### 2. Dummy Node Pattern
+
+**Pseudocode:**
+```
+Remove nth from end:
+1. Create dummy node, dummy.next = head
+2. Set first = dummy, second = dummy
+3. Advance first by n+1 steps
+4. Move both until first reaches end
+5. second.next = second.next.next (skip nth node)
+6. Return dummy.next
+```
+
 ```python
 def remove_nth_from_end(head, n):
     dummy = ListNode(0)

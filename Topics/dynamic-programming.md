@@ -91,6 +91,21 @@ Where:
 ## Implementation Patterns
 
 ### 1. Fibonacci with Both Approaches
+
+**Pseudocode:**
+```
+Top-down (Memoization):
+1. If n is in memo, return memo[n]
+2. Base case: if n <= 1, return n
+3. memo[n] = fib(n-1) + fib(n-2)
+4. Return memo[n]
+
+Bottom-up (Tabulation):
+1. Create dp array of size n+1, set dp[1] = 1
+2. For i from 2 to n: dp[i] = dp[i-1] + dp[i-2]
+3. Return dp[n]
+```
+
 ```python
 # Top-down (Memoization)
 def fib_memo(n, memo=None):
@@ -147,6 +162,19 @@ int fib(int n) {
 ```
 
 ### 2. 0/1 Knapsack
+
+**Pseudocode:**
+```
+1. Create 2D dp table: dp[i][w] = max value using first i items with capacity w
+2. For each item i from 1 to n:
+   a. For each capacity w from 0 to max_capacity:
+      - If weight[i-1] <= w:
+        dp[i][w] = max(take item: value[i-1] + dp[i-1][w-weight[i-1]], 
+                       skip item: dp[i-1][w])
+      - Else: dp[i][w] = dp[i-1][w] (can't take item)
+3. Return dp[n][capacity]
+```
+
 ```python
 def knapsack(values, weights, capacity):
     n = len(values)
@@ -198,6 +226,18 @@ int knapsack(vector<int>& values, vector<int>& weights, int capacity) {
 ```
 
 ### 3. Longest Common Subsequence
+
+**Pseudocode:**
+```
+1. Create 2D dp table: dp[i][j] = LCS length of text1[0:i] and text2[0:j]
+2. For i from 1 to m, for j from 1 to n:
+   a. If text1[i-1] == text2[j-1]:
+      dp[i][j] = dp[i-1][j-1] + 1  (extend LCS)
+   b. Else:
+      dp[i][j] = max(dp[i-1][j], dp[i][j-1])  (take best without one char)
+3. Return dp[m][n]
+```
+
 ```python
 def lcs(text1: str, text2: str) -> int:
     m, n = len(text1), len(text2)
@@ -246,6 +286,17 @@ int longestCommonSubsequence(string text1, string text2) {
 ```
 
 ### 4. Matrix Path Problems
+
+**Pseudocode:**
+```
+Minimum Path Sum:
+1. Create dp table, set dp[0][0] = grid[0][0]
+2. Fill first row: dp[0][j] = dp[0][j-1] + grid[0][j]
+3. Fill first column: dp[i][0] = dp[i-1][0] + grid[i][0]
+4. For each cell (i,j): dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+5. Return dp[m-1][n-1]
+```
+
 ```python
 def min_path_sum(grid):
     if not grid:
@@ -300,6 +351,19 @@ int minPathSum(vector<vector<int>>& grid) {
 ```
 
 ### 5. State Compression DP
+
+**Pseudocode:**
+```
+Partition Equal Subset Sum:
+1. Calculate total sum; if odd, return false
+2. Target = total / 2
+3. Use boolean dp array where dp[j] = can we make sum j?
+4. Initialize dp[0] = true
+5. For each number: traverse j from target down to num
+   a. dp[j] = dp[j] OR dp[j - num]
+6. Return dp[target]
+```
+
 ```python
 def can_partition(nums):
     total = sum(nums)

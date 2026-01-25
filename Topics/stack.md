@@ -80,6 +80,17 @@ For "next greater element":
 ## Implementation
 
 ### Basic Stack Implementation
+
+**Pseudocode:**
+```
+Stack operations (LIFO):
+- push(item): add item to top
+- pop(): remove and return top item
+- peek(): return top item without removing
+- is_empty(): check if stack is empty
+- size(): return number of elements
+```
+
 ```python
 class Stack:
     def __init__(self):
@@ -151,6 +162,16 @@ public:
 ```
 
 ### MinStack Implementation
+
+**Pseudocode:**
+```
+Stack with O(1) getMin:
+- Use two stacks: main stack and min stack
+- push(val): push to main; if val <= min_stack top, push to min_stack
+- pop(): if main top == min_stack top, pop both; else pop main only
+- getMin(): return min_stack top
+```
+
 ```python
 class MinStack:
     def __init__(self):
@@ -210,6 +231,20 @@ public:
 ## Common Applications
 
 ### 1. Expression Evaluation
+
+**Pseudocode:**
+```
+Evaluate Reverse Polish Notation (RPN):
+1. Initialize empty stack
+2. For each token:
+   a. If token is operator (+, -, *, /):
+      - Pop two operands (b first, then a)
+      - Apply operator: result = a operator b
+      - Push result to stack
+   b. Else: push number to stack
+3. Return top of stack (final result)
+```
+
 ```python
 def evaluate_rpn(tokens):
     stack = []
@@ -262,6 +297,19 @@ int evalRPN(vector<string>& tokens) {
 ```
 
 ### 2. Parentheses Matching
+
+**Pseudocode:**
+```
+Valid parentheses check:
+1. Create stack and mapping: ')' -> '(', ']' -> '[', '}' -> '{'
+2. For each character:
+   a. If opening bracket: push to stack
+   b. If closing bracket:
+      - If stack empty OR top doesn't match: return false
+      - Else: pop stack
+3. Return true if stack is empty
+```
+
 ```python
 def is_valid_parentheses(s):
     stack = []
@@ -308,6 +356,19 @@ bool isValid(string s) {
 
 ### 1. Monotonic Stack Pattern
 Used for finding next greater/smaller element problems.
+
+**Pseudocode:**
+```
+Next greater element using monotonic decreasing stack:
+1. Initialize result array with -1, empty stack (stores indices)
+2. For each index i from 0 to n-1:
+   a. While stack not empty AND nums[i] > nums[stack.top()]:
+      - Pop index from stack
+      - Set result[popped_index] = nums[i] (found next greater)
+   b. Push current index i to stack
+3. Return result (remaining stack indices have no greater element)
+```
+
 ```python
 def next_greater_element(nums):
     result = [-1] * len(nums)
@@ -352,6 +413,20 @@ vector<int> nextGreaterElement(vector<int>& nums) {
 
 ### 2. Calculator Pattern
 Used for basic calculator problems.
+
+**Pseudocode:**
+```
+Basic calculator (no parentheses):
+1. Initialize result = 0, num = 0, sign = 1
+2. For each character:
+   a. If digit: num = num × 10 + digit
+   b. If + or -:
+      - result += sign × num
+      - num = 0
+      - sign = 1 if '+', else -1
+3. Add final number: result += sign × num
+```
+
 ```python
 def calculate(s):
     stack = []

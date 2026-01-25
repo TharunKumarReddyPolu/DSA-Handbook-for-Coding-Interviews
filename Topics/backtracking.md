@@ -72,6 +72,19 @@ Where n is the input size or board dimension
 ## Implementation Patterns
 
 ### 1. Basic Backtracking Template
+
+**Pseudocode:**
+```
+1. Define base case: if current_state is a complete solution
+   a. Add copy of current_state to results
+   b. Return
+2. For each possible choice from available options:
+   a. If choice is valid for current_state:
+      - Make the choice (add to current_state)
+      - Recursively call backtrack with updated state
+      - Undo the choice (remove from current_state) - BACKTRACK
+```
+
 ```python
 def backtrack(input, current_state, result):
     if is_solution(current_state):
@@ -118,6 +131,17 @@ void backtrack(vector<int>& input, vector<int>& currentState, vector<vector<int>
 ```
 
 ### 2. Subset Generation
+
+**Pseudocode:**
+```
+1. Start with empty path and index 0
+2. At each step, add current path to result (every path is a valid subset)
+3. For each element from start index to end:
+   a. Include current element in path
+   b. Recursively generate subsets starting from next index
+   c. Remove current element from path (backtrack)
+```
+
 ```python
 def subsets(nums):
     def backtrack(start, path):
@@ -167,6 +191,18 @@ void backtrack(vector<int>& nums, int start, vector<int>& path, vector<vector<in
 ```
 
 ### 3. Permutation Generation
+
+**Pseudocode:**
+```
+1. Track which elements are used with a boolean array
+2. Base case: if path length equals input length, add path to results
+3. For each element in input:
+   a. If element not used:
+      - Mark as used, add to path
+      - Recursively generate remaining permutation
+      - Unmark as used, remove from path (backtrack)
+```
+
 ```python
 def permutations(nums):
     def backtrack(path, used):
@@ -236,6 +272,18 @@ void backtrack(vector<int>& nums, vector<int>& path, vector<bool>& used, vector<
 ```
 
 ### 4. N-Queens Problem
+
+**Pseudocode:**
+```
+1. Create n×n board initialized with '.'
+2. Process row by row:
+   a. Base case: if row == n, found valid solution, add to results
+   b. For each column in current row:
+      - Check if position is safe (no queen in same column, diagonals)
+      - If safe: place queen ('Q'), recurse to next row, remove queen (backtrack)
+3. Safety check: scan upward in column and both diagonals
+```
+
 ```python
 def solveNQueens(n):
     def is_safe(board, row, col):
@@ -328,6 +376,18 @@ bool isSafe(vector<string>& board, int row, int col) {
 ```
 
 ### 5. Combination Sum
+
+**Pseudocode:**
+```
+1. Sort candidates (optional optimization)
+2. Base case: if target < 0, return; if target == 0, add path to results
+3. For each candidate from start index:
+   a. Add candidate to path
+   b. Recurse with same start index (allows reuse) and reduced target
+   c. Remove candidate from path (backtrack)
+4. Optimization: break early if candidate > target (requires sorted input)
+```
+
 ```python
 def combinationSum(candidates, target):
     def backtrack(start, target, path):
@@ -386,6 +446,15 @@ void backtrack(vector<int>& candidates, int target, int start, vector<int>& path
 ## Common Techniques
 
 ### 1. State Management
+
+**Pseudocode:**
+```
+1. Create State class with: choices list, used set
+2. make_choice(choice): add to choices list, add to used set
+3. undo_choice(): remove last from choices, remove from used set
+4. is_valid(choice): return true if choice not in used set
+```
+
 ```python
 class State:
     def __init__(self):
@@ -427,6 +496,17 @@ public:
 ```
 
 ### 2. Pruning Optimization
+
+**Pseudocode:**
+```
+1. Early termination: if target < 0, return immediately
+2. Success: if target == 0, add current path to results
+3. For each candidate from start:
+   a. Skip duplicates: if i > start AND candidate[i] == candidate[i-1], continue
+   b. Prune: if candidate > target, break (requires sorted input)
+   c. Add candidate, recurse with i+1 and reduced target, remove (backtrack)
+```
+
 ```python
 def backtrack_with_pruning(candidates, target, path, start):
     if target < 0:  # Pruning condition

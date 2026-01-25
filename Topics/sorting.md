@@ -87,6 +87,19 @@ Where:
 ## Implementation
 
 ### 1. Quick Sort
+
+**Pseudocode:**
+```
+1. If low >= high, return (base case)
+2. Partition: choose pivot (e.g., last element)
+   a. i = low - 1
+   b. For j from low to high-1:
+      If arr[j] <= pivot: i++, swap arr[i] and arr[j]
+   c. Swap arr[i+1] and pivot
+   d. Return i+1 (pivot's final position)
+3. Recursively sort left of pivot, then right of pivot
+```
+
 ```python
 def quick_sort(arr, low, high):
     def partition(low, high):
@@ -140,6 +153,19 @@ void quickSort(vector<int>& arr, int low, int high) {
 ```
 
 ### 2. Merge Sort
+
+**Pseudocode:**
+```
+1. If array length <= 1, return array
+2. Split into left and right halves
+3. Recursively sort each half
+4. Merge sorted halves:
+   a. Compare front elements of both halves
+   b. Take smaller element, add to result
+   c. Repeat until one half empty
+   d. Append remaining elements
+```
+
 ```python
 def merge_sort(arr):
     if len(arr) <= 1:
@@ -209,6 +235,16 @@ void merge(vector<int>& arr, int left, int mid, int right) {
 ```
 
 ### 3. Heap Sort
+
+**Pseudocode:**
+```
+1. Build max-heap: for i from n/2-1 down to 0, heapify(n, i)
+2. Extract elements: for i from n-1 down to 1:
+   a. Swap arr[0] with arr[i] (move max to end)
+   b. Heapify(i, 0) on reduced heap
+Heapify: ensure parent >= children, recursively fix violations
+```
+
 ```python
 def heap_sort(arr):
     def heapify(n, i):
@@ -275,6 +311,19 @@ void heapify(vector<int>& arr, int n, int i) {
 ```
 
 ### 4. Counting Sort
+
+**Pseudocode:**
+```
+1. Find min and max values, calculate range
+2. Create count array of size range
+3. Count occurrences: count[num - min]++
+4. Build cumulative count: count[i] += count[i-1]
+5. Build output: for each element from end to start:
+   a. Place in output at position count[num - min] - 1
+   b. Decrement count
+(Stable sort, O(n + k) where k is range)
+```
+
 ```python
 def counting_sort(arr):
     if not arr:
@@ -343,6 +392,18 @@ vector<int> countingSort(vector<int>& arr) {
 ## Common Techniques
 
 ### 1. Three-Way Partitioning (Dutch National Flag)
+
+**Pseudocode:**
+```
+Sort array with values 0, 1, 2:
+1. Initialize low = 0, mid = 0, high = n-1
+2. While mid <= high:
+   a. If nums[mid] == 0: swap(low, mid), low++, mid++
+   b. If nums[mid] == 1: mid++
+   c. If nums[mid] == 2: swap(mid, high), high--
+(Partitions into: [0s | 1s | 2s])
+```
+
 ```python
 def sort_colors(nums):
     low = mid = 0
@@ -384,6 +445,17 @@ void sortColors(vector<int>& nums) {
 ```
 
 ### 2. Custom Comparator
+
+**Pseudocode:**
+```
+Sort with custom ordering:
+1. Define comparison function: compare(a, b) returns negative/zero/positive
+2. Or define key function: key(x) returns value to sort by
+3. For multi-key sort: return tuple (primary_key, secondary_key, ...)
+Example: sort strings by length, then alphabetically
+key = lambda x: (len(x), x)
+```
+
 ```python
 def custom_sort(arr):
     return sorted(arr, key=lambda x: (priority(x), x))

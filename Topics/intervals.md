@@ -81,6 +81,14 @@ Interval problems involve ranges defined by start and end points. These problems
 ## Implementation Patterns
 
 ### 1. Basic Interval Operations
+
+**Pseudocode:**
+```
+Check overlap: max(a.start, b.start) <= min(a.end, b.end)
+Get intersection: if overlap, return [max(starts), min(ends)]
+Merge two intervals: if overlap, return [min(starts), max(ends)]
+```
+
 ```python
 class Interval:
     def __init__(self, start, end):
@@ -144,6 +152,18 @@ Interval* mergeTwoIntervals(Interval& a, Interval& b) {
 ```
 
 ### 2. Merge Intervals
+
+**Pseudocode:**
+```
+1. Sort intervals by start time
+2. Add first interval to result
+3. For each interval:
+   a. If current.start <= last_result.end: (overlap)
+      - Update last_result.end = max(last_result.end, current.end)
+   b. Else: add current to result
+4. Return merged result
+```
+
 ```python
 def merge_intervals(intervals):
     if not intervals:
@@ -200,6 +220,19 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
 ```
 
 ### 3. Meeting Rooms
+
+**Pseudocode:**
+```
+Minimum rooms needed:
+1. Sort meetings by start time
+2. Create min-heap to track end times of ongoing meetings
+3. For each meeting:
+   a. If heap not empty AND heap_top <= meeting.start:
+      Pop from heap (that room is now free)
+   b. Push current meeting's end time to heap
+4. Return heap size (number of concurrent meetings at peak)
+```
+
 ```python
 import heapq
 
@@ -254,6 +287,18 @@ int minMeetingRooms(vector<vector<int>>& intervals) {
 ```
 
 ### 4. Insert Interval
+
+**Pseudocode:**
+```
+1. Add all intervals that end before newInterval starts (no overlap)
+2. Merge overlapping intervals:
+   a. While current.start <= newInterval.end:
+      - newInterval.start = min(newInterval.start, current.start)
+      - newInterval.end = max(newInterval.end, current.end)
+3. Add merged newInterval
+4. Add all remaining intervals
+```
+
 ```python
 def insert_interval(intervals, newInterval):
     result = []
@@ -316,6 +361,18 @@ vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInter
 ```
 
 ### 5. Non-overlapping Intervals
+
+**Pseudocode:**
+```
+Minimum removals for non-overlapping:
+1. Sort by end time (greedy: keep intervals that end earliest)
+2. count = 1, current_end = first interval's end
+3. For each interval:
+   a. If start >= current_end: (no overlap)
+      - Increment count, update current_end
+4. Return total - count (intervals to remove)
+```
+
 ```python
 def erase_overlap_intervals(intervals):
     if not intervals:
@@ -362,6 +419,18 @@ int eraseOverlapIntervals(vector<vector<int>>& intervals) {
 ## Common Techniques
 
 ### 1. Sweep Line Algorithm
+
+**Pseudocode:**
+```
+Find maximum overlap:
+1. Create events: (start, +1) and (end, -1) for each interval
+2. Sort events by time (process ends before starts at same time)
+3. Sweep through events:
+   a. current_count += event_value
+   b. max_overlap = max(max_overlap, current_count)
+4. Return max_overlap
+```
+
 ```python
 def sweep_line(intervals):
     events = []
@@ -417,6 +486,17 @@ int sweepLine(vector<vector<int>>& intervals) {
 ```
 
 ### 2. Interval Tree
+
+**Pseudocode:**
+```
+BST where each node stores an interval:
+- Node: interval, max_end (max end point in subtree), left, right
+- Insert: BST insert by start time, update max_end going back up
+- Search for overlap: 
+  If left exists AND left.max_end >= query.start: search left
+  Else: search right
+```
+
 ```python
 class IntervalNode:
     def __init__(self, interval):

@@ -75,6 +75,18 @@ Cyclic Sort is a pattern used to solve array problems where the array contains n
 ## Implementation Patterns
 
 ### 1. Basic Cyclic Sort
+
+**Pseudocode:**
+```
+1. Start at index i = 0
+2. While i < array length:
+   a. Calculate correct position: nums[i] - 1
+   b. If nums[i] is in valid range AND nums[i] != nums[correct_pos]:
+      - Swap nums[i] with nums[correct_pos]
+   c. Else: move to next index (i++)
+3. Each number ends up at index (value - 1)
+```
+
 ```python
 def cyclic_sort(nums):
     i = 0
@@ -112,6 +124,15 @@ void cyclicSort(vector<int>& nums) {
 ```
 
 ### 2. Find Missing Number
+
+**Pseudocode:**
+```
+1. Apply cyclic sort: place each number at its correct index
+2. After sorting, scan array:
+   a. For each index i: if nums[i] != i, return i
+3. If all positions correct, missing number is n (array length)
+```
+
 ```python
 def find_missing_number(nums):
     i = 0
@@ -157,6 +178,19 @@ int missingNumber(vector<int>& nums) {
 ```
 
 ### 3. Find Duplicate Number
+
+**Pseudocode:**
+```
+1. Start at index i = 0
+2. While i < array length:
+   a. If nums[i] != i + 1:
+      - Calculate correct position = nums[i] - 1
+      - If nums[i] != nums[correct_pos]: swap them
+      - Else: found duplicate, return nums[i]
+   b. Else: move to next index (i++)
+3. Return -1 if no duplicate found
+```
+
 ```python
 def find_duplicate(nums):
     i = 0
@@ -201,6 +235,16 @@ int findDuplicate(vector<int>& nums) {
 ```
 
 ### 4. Find All Missing Numbers
+
+**Pseudocode:**
+```
+1. Apply cyclic sort to place numbers at correct positions
+2. Create empty list for missing numbers
+3. Scan array: for each index i:
+   a. If nums[i] != i + 1: add (i + 1) to missing list
+4. Return missing numbers list
+```
+
 ```python
 def find_missing_numbers(nums):
     i = 0
@@ -248,6 +292,16 @@ vector<int> findDisappearedNumbers(vector<int>& nums) {
 ```
 
 ### 5. Find First Missing Positive
+
+**Pseudocode:**
+```
+1. Apply cyclic sort (only for positive numbers in range 1 to n):
+   a. If 0 < nums[i] <= n AND nums[i] != nums[correct_pos]: swap
+2. Scan array: for each index i:
+   a. If nums[i] != i + 1: return i + 1 (first missing positive)
+3. If all positions correct, return n + 1
+```
+
 ```python
 def first_missing_positive(nums):
     i = 0
@@ -296,6 +350,16 @@ int firstMissingPositive(vector<int>& nums) {
 ## Common Techniques
 
 ### 1. Index Mapping
+
+**Pseudocode:**
+```
+1. For each index i:
+   a. While nums[i] != i + 1 AND nums[i] is in valid range:
+      - Calculate correct position = nums[i] - 1
+      - If nums[i] != nums[correct_pos]: swap them
+      - Else: break (duplicate detected)
+```
+
 ```python
 def index_mapping_sort(nums):
     """Sort array where each number should be at index (number-1)"""
@@ -333,6 +397,18 @@ void indexMappingSort(vector<int>& nums) {
 ```
 
 ### 2. Corruption Detection
+
+**Pseudocode:**
+```
+Find duplicate and missing number:
+1. Apply cyclic sort to place numbers at correct positions
+2. Scan array: for each index i:
+   a. If nums[i] != i + 1:
+      - Duplicate = nums[i] (number at wrong position)
+      - Missing = i + 1 (number that should be here)
+      - Return [duplicate, missing]
+```
+
 ```python
 def find_corrupt_pair(nums):
     """Find the duplicate and missing number"""

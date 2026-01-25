@@ -73,6 +73,17 @@ A queue is a fundamental data structure that follows the First-In-First-Out (FIF
 ## Implementation
 
 ### Basic Queue Implementation
+
+**Pseudocode:**
+```
+Queue operations (FIFO):
+- enqueue(item): add item to back of queue
+- dequeue(): remove and return item from front
+- front(): return front item without removing
+- is_empty(): check if queue has no elements
+- size(): return number of elements
+```
+
 ```python
 class Queue:
     def __init__(self):
@@ -144,6 +155,18 @@ public:
 ```
 
 ### Circular Queue Implementation
+
+**Pseudocode:**
+```
+Fixed-size circular queue:
+- Use front and rear pointers, both start at -1
+- enqueue: if not full, rear = (rear + 1) % size, add item
+- dequeue: if not empty, get item at front, front = (front + 1) % size
+- is_full: (rear + 1) % size == front
+- is_empty: front == -1
+Wrapping allows reuse of space when elements are dequeued
+```
+
 ```python
 class CircularQueue:
     def __init__(self, size):
@@ -236,6 +259,17 @@ public:
 ```
 
 ### Deque Implementation
+
+**Pseudocode:**
+```
+Double-ended queue operations:
+- add_front(item): insert item at front of deque
+- add_rear(item): insert item at back of deque
+- remove_front(): remove and return item from front
+- remove_rear(): remove and return item from back
+- is_empty(): check if deque has no elements
+```
+
 ```python
 from collections import deque
 
@@ -287,6 +321,17 @@ public:
 ## Common Applications
 
 ### 1. BFS Implementation
+
+**Pseudocode:**
+```
+1. Create visited set, add start vertex
+2. Create queue, enqueue start
+3. While queue not empty:
+   a. Dequeue vertex, process it
+   b. For each neighbor:
+      - If not visited: mark visited, enqueue
+```
+
 ```python
 from collections import deque
 
@@ -344,6 +389,17 @@ void bfs(unordered_map<int, vector<int>>& graph, int start) {
 ```
 
 ### 2. Sliding Window Maximum
+
+**Pseudocode:**
+```
+Using monotonic deque (store indices):
+1. For each element at index i:
+   a. Remove indices outside window: while front < i - k + 1, pop_front
+   b. Remove smaller elements: while back element < current, pop_back
+   c. Add current index to back
+   d. If i >= k - 1: add nums[front] to result (front is max)
+```
+
 ```python
 from collections import deque
 
@@ -399,6 +455,20 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 ## Common Patterns
 
 ### 1. Level Order Traversal
+
+**Pseudocode:**
+```
+1. If root is null, return empty list
+2. Create queue, enqueue root
+3. While queue not empty:
+   a. level_size = queue size (nodes at current level)
+   b. Create level list
+   c. For i from 0 to level_size:
+      - Dequeue node, add value to level list
+      - Enqueue left and right children if exist
+   d. Add level list to result
+```
+
 ```python
 def level_order_traversal(root):
     if not root:
@@ -468,6 +538,16 @@ vector<vector<int>> levelOrder(TreeNode* root) {
 ```
 
 ### 2. Task Scheduling
+
+**Pseudocode:**
+```
+Minimum intervals with cooldown:
+1. Count frequency of each task
+2. Find max_freq (most frequent task count)
+3. Count tasks with max_freq
+4. Minimum time = max(total_tasks, (max_freq - 1) × (n + 1) + max_freq_count)
+```
+
 ```python
 def task_scheduling(tasks, n):
     from collections import Counter

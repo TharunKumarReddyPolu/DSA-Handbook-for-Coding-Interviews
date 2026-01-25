@@ -89,6 +89,15 @@ A tree is a hierarchical data structure composed of nodes connected by edges. Ea
 ## Implementation
 
 ### Basic Tree Node
+
+**Pseudocode:**
+```
+Binary tree node structure:
+- value: data stored in node
+- left: reference to left child (or null)
+- right: reference to right child (or null)
+```
+
 ```python
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -114,6 +123,23 @@ struct TreeNode {
 ```
 
 ### Binary Search Tree Implementation
+
+**Pseudocode:**
+```
+BST Insert:
+1. If tree empty: create root node with value
+2. Start at root, traverse:
+   a. If value < current: go left (create node if null)
+   b. If value >= current: go right (create node if null)
+
+BST Search:
+1. Start at root
+2. While current node exists AND value not found:
+   a. If value < current: go left
+   b. Else: go right
+3. Return current node (null if not found)
+```
+
 ```python
 class BST:
     def __init__(self):
@@ -203,6 +229,22 @@ public:
 ## Tree Traversal Techniques
 
 ### 1. Depth-First Search (DFS)
+
+**Pseudocode:**
+```
+Inorder (Left, Root, Right):
+1. If node null, return
+2. Recurse on left, process node, recurse on right
+
+Preorder (Root, Left, Right):
+1. If node null, return
+2. Process node, recurse on left, recurse on right
+
+Postorder (Left, Right, Root):
+1. If node null, return
+2. Recurse on left, recurse on right, process node
+```
+
 ```python
 def inorder(root):  # Left -> Root -> Right
     if not root:
@@ -251,6 +293,21 @@ void inorderHelper(TreeNode* node, vector<int>& result) {
 ```
 
 ### 2. Breadth-First Search (BFS)
+
+**Pseudocode:**
+```
+Level order traversal:
+1. If root is null, return empty list
+2. Create queue, add root
+3. While queue not empty:
+   a. Get level_size = queue size (nodes at current level)
+   b. Process level_size nodes:
+      - Dequeue node, add value to current level list
+      - Enqueue left and right children if they exist
+   c. Add level list to result
+4. Return result (list of lists, one per level)
+```
+
 ```python
 from collections import deque
 
@@ -324,6 +381,15 @@ vector<vector<int>> levelOrder(TreeNode* root) {
 ## Common Techniques
 
 ### 1. Lowest Common Ancestor (LCA)
+
+**Pseudocode:**
+```
+1. If root is null or equals p or q, return root
+2. Recursively search left and right subtrees
+3. If both searches return non-null: root is LCA
+4. Else: return whichever is non-null (or null if both null)
+```
+
 ```python
 def lowest_common_ancestor(root, p, q):
     if not root or root == p or root == q:
@@ -358,6 +424,18 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
 ```
 
 ### 2. Path Sum
+
+**Pseudocode:**
+```
+Check if path exists from root to leaf with given sum:
+1. If root is null: return false
+2. If root is leaf (no children):
+   a. Return true if root.val equals remaining target_sum
+3. Recursively check left OR right subtree with reduced target:
+   a. Return has_path_sum(left, target - root.val) OR
+          has_path_sum(right, target - root.val)
+```
+
 ```python
 def has_path_sum(root, target_sum):
     if not root:
@@ -387,6 +465,18 @@ bool hasPathSum(TreeNode* root, int targetSum) {
 ```
 
 ### 3. Tree Validation
+
+**Pseudocode:**
+```
+Validate BST:
+1. Pass valid range (min_val, max_val) to each node
+2. If root null, return true
+3. If root.val <= min_val OR root.val >= max_val, return false
+4. Recursively validate:
+   - Left subtree with (min_val, root.val)
+   - Right subtree with (root.val, max_val)
+```
+
 ```python
 def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
     if not root:

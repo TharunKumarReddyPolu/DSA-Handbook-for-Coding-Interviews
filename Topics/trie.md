@@ -86,6 +86,14 @@ Where:
 ## Implementation
 
 ### Basic Trie Node
+
+**Pseudocode:**
+```
+TrieNode structure:
+- children: map/array of child nodes (26 for lowercase letters)
+- is_end_of_word: boolean flag marking complete words
+```
+
 ```python
 class TrieNode:
     def __init__(self):
@@ -108,6 +116,27 @@ struct TrieNode {
 ```
 
 ### Complete Trie Implementation
+
+**Pseudocode:**
+```
+Insert(word):
+1. Start at root
+2. For each char in word:
+   a. If char not in children: create new node
+   b. Move to child node
+3. Mark current node as end of word
+
+Search(word):
+1. Traverse trie following word characters
+2. If any char missing: return false
+3. Return node.is_end_of_word
+
+StartsWith(prefix):
+1. Traverse trie following prefix characters
+2. If any char missing: return false
+3. Return true (prefix exists)
+```
+
 ```python
 class Trie:
     def __init__(self):
@@ -207,6 +236,15 @@ private:
 };
 ```
 
+**Pseudocode (Get Words with Prefix):**
+```
+1. Navigate to prefix node (return empty if prefix doesn't exist)
+2. DFS from prefix node to find all complete words:
+   a. If current node is end of word: add current path to results
+   b. For each child: recurse with extended path
+3. Return all words found
+```
+
 ```python
     def get_words_with_prefix(self, prefix: str) -> List[str]:
         words = []
@@ -277,6 +315,18 @@ void dfs(TrieNode* node, string curr, vector<string>& words) {
 ## Common Applications
 
 ### 1. Autocomplete System
+
+**Pseudocode:**
+```
+Autocomplete with frequency ranking:
+1. Build trie from dictionary words with frequency counts
+2. On input prefix:
+   a. Get all words matching prefix using trie traversal
+   b. Sort by frequency (descending), then alphabetically
+   c. Return top k suggestions (typically 3)
+3. On complete (#): add/update word in dictionary
+```
+
 ```python
 class AutocompleteSystem:
     def __init__(self, words: List[str], times: List[int]):
@@ -346,6 +396,17 @@ public:
 ```
 
 ### 2. Spell Checker
+
+**Pseudocode:**
+```
+Suggest corrections within 1 edit distance:
+1. Build trie from dictionary
+2. DFS with edit tracking:
+   a. If edits > max allowed: return
+   b. If at end and edits valid: add to suggestions
+   c. For each child char: recurse with or without counting edit
+```
+
 ```python
 class SpellChecker:
     def __init__(self, dictionary: List[str]):
@@ -437,6 +498,19 @@ public:
 ## Common Patterns
 
 ### 1. Word Dictionary with Wildcards
+
+**Pseudocode:**
+```
+Search with wildcard '.' matching any character:
+1. Use DFS with current node, word, and index
+2. Base case: if index == word length, return node.is_end_of_word
+3. If current char is '.':
+   a. Try ALL children recursively
+   b. Return true if any child path matches
+4. Else: if char not in children return false
+   Otherwise: continue DFS with matching child
+```
+
 ```python
 def search_with_dots(self, word: str) -> bool:
     def dfs(node, word, index):
@@ -494,6 +568,17 @@ bool dfs(TrieNode* node, string& word, int index) {
 ```
 
 ### 2. Replace Words with Roots
+
+**Pseudocode:**
+```
+1. Build trie from all root words
+2. For each word in sentence:
+   a. Traverse trie character by character
+   b. If reach end-of-word marker: replace with root (prefix)
+   c. If can't continue: keep original word
+3. Return modified sentence
+```
+
 ```python
 def replace_with_root(self, sentence: str, roots: List[str]) -> str:
     # Build trie with roots

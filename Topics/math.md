@@ -91,6 +91,19 @@ Mathematical algorithms form the foundation of many computer science problems. U
 ## Implementation Patterns
 
 ### 1. GCD and LCM
+
+**Pseudocode:**
+```
+GCD (Euclidean Algorithm):
+1. While b != 0:
+   a. temp = b
+   b. b = a mod b
+   c. a = temp
+2. Return a
+
+LCM: return |a × b| / gcd(a, b)
+```
+
 ```python
 def gcd(a: int, b: int) -> int:
     while b:
@@ -141,6 +154,23 @@ int lcm(int a, int b) {
 ```
 
 ### 2. Prime Numbers
+
+**Pseudocode:**
+```
+Is Prime:
+1. If n < 2: return false
+2. For i from 2 to sqrt(n):
+   If n mod i == 0: return false
+3. Return true
+
+Sieve of Eratosthenes (all primes up to n):
+1. Create boolean array sieve[0..n] = true
+2. Set sieve[0] = sieve[1] = false
+3. For i from 2 to sqrt(n):
+   If sieve[i]: mark all multiples i², i²+i, i²+2i... as false
+4. Return indices where sieve[i] is true
+```
+
 ```python
 def is_prime(n: int) -> bool:
     if n < 2:
@@ -202,6 +232,17 @@ vector<int> sieveOfEratosthenes(int n) {
 }
 ```
 
+**Pseudocode (Prime Factorization):**
+```
+1. Initialize empty factors list
+2. Start with divisor d = 2
+3. While n > 1:
+   a. While n mod d == 0: add d to factors, n = n / d
+   b. d++
+   c. If d² > n and n > 1: add n to factors, break
+4. Return factors
+```
+
 ```python
 def prime_factors(n: int) -> List[int]:
     factors = []
@@ -241,6 +282,19 @@ vector<int> primeFactors(int n) {
 ```
 
 ### 3. Fast Exponentiation
+
+**Pseudocode:**
+```
+Power(base, exp, mod):
+1. result = 1, base = base mod modulus
+2. While exp > 0:
+   a. If exp is odd: result = (result × base) mod modulus
+   b. base = (base × base) mod modulus
+   c. exp = exp / 2 (integer division)
+3. Return result
+(Uses: x^n = (x^(n/2))² if even, x × x^(n-1) if odd)
+```
+
 ```python
 def power_mod(base: int, exponent: int, modulus: int) -> int:
     """Calculate (base ^ exponent) % modulus efficiently"""
@@ -283,6 +337,15 @@ long long powerMod(long long base, long long exp, long long mod) {
     }
     return result;
 }
+```
+
+**Pseudocode (Matrix Exponentiation):**
+```
+1. If n == 0: return identity matrix
+2. If n == 1: return matrix
+3. half = matrix_power(matrix, n/2)
+4. If n is even: return half × half
+5. Else: return matrix × half × half
 ```
 
 ```python
@@ -358,6 +421,22 @@ vector<vector<long long>> matrixMultiply(vector<vector<long long>>& A, vector<ve
 ```
 
 ### 4. Combinatorics
+
+**Pseudocode:**
+```
+Factorial(n): return 1 × 2 × 3 × ... × n
+
+Permutations P(n,r) = n! / (n-r)!
+
+Combinations C(n,r):
+1. r = min(r, n-r)  // optimization
+2. numerator = n × (n-1) × ... × (n-r+1)
+3. denominator = r!
+4. Return numerator / denominator
+
+Pascal's Triangle row i: C(i,0), C(i,1), ..., C(i,i)
+```
+
 ```python
 def factorial(n: int) -> int:
     result = 1
@@ -438,6 +517,20 @@ vector<vector<int>> pascalTriangle(int n) {
 ```
 
 ### 5. Number Theory Utilities
+
+**Pseudocode:**
+```
+Euler's Totient φ(n) - count of numbers coprime to n:
+1. result = n
+2. For each prime factor p of n:
+   result = result - result/p
+3. Return result
+
+Modular Inverse (a^(-1) mod m):
+Use Extended Euclidean: find x where ax + my = gcd(a,m)
+If gcd = 1, x mod m is the inverse
+```
+
 ```python
 def euler_totient(n: int) -> int:
     """Count numbers coprime to n"""
@@ -534,6 +627,18 @@ def modular_operations():
 ```
 
 ### 2. Chinese Remainder Theorem
+
+**Pseudocode:**
+```
+Solve: x ≡ r₁ (mod m₁), x ≡ r₂ (mod m₂), ...
+1. Compute M = product of all moduli
+2. For each equation i:
+   a. Mᵢ = M / mᵢ
+   b. yᵢ = modular_inverse(Mᵢ, mᵢ)
+   c. x += rᵢ × Mᵢ × yᵢ
+3. Return x mod M
+```
+
 ```python
 def chinese_remainder(remainders: List[int], moduli: List[int]) -> int:
     """Solve system of linear congruences"""

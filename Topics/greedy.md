@@ -83,6 +83,18 @@ Ask: "If I make the locally best choice now, will I always get the globally best
 ## Implementation Patterns
 
 ### 1. Activity Selection
+
+**Pseudocode:**
+```
+1. Sort activities by finish time (ascending)
+2. Select first activity, set last_finish = its finish time
+3. For each remaining activity:
+   a. If activity's start >= last_finish:
+      - Select this activity
+      - Update last_finish to this activity's finish time
+4. Return selected activities (maximum non-overlapping)
+```
+
 ```python
 def activity_selection(start, finish):
     # Sort by finish time
@@ -128,6 +140,20 @@ int activitySelection(vector<pair<int,int>>& activities) {
 ```
 
 ### 2. Fractional Knapsack
+
+**Pseudocode:**
+```
+1. Calculate value-to-weight ratio for each item
+2. Sort items by ratio in descending order
+3. For each item (in sorted order):
+   a. If remaining capacity >= item weight:
+      - Take entire item, reduce capacity
+   b. Else:
+      - Take fraction: add (ratio × remaining_capacity)
+      - Break (knapsack full)
+4. Return total value
+```
+
 ```python
 def fractional_knapsack(values, weights, capacity):
     # Calculate value per unit weight
@@ -179,6 +205,19 @@ double fractionalKnapsack(vector<int>& values, vector<int>& weights, int capacit
 ```
 
 ### 3. Huffman Coding
+
+**Pseudocode:**
+```
+1. Create leaf node for each character with its frequency
+2. Add all nodes to min-heap (priority = frequency)
+3. While heap has more than one node:
+   a. Pop two nodes with lowest frequencies (left, right)
+   b. Create internal node with frequency = left.freq + right.freq
+   c. Set internal node's children to left and right
+   d. Push internal node back to heap
+4. Return root of heap (Huffman tree root)
+```
+
 ```python
 import heapq
 
@@ -252,6 +291,19 @@ HuffmanNode* huffmanCoding(vector<char>& chars, vector<int>& freqs) {
 ```
 
 ### 4. Interval Scheduling
+
+**Pseudocode:**
+```
+Maximum non-overlapping intervals:
+1. Sort intervals by end time
+2. Select first interval, track current_end
+3. Count = 1
+4. For each interval:
+   a. If interval start >= current_end:
+      - Select it, update current_end, increment count
+5. Return count (or intervals.length - count for minimum removals)
+```
+
 ```python
 def interval_scheduling(intervals):
     # Sort by end time
@@ -293,6 +345,18 @@ int eraseOverlapIntervals(vector<vector<int>>& intervals) {
 ```
 
 ### 5. Job Sequencing with Deadlines
+
+**Pseudocode:**
+```
+1. Sort jobs by profit in descending order
+2. Create slot array of size max_deadline, initialized to empty
+3. For each job:
+   a. For slot j from (deadline-1) down to 0:
+      - If slot[j] is empty:
+        Assign job to slot[j], break
+4. Return jobs in non-empty slots (maximizes profit)
+```
+
 ```python
 def job_sequencing(jobs, deadlines, profits):
     # Sort jobs by profit in descending order
@@ -345,6 +409,18 @@ int jobSequencing(vector<pair<int,int>>& jobs) { // {deadline, profit}
 ## Common Techniques
 
 ### 1. Sort-First Strategy
+
+**Pseudocode:**
+```
+Minimum coins (greedy - works for standard denominations):
+1. Sort coins in descending order
+2. For each coin (largest to smallest):
+   a. count += remaining / coin  (take as many as possible)
+   b. remaining = remaining % coin
+3. If remaining == 0: return count
+   Else: return -1 (cannot make exact amount)
+```
+
 ```python
 def minimum_coins(coins, amount):
     coins.sort(reverse=True)
@@ -383,6 +459,20 @@ int minimumCoins(vector<int>& coins, int amount) {
 ```
 
 ### 2. Priority Queue Approach
+
+**Pseudocode:**
+```
+Minimum cost to connect ropes:
+1. Build min-heap from all rope lengths
+2. total_cost = 0
+3. While heap has more than one element:
+   a. Pop two smallest ropes
+   b. cost = sum of two ropes
+   c. total_cost += cost
+   d. Push combined rope back to heap
+4. Return total_cost
+```
+
 ```python
 def minimum_cost_ropes(ropes):
     heapq.heapify(ropes)

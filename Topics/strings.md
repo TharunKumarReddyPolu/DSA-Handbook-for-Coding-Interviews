@@ -91,6 +91,21 @@ Where:
 ## Implementation Patterns
 
 ### 1. String Matching (KMP Algorithm)
+
+**Pseudocode:**
+```
+Build LPS (Longest Proper Prefix Suffix) array:
+1. lps[0] = 0, length = 0, i = 1
+2. While i < pattern length:
+   a. If pattern[i] == pattern[length]: lps[i++] = ++length
+   b. Else if length != 0: length = lps[length-1]
+   c. Else: lps[i++] = 0
+
+KMP Search:
+1. Build LPS for pattern
+2. Compare text and pattern; on mismatch, use LPS to skip
+```
+
 ```python
 def compute_lps(pattern):
     m = len(pattern)
@@ -182,6 +197,17 @@ int strStr(string haystack, string needle) {
 ```
 
 ### 2. Rabin-Karp Algorithm
+
+**Pseudocode:**
+```
+1. Compute hash of pattern and first window of text
+2. For each window position:
+   a. If hashes match: verify with string comparison
+   b. Slide window: remove leading char, add trailing char
+      new_hash = (old_hash - old_char × highest_power) × base + new_char
+3. Return all matching positions
+```
+
 ```python
 def rabin_karp(text, pattern):
     n, m = len(text), len(pattern)
@@ -267,6 +293,19 @@ vector<int> rabinKarp(string text, string pattern) {
 ```
 
 ### 3. Palindrome Check
+
+**Pseudocode:**
+```
+Simple check: s == reverse(s)
+
+Longest palindromic substring (expand around center):
+1. For each position i:
+   a. Expand from (i, i) for odd length palindromes
+   b. Expand from (i, i+1) for even length palindromes
+   c. Track longest found
+Expand: while s[left] == s[right], extend outward
+```
+
 ```python
 def is_palindrome(s: str) -> bool:
     # Remove non-alphanumeric and convert to lowercase
@@ -323,6 +362,21 @@ bool isPalindrome(string s) {
 ```
 
 ### 4. Anagram Detection
+
+**Pseudocode:**
+```
+Check if two strings are anagrams:
+- Compare character frequency counts of both strings
+
+Find all anagrams of pattern p in string s:
+1. Create frequency count of pattern p
+2. Use sliding window of size len(p):
+   a. Add new character to window count
+   b. Remove leftmost character when window exceeds pattern length
+   c. If window count equals pattern count: found anagram at position i - len(p) + 1
+3. Return all starting indices
+```
+
 ```python
 from collections import Counter
 
@@ -381,6 +435,19 @@ vector<int> findAnagrams(string s, string p) {
 ```
 
 ### 5. String Compression
+
+**Pseudocode:**
+```
+Run-length encoding:
+1. Use write pointer and anchor pointer
+2. For each position (read):
+   a. If next char different or at end:
+      - Write char at anchor position
+      - If count > 1: write count digits
+      - Move anchor to next position
+3. Return write pointer (new length)
+```
+
 ```python
 def compress(chars: List[str]) -> int:
     write = anchor = 0
@@ -437,6 +504,20 @@ int compress(vector<char>& chars) {
 ## Common Techniques
 
 ### 1. Sliding Window
+
+**Pseudocode:**
+```
+Longest substring without repeating characters:
+1. Use hash map to store last seen index of each character
+2. Maintain window start pointer
+3. For each character at index i:
+   a. If character seen before AND its last index >= window start:
+      - Move window start to (last_index + 1)
+   b. Else: update max_length = max(max_length, i - start + 1)
+   c. Update character's last seen index to i
+4. Return max_length
+```
+
 ```python
 def longest_substring_without_repeating(s: str) -> int:
     char_index = {}
@@ -484,6 +565,16 @@ int lengthOfLongestSubstring(string s) {
 ```
 
 ### 2. Two Pointers
+
+**Pseudocode:**
+```
+Reverse string in-place:
+1. Set left = 0, right = length - 1
+2. While left < right:
+   a. Swap s[left] and s[right]
+   b. left++, right--
+```
+
 ```python
 def reverse_string(s: List[str]) -> None:
     left, right = 0, len(s) - 1

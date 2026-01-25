@@ -85,6 +85,21 @@ Factors affecting performance:
 ## Implementation Patterns
 
 ### 1. Basic Hash Map Implementation
+
+**Pseudocode:**
+```
+Hash Map with Chaining:
+- _hash(key): return hash(key) mod table_size
+- put(key, value): 
+  Find bucket using _hash(key)
+  If key exists in bucket: update value
+  Else: append (key, value) to bucket
+- get(key):
+  Find bucket, search for key, return value or default
+- remove(key):
+  Find bucket, remove (key, value) pair if exists
+```
+
 ```python
 class HashMap:
     def __init__(self, size=1000):
@@ -197,6 +212,17 @@ public:
 ```
 
 ### 2. Custom Hash Function
+
+**Pseudocode:**
+```
+Polynomial rolling hash for strings:
+1. Initialize hash = 0
+2. For each character c in string:
+   a. hash = (hash × multiplier + char_code(c)) mod modulus
+3. Return hash
+(Common values: multiplier = 31, modulus = 10^9 + 7)
+```
+
 ```python
 class CustomHash:
     def __init__(self):
@@ -264,6 +290,20 @@ public:
 ```
 
 ### 3. Rolling Hash
+
+**Pseudocode:**
+```
+Rolling hash for sliding window:
+1. Compute hash of first window (pattern length)
+2. Store highest_power = base^(pattern_length - 1) mod modulus
+3. For each position i:
+   a. Record current window_hash
+   b. To slide window:
+      - Remove leftmost char: hash -= char × highest_power
+      - Add rightmost char: hash = hash × base + new_char
+      - Apply modulus
+```
+
 ```python
 def rolling_hash(text: str, pattern_length: int) -> List[int]:
     if not text or pattern_length <= 0:
@@ -325,6 +365,16 @@ vector<long long> rollingHash(string text, int patternLen) {
 ```
 
 ### 4. Frequency Counter
+
+**Pseudocode:**
+```
+Frequency analysis:
+1. Create frequency map: for each item, freq[item]++
+2. Most common: sort by frequency descending, take top k
+3. Unique elements: items where freq[item] == 1
+4. Duplicates: items where freq[item] > 1
+```
+
 ```python
 from collections import Counter
 
@@ -397,6 +447,17 @@ FrequencyResult frequencyAnalysis(vector<int>& items) {
 ```
 
 ### 5. Two Sum Pattern
+
+**Pseudocode:**
+```
+1. Create empty hash map (seen)
+2. For each (index, num) in array:
+   a. complement = target - num
+   b. If complement in seen: return [seen[complement], index]
+   c. Add num -> index to seen
+3. Return empty (no solution found)
+```
+
 ```python
 def two_sum(nums: List[int], target: int) -> List[int]:
     seen = {}
@@ -437,6 +498,20 @@ vector<int> twoSum(vector<int>& nums, int target) {
 ## Common Techniques
 
 ### 1. Collision Resolution
+
+**Pseudocode:**
+```
+Separate Chaining:
+1. Each bucket is a linked list/array
+2. On collision: append to bucket's list
+3. Search: hash to find bucket, linear search within bucket
+
+Open Addressing (Linear Probing):
+1. On collision: try next slot (index + 1) mod size
+2. Continue until empty slot found
+3. Search: probe starting from hash until found or empty
+```
+
 ```python
 class HashTableWithChaining:
     def __init__(self):
@@ -460,6 +535,17 @@ class HashTableWithChaining:
 ```
 
 ### 2. Load Factor Management
+
+**Pseudocode:**
+```
+Dynamic resizing:
+1. load_factor = count / table_size
+2. If load_factor >= threshold (e.g., 0.75):
+   a. Create new table with 2× size
+   b. Rehash all existing entries into new table
+   c. Replace old table with new table
+```
+
 ```python
 class DynamicHashTable:
     def __init__(self, initial_size=8):

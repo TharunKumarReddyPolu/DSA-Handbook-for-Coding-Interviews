@@ -69,6 +69,18 @@ Arrays are fundamental data structures that store elements in contiguous memory 
 
 ### 1. Two Pointer Technique
 Used when dealing with sorted arrays or pairs in array.
+
+**Pseudocode:**
+```
+1. Initialize two pointers: left at start (index 0), right at end (last index)
+2. While left pointer is less than right pointer:
+   a. Calculate current sum = element at left + element at right
+   b. If current sum equals target, return the indices [left, right]
+   c. If current sum is less than target, move left pointer right (left++)
+   d. If current sum is greater than target, move right pointer left (right--)
+3. If no pair found, return empty result
+```
+
 ```python
 def twoSum(nums, target):
     left, right = 0, len(nums) - 1
@@ -111,6 +123,19 @@ vector<int> twoSum(vector<int>& nums, int target) {
 
 ### 2. Sliding Window
 Useful for problems involving contiguous subarrays.
+
+**Pseudocode:**
+```
+1. Calculate the sum of first k elements (initial window)
+2. Set max_sum = initial window sum
+3. Slide the window from left to right:
+   a. For each position i from k to end of array:
+      - Subtract the element leaving the window (leftmost element)
+      - Add the element entering the window (rightmost element)
+      - Update max_sum if current window sum is greater
+4. Return max_sum
+```
+
 ```python
 def maxSumSubarray(nums, k):
     window_sum = sum(nums[:k])
@@ -151,6 +176,17 @@ int maxSumSubarray(vector<int>& nums, int k) {
 
 ### 3. Prefix Sum
 Optimal for range queries and cumulative computations.
+
+**Pseudocode:**
+```
+1. Create a prefix array of size (n + 1), initialized with zeros
+2. For each index i from 0 to n-1:
+   a. prefix[i + 1] = prefix[i] + nums[i]
+   (Each position stores sum of all elements from start up to that index)
+3. Return the prefix array
+   (To get sum of range [i, j]: prefix[j+1] - prefix[i])
+```
+
 ```python
 def buildPrefixSum(nums):
     prefix = [0] * (len(nums) + 1)
@@ -181,6 +217,18 @@ vector<int> buildPrefixSum(vector<int>& nums) {
 
 ### 4. Kadane's Algorithm
 For maximum subarray problems.
+
+**Pseudocode:**
+```
+1. Initialize max_sum and current_sum with first element
+2. For each element from index 1 to end:
+   a. current_sum = maximum of (current element, current_sum + current element)
+      (Decide: start fresh from current element OR extend previous subarray)
+   b. max_sum = maximum of (max_sum, current_sum)
+      (Track the best sum seen so far)
+3. Return max_sum
+```
+
 ```python
 def kadane(nums):
     max_sum = current_sum = nums[0]

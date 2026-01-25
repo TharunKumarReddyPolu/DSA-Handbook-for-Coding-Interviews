@@ -76,6 +76,20 @@ A heap is a specialized tree-based data structure that satisfies the heap proper
 ## Implementation
 
 ### Basic Binary Heap
+
+**Pseudocode:**
+```
+Array-based heap (0-indexed):
+- parent(i) = (i - 1) / 2
+- left_child(i) = 2*i + 1
+- right_child(i) = 2*i + 2
+
+Insert: append to end, sift_up to restore heap property
+Extract: swap root with last, remove last, sift_down from root
+Sift_up: while parent violates heap property, swap with parent
+Sift_down: while children violate heap property, swap with best child
+```
+
 ```python
 class BinaryHeap:
     def __init__(self, max_heap=False):
@@ -240,6 +254,17 @@ private:
 ```
 
 ### Priority Queue using heapq
+
+**Pseudocode:**
+```
+Priority Queue operations:
+- push(item, priority): add (priority, index, item) to heap
+  (index breaks ties, ensures FIFO for same priority)
+- pop(): remove and return item with highest priority (lowest value for min-heap)
+- peek(): return top item without removing
+- is_empty(): check if heap is empty
+```
+
 ```python
 import heapq
 
@@ -312,6 +337,17 @@ public:
 ## Common Applications
 
 ### 1. K-th Largest Element
+
+**Pseudocode:**
+```
+Using min-heap of size k:
+1. For each number in array:
+   a. Push to heap
+   b. If heap size > k: pop smallest
+2. After processing all: heap top is kth largest
+(Heap maintains k largest elements, smallest of those is kth largest)
+```
+
 ```python
 def find_kth_largest(nums, k):
     heap = []
@@ -345,6 +381,17 @@ int findKthLargest(vector<int>& nums, int k) {
 ```
 
 ### 2. Merge K Sorted Lists
+
+**Pseudocode:**
+```
+1. Create min-heap with first element from each list: (value, list_index, element_index)
+2. While heap not empty:
+   a. Pop smallest (val, list_idx, elem_idx)
+   b. Add val to result
+   c. If list has next element: push (next_val, list_idx, elem_idx+1) to heap
+3. Return result
+```
+
 ```python
 def merge_k_sorted_lists(lists):
     heap = []
@@ -398,6 +445,19 @@ ListNode* mergeKLists(vector<ListNode*>& lists) {
 ```
 
 ### 3. Running Median
+
+**Pseudocode:**
+```
+Two heaps: max-heap for smaller half, min-heap for larger half
+Add number:
+1. Add to max-heap (smaller half)
+2. Move max of smaller to larger (balance values)
+3. If larger heap bigger: move min of larger to smaller (balance sizes)
+Find median:
+- If heaps equal size: average of both tops
+- Else: top of larger heap
+```
+
 ```python
 class MedianFinder:
     def __init__(self):

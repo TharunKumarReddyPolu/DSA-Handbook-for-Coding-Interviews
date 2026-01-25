@@ -81,6 +81,15 @@ Bit manipulation involves working with individual bits in numbers. It's essentia
 ## Implementation Patterns
 
 ### 1. Basic Bit Operations
+
+**Pseudocode:**
+```
+1. Get bit at position i: shift num right by i, AND with 1
+2. Set bit at position i: OR num with (1 shifted left by i)
+3. Clear bit at position i: AND num with NOT(1 shifted left by i)
+4. Update bit at position i: clear bit first, then OR with (value shifted left by i)
+```
+
 ```python
 def bit_operations(a: int, b: int) -> dict:
     return {
@@ -122,6 +131,18 @@ int clearBit(int num, int i) { return num & ~(1 << i); }
 ```
 
 ### 2. Counting Set Bits
+
+**Pseudocode:**
+```
+Brian Kernighan's Algorithm:
+1. Initialize count = 0
+2. While n is not zero:
+   a. n = n AND (n - 1)  // This clears the rightmost set bit
+   b. Increment count
+3. Return count
+(Each iteration removes exactly one set bit)
+```
+
 ```python
 def count_set_bits(n: int) -> int:
     """Brian Kernighan's Algorithm"""
@@ -166,6 +187,16 @@ int countSetBits(int n) {
 ```
 
 ### 3. Power of Two
+
+**Pseudocode:**
+```
+Check if power of 2:
+1. A power of 2 has exactly one bit set (e.g., 8 = 1000)
+2. n - 1 flips all bits after that single bit (e.g., 7 = 0111)
+3. n AND (n - 1) will be 0 only for powers of 2
+4. Return: n > 0 AND (n AND (n - 1)) == 0
+```
+
 ```python
 def is_power_of_two(n: int) -> bool:
     """Check if number is power of 2"""
@@ -198,6 +229,19 @@ bool isPowerOfTwo(int n) {
 ```
 
 ### 4. Subset Generation
+
+**Pseudocode:**
+```
+1. For i from 0 to 2^n - 1 (each i represents a subset):
+   a. Create empty subset
+   b. For j from 0 to n-1:
+      - If bit j is set in i (i AND (1 << j) is non-zero):
+        Add nums[j] to subset
+   c. Add subset to results
+2. Return all subsets
+(Each bit position decides include/exclude for that element)
+```
+
 ```python
 def generate_subsets(nums: List[int]) -> List[List[int]]:
     n = len(nums)
@@ -242,6 +286,18 @@ vector<vector<int>> subsets(vector<int>& nums) {
 ```
 
 ### 5. Bit Manipulation Tricks
+
+**Pseudocode:**
+```
+Common tricks:
+- Check if even: (n AND 1) == 0
+- Multiply by 2: n << 1 (left shift)
+- Divide by 2: n >> 1 (right shift)
+- Clear rightmost set bit: n AND (n - 1)
+- Get rightmost set bit: n AND (-n)
+- Swap without temp: a ^= b; b ^= a; a ^= b
+```
+
 ```python
 def bit_tricks(n: int) -> dict:
     return {
@@ -279,6 +335,17 @@ void swap(int& a, int& b) { a ^= b; b ^= a; a ^= b; }
 ## Common Techniques
 
 ### 1. XOR Properties
+
+**Pseudocode:**
+```
+Find single number (all others appear twice):
+1. Initialize result = 0
+2. For each number in array:
+   a. result = result XOR number
+3. Return result
+(XOR properties: a^a=0, a^0=a, commutative - pairs cancel out)
+```
+
 ```python
 def xor_techniques(nums: List[int]) -> dict:
     # Properties:
@@ -322,6 +389,15 @@ int singleNumber(vector<int>& nums) {
 ```
 
 ### 2. Bit Masking
+
+**Pseudocode:**
+```
+- Create mask with n rightmost 1s: (1 << n) - 1
+- Clear rightmost n bits: x AND (-1 << n)
+- Clear bits from MSB to position i: x AND ((1 << i) - 1)
+- Extract bits: x AND mask
+```
+
 ```python
 def bit_masking_examples() -> dict:
     # Create mask with n rightmost 1's

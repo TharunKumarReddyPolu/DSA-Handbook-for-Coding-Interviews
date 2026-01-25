@@ -85,6 +85,15 @@ A matrix is a 2D array structure that organizes data in rows and columns. Matrix
 ## Implementation Patterns
 
 ### 1. Matrix Creation and Basic Operations
+
+**Pseudocode:**
+```
+Create matrix: initialize rows × cols 2D array with default value
+Transpose: swap matrix[i][j] with matrix[j][i] for all i < j
+Get dimensions: (len(matrix), len(matrix[0]))
+Access element: matrix[row][col]
+```
+
 ```python
 def create_matrix(rows, cols, default_value=0):
     return [[default_value] * cols for _ in range(rows)]
@@ -101,6 +110,18 @@ def get_dimensions(matrix):
 ```
 
 ### 2. Matrix Rotation
+
+**Pseudocode:**
+```
+Rotate 90° clockwise (in-place):
+1. Transpose: for i < j, swap matrix[i][j] with matrix[j][i]
+2. Reverse each row
+
+Rotate 90° counter-clockwise:
+1. Transpose the matrix
+2. Reverse each column (or: reverse rows first, then transpose)
+```
+
 ```python
 def rotate_90_clockwise(matrix):
     n = len(matrix)
@@ -164,6 +185,21 @@ def rotate_90_counterclockwise(matrix):
 ```
 
 ### 3. Spiral Traversal
+
+**Pseudocode:**
+```
+1. Initialize boundaries: top=0, bottom=m-1, left=0, right=n-1
+2. While top <= bottom AND left <= right:
+   a. Traverse right: row=top, col from left to right
+   b. top++
+   c. Traverse down: col=right, row from top to bottom
+   d. right--
+   e. If top <= bottom: traverse left: row=bottom, col from right to left
+   f. bottom--
+   g. If left <= right: traverse up: col=left, row from bottom to top
+   h. left++
+```
+
 ```python
 def spiral_order(matrix):
     if not matrix:
@@ -234,6 +270,18 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
 ```
 
 ### 4. Matrix Search
+
+**Pseudocode:**
+```
+Search in row-wise and column-wise sorted matrix:
+1. Start at top-right corner (row=0, col=n-1)
+2. While within bounds:
+   a. If matrix[row][col] == target: found
+   b. If matrix[row][col] > target: col-- (eliminate column)
+   c. If matrix[row][col] < target: row++ (eliminate row)
+3. Return not found
+```
+
 ```python
 def search_sorted_matrix(matrix, target):
     if not matrix:
@@ -280,6 +328,20 @@ bool searchMatrix(vector<vector<int>>& matrix, int target) {
 ```
 
 ### 5. Island Problems (DFS)
+
+**Pseudocode:**
+```
+Count islands:
+1. For each cell (i, j) in grid:
+   a. If cell is land ('1'):
+      - Increment island count
+      - DFS to mark all connected land as visited
+2. DFS(i, j):
+   a. If out of bounds OR not land: return
+   b. Mark cell as visited (e.g., change to '#')
+   c. DFS on all 4 neighbors (up, down, left, right)
+```
+
 ```python
 def num_islands(grid):
     if not grid:
@@ -346,6 +408,20 @@ void dfs(vector<vector<char>>& grid, int i, int j) {
 ## Common Techniques
 
 ### 1. Direction Arrays
+
+**Pseudocode:**
+```
+4-directional movement (up, right, down, left):
+dx = [-1, 0, 1, 0]
+dy = [0, 1, 0, -1]
+
+8-directional (including diagonals):
+Add: [-1,-1], [-1,1], [1,-1], [1,1]
+
+Move: new_x = x + dx[i], new_y = y + dy[i]
+Check bounds: 0 <= new_x < rows AND 0 <= new_y < cols
+```
+
 ```python
 # 4 directions (up, right, down, left)
 dx = [-1, 0, 1, 0]
@@ -384,6 +460,17 @@ bool isValid(int x, int y, int rows, int cols) {
 ```
 
 ### 2. Layer by Layer Processing
+
+**Pseudocode:**
+```
+Process matrix in concentric layers:
+1. layers = min(m, n) / 2
+2. For each layer from 0 to layers-1:
+   a. first = layer (starting index)
+   b. last = min(m, n) - 1 - layer (ending index)
+   c. Process elements in current layer ring
+```
+
 ```python
 def process_matrix_layers(matrix):
     m, n = len(matrix), len(matrix[0])

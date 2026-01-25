@@ -94,6 +94,17 @@ A graph is a non-linear data structure consisting of vertices (nodes) and edges 
 ## Implementation
 
 ### Basic Graph using Adjacency List
+
+**Pseudocode:**
+```
+Graph structure:
+- Use dictionary/map where key=vertex, value=list of neighbors
+- add_vertex(v): if v not in graph, create empty list for v
+- add_edge(v1, v2): add v2 to v1's list; if undirected, add v1 to v2's list
+- get_vertices(): return all keys
+- get_edges(): collect all (v, neighbor) pairs from adjacency lists
+```
+
 ```python
 class Graph:
     def __init__(self, directed=False):
@@ -195,6 +206,16 @@ public:
 ```
 
 ### Weighted Graph Implementation
+
+**Pseudocode:**
+```
+Weighted Graph structure:
+- Use nested dictionary: graph[v1][v2] = weight
+- add_edge(v1, v2, weight): graph[v1][v2] = weight
+- For undirected: also set graph[v2][v1] = weight
+- get_weight(v1, v2): return graph[v1][v2] or infinity if not exists
+```
+
 ```python
 class WeightedGraph:
     def __init__(self, directed=False):
@@ -262,6 +283,16 @@ public:
 ## Common Algorithms
 
 ### 1. Depth-First Search (DFS)
+
+**Pseudocode:**
+```
+1. Mark start vertex as visited
+2. Process start vertex (print, add to result, etc.)
+3. For each neighbor of start:
+   a. If neighbor not visited:
+      - Recursively call DFS on neighbor
+```
+
 ```python
 def dfs(graph, start, visited=None):
     if visited is None:
@@ -300,6 +331,17 @@ void dfs(unordered_map<int, vector<int>>& graph, int start, unordered_set<int>& 
 ```
 
 ### 2. Breadth-First Search (BFS)
+
+**Pseudocode:**
+```
+1. Create visited set, add start to it
+2. Create queue, enqueue start
+3. While queue not empty:
+   a. Dequeue vertex, process it
+   b. For each neighbor of vertex:
+      - If not visited: mark visited, enqueue neighbor
+```
+
 ```python
 from collections import deque
 
@@ -356,6 +398,21 @@ void bfs(unordered_map<int, vector<int>>& graph, int start) {
 ```
 
 ### 3. Dijkstra's Shortest Path
+
+**Pseudocode:**
+```
+1. Initialize distances: all vertices = infinity, start = 0
+2. Create min-heap priority queue with (0, start)
+3. While priority queue not empty:
+   a. Pop (current_dist, current_vertex)
+   b. If current_dist > distances[current_vertex]: skip (stale entry)
+   c. For each neighbor with edge weight:
+      - new_dist = current_dist + weight
+      - If new_dist < distances[neighbor]:
+        Update distances[neighbor], push (new_dist, neighbor) to queue
+4. Return distances array
+```
+
 ```python
 import heapq
 
@@ -425,6 +482,19 @@ vector<int> dijkstra(vector<vector<pair<int,int>>>& graph, int start) {
 ```
 
 ### 4. Topological Sort
+
+**Pseudocode:**
+```
+1. Create visited set and result stack
+2. For each vertex in graph:
+   a. If not visited: call DFS on it
+3. DFS(vertex):
+   a. Mark vertex as visited
+   b. For each neighbor: if not visited, DFS(neighbor)
+   c. After processing all neighbors: push vertex to stack
+4. Return reversed stack (or pop elements one by one)
+```
+
 ```python
 def topological_sort(graph):
     visited = set()
@@ -481,6 +551,22 @@ vector<int> topologicalSort(unordered_map<int, vector<int>>& graph) {
 ```
 
 ### 5. Union-Find (Disjoint Set)
+
+**Pseudocode:**
+```
+Initialize: parent[v] = v for all vertices, rank[v] = 0
+
+Find(x) with path compression:
+1. If parent[x] != x: parent[x] = Find(parent[x])
+2. Return parent[x]
+
+Union(x, y) with union by rank:
+1. rootX = Find(x), rootY = Find(y)
+2. If rootX == rootY: return (already same set)
+3. Attach smaller rank tree under larger rank tree
+4. If ranks equal: increment rank of new root
+```
+
 ```python
 class UnionFind:
     def __init__(self, vertices):
@@ -556,6 +642,20 @@ public:
 ## Common Patterns
 
 ### 1. Cycle Detection
+
+**Pseudocode:**
+```
+For directed graph:
+1. Use visited set and recursion_stack set
+2. DFS(vertex):
+   a. Add to visited and recursion_stack
+   b. For each neighbor:
+      - If not visited and DFS(neighbor) returns true: return true
+      - If neighbor in recursion_stack: return true (back edge = cycle)
+   c. Remove from recursion_stack, return false
+3. Call DFS for each unvisited vertex
+```
+
 ```python
 def has_cycle(graph):
     visited = set()
@@ -583,6 +683,18 @@ def has_cycle(graph):
 ```
 
 ### 2. Connected Components
+
+**Pseudocode:**
+```
+1. Create visited set and components list
+2. For each vertex:
+   a. If not visited:
+      - Create new component list
+      - DFS from vertex, adding each visited node to component
+      - Add component to components list
+3. Return components list
+```
+
 ```python
 def find_connected_components(graph):
     visited = set()
