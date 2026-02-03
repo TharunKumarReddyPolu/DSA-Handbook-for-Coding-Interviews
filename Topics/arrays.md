@@ -124,6 +124,8 @@ vector<int> twoSum(vector<int>& nums, int target) {
 ### 2. Sliding Window
 Useful for problems involving contiguous subarrays.
 
+🔹 Fixed Size Sliding Window
+Used when the window size `k` is constant.
 **Pseudocode:**
 ```
 1. Calculate the sum of first k elements (initial window)
@@ -173,6 +175,97 @@ int maxSumSubarray(vector<int>& nums, int k) {
     return maxSum;
 }
 ```
+🔹 Variable Size Sliding Window
+
+Used when the window size is dynamic and depends on a condition.
+
+**Core Idea:**
+
+Expand the window using the right pointer.
+If the window violates the condition, shrink it using the left pointer.
+We shrink the window whenever a duplicate character is found, and continue shrinking until the window becomes valid again.
+Continue until the window becomes valid again.
+Update the result during valid states.
+
+**Pseudocode:**
+1. Initialize left = 0
+2. For each right from 0 to n-1:
+   a. Add element at right to the window
+   b. While window violates condition:
+      - Remove element at left from window
+      - Increment left
+   c. Update answer
+3. Return result
+
+**Time Complexity:** O(n)  
+Each element is added to the window once and removed at most once.
+
+**Space Complexity:** O(n)  
+In worst case, the set stores all unique characters.
+
+```python
+def lengthOfLongestSubstring(s):
+    char_set = set()
+    left = 0
+    max_length = 0
+
+    for right in range(len(s)):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+        
+        char_set.add(s[right])
+        max_length = max(max_length, right - left + 1)
+
+    return max_length
+```
+
+```cpp
+int lengthOfLongestSubstring(string s) {
+    unordered_set<char> charSet;
+    int left = 0;
+    int maxLength = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        while (charSet.count(s[right])) {
+            charSet.erase(s[left]);
+            left++;
+        }
+
+        charSet.insert(s[right]);
+        maxLength = max(maxLength, right - left + 1);
+    }
+
+    return maxLength;
+}
+```
+
+```java
+public int lengthOfLongestSubstring(String s) {
+    HashSet<Character> set = new HashSet<>();
+    int left = 0;
+    int maxLength = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        while (set.contains(s.charAt(right))) {
+            set.remove(s.charAt(left));
+            left++;
+        }
+
+        set.add(s.charAt(right));
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+
+    return maxLength;
+}
+```
+#### Fixed vs Variable Sliding Window
+
+| Feature | Fixed Size | Variable Size |
+|----------|------------|---------------|
+| Window size | Constant (k) | Dynamic |
+| Trigger | Size based | Condition based |
+| Example | Max sum of size k | Longest substring without repeating characters |
 
 ### 3. Prefix Sum
 Optimal for range queries and cumulative computations.
