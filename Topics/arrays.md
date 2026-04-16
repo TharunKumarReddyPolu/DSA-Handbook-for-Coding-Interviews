@@ -95,31 +95,6 @@ def twoSum(nums, target):
     return []
 ```
 
-```java
-public int[] twoSum(int[] nums, int target) {
-    int left = 0, right = nums.length - 1;
-    while (left < right) {
-        int sum = nums[left] + nums[right];
-        if (sum == target) return new int[]{left, right};
-        else if (sum < target) left++;
-        else right--;
-    }
-    return new int[]{};
-}
-```
-
-```cpp
-vector<int> twoSum(vector<int>& nums, int target) {
-    int left = 0, right = nums.size() - 1;
-    while (left < right) {
-        int sum = nums[left] + nums[right];
-        if (sum == target) return {left, right};
-        else if (sum < target) left++;
-        else right--;
-    }
-    return {};
-}
-```
 
 ### 2. Sliding Window
 Useful for problems involving contiguous subarrays.
@@ -150,31 +125,7 @@ def maxSumSubarray(nums, k):
     return max_sum
 ```
 
-```java
-public int maxSumSubarray(int[] nums, int k) {
-    int windowSum = 0;
-    for (int i = 0; i < k; i++) windowSum += nums[i];
-    int maxSum = windowSum;
-    for (int i = k; i < nums.length; i++) {
-        windowSum += nums[i] - nums[i - k];
-        maxSum = Math.max(maxSum, windowSum);
-    }
-    return maxSum;
-}
-```
 
-```cpp
-int maxSumSubarray(vector<int>& nums, int k) {
-    int windowSum = 0;
-    for (int i = 0; i < k; i++) windowSum += nums[i];
-    int maxSum = windowSum;
-    for (int i = k; i < nums.size(); i++) {
-        windowSum += nums[i] - nums[i - k];
-        maxSum = max(maxSum, windowSum);
-    }
-    return maxSum;
-}
-```
 🔹 Variable Size Sliding Window
 
 Used when the window size is dynamic and depends on a condition.
@@ -197,11 +148,46 @@ Update the result during valid states.
    c. Update answer
 3. Return result
 
+```python
+
+left = 0
+for right in range(len(nums)):
+    # 1. Expand window
+    add nums[right]
+
+    # 2. Shrink if invalid
+    while condition is violated:
+        remove nums[left]
+        left += 1
+
+    # 3. Update answer
+    update result
+
+```
+
 **Time Complexity:** O(n)  
 Each element is added to the window once and removed at most once.
 
 **Space Complexity:** O(n)  
 In worst case, the set stores all unique characters.
+
+```python
+def longest_subarray(nums, k):
+    left = 0
+    curr_sum = 0
+    max_len = 0
+
+    for right in range(len(nums)):
+        curr_sum += nums[right]   # expand
+
+        while curr_sum > k:       # shrink
+            curr_sum -= nums[left]
+            left += 1
+
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
 
 ```python
 def lengthOfLongestSubstring(s):
@@ -220,45 +206,6 @@ def lengthOfLongestSubstring(s):
     return max_length
 ```
 
-```cpp
-int lengthOfLongestSubstring(string s) {
-    unordered_set<char> charSet;
-    int left = 0;
-    int maxLength = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        while (charSet.count(s[right])) {
-            charSet.erase(s[left]);
-            left++;
-        }
-
-        charSet.insert(s[right]);
-        maxLength = max(maxLength, right - left + 1);
-    }
-
-    return maxLength;
-}
-```
-
-```java
-public int lengthOfLongestSubstring(String s) {
-    HashSet<Character> set = new HashSet<>();
-    int left = 0;
-    int maxLength = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        while (set.contains(s.charAt(right))) {
-            set.remove(s.charAt(left));
-            left++;
-        }
-
-        set.add(s.charAt(right));
-        maxLength = Math.max(maxLength, right - left + 1);
-    }
-
-    return maxLength;
-}
-```
 #### Fixed vs Variable Sliding Window
 
 | Feature | Fixed Size | Variable Size |
@@ -288,25 +235,6 @@ def buildPrefixSum(nums):
     return prefix
 ```
 
-```java
-public int[] buildPrefixSum(int[] nums) {
-    int[] prefix = new int[nums.length + 1];
-    for (int i = 0; i < nums.length; i++) {
-        prefix[i + 1] = prefix[i] + nums[i];
-    }
-    return prefix;
-}
-```
-
-```cpp
-vector<int> buildPrefixSum(vector<int>& nums) {
-    vector<int> prefix(nums.size() + 1, 0);
-    for (int i = 0; i < nums.size(); i++) {
-        prefix[i + 1] = prefix[i] + nums[i];
-    }
-    return prefix;
-}
-```
 
 ### 4. Kadane's Algorithm
 For maximum subarray problems.
@@ -331,27 +259,7 @@ def kadane(nums):
     return max_sum
 ```
 
-```java
-public int kadane(int[] nums) {
-    int maxSum = nums[0], currentSum = nums[0];
-    for (int i = 1; i < nums.length; i++) {
-        currentSum = Math.max(nums[i], currentSum + nums[i]);
-        maxSum = Math.max(maxSum, currentSum);
-    }
-    return maxSum;
-}
-```
 
-```cpp
-int kadane(vector<int>& nums) {
-    int maxSum = nums[0], currentSum = nums[0];
-    for (int i = 1; i < nums.size(); i++) {
-        currentSum = max(nums[i], currentSum + nums[i]);
-        maxSum = max(maxSum, currentSum);
-    }
-    return maxSum;
-}
-```
 
 ## Edge Cases to Consider
 - Empty array
