@@ -11,8 +11,8 @@ Arrays are fundamental data structures that store elements in contiguous memory 
 
 ### Related Topics
 - **Builds on**: Basic programming fundamentals
-- **Used in**: [Hashing](hashing.md), [Sorting](sorting.md), [Matrix](matrix.md), [Heap](heap-pq.md), [Stack](stack.md), [Queue](queue.md)
-- **Techniques often combined**: Two Pointers, Sliding Window, Prefix Sum
+- **Used in**: [Hashing](hashing.md), [Sorting](sorting.md), [Binary Search](binary-search.md), [Matrix](matrix.md), [Heap](heap-pq.md), [Stack](stack.md), [Queue](queue.md)
+- **Techniques often combined**: Two Pointers, Sliding Window, Prefix Sum, [Binary Search](binary-search.md)
 - **See also**: [Strings](strings.md) (character arrays), [Linked List](linked-list.md) (alternative linear structure)
 
 ## Pattern Recognition Guide
@@ -81,6 +81,7 @@ Used when dealing with sorted arrays or pairs in array.
 3. If no pair found, return empty result
 ```
 
+**Python:**
 ```python
 def twoSum(nums, target):
     left, right = 0, len(nums) - 1
@@ -95,6 +96,7 @@ def twoSum(nums, target):
     return []
 ```
 
+**Java:**
 ```java
 public int[] twoSum(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
@@ -108,6 +110,7 @@ public int[] twoSum(int[] nums, int target) {
 }
 ```
 
+**C++:**
 ```cpp
 vector<int> twoSum(vector<int>& nums, int target) {
     int left = 0, right = nums.size() - 1;

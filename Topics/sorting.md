@@ -13,7 +13,7 @@ Sorting is the process of arranging elements in a specific order, typically in a
 ### Related Topics
 - **Builds on**: [Arrays](arrays.md), [Recursion](recursion.md) (divide and conquer)
 - **Used by**: [Heap/Priority Queue](heap-pq.md) (heap sort), [Intervals](intervals.md), [Greedy](greedy.md)
-- **Enables**: Binary search, Two Pointers technique
+- **Enables**: [Binary Search](binary-search.md), Two Pointers technique
 - **See also**: [Cyclic Sort](cyclic-sort.md) (O(n) for specific cases), [Counting/Radix sort](bit-manipulation.md)
 
 ## Pattern Recognition Guide
@@ -44,7 +44,7 @@ Sorting is the process of arranging elements in a specific order, typically in a
 | Two Pointers | Enables O(n) two-pointer technique | Two Sum II (sorted) |
 | Intervals | Process in order by start/end | Merge Intervals |
 | Greedy | Sort to make greedy choices | Activity Selection |
-| Binary Search | Enables O(log n) search | Search in Sorted Array |
+| [Binary Search](binary-search.md) | Enables O(log n) search | Search in Sorted Array |
 
 ### ❌ When NOT to Use
 - Already sorted or order doesn't matter

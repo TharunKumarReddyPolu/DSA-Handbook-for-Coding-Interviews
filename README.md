@@ -104,6 +104,7 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 
 ### 🎯 **Algorithmic Techniques**
 - [🔃 Sorting](Topics/sorting.md) - Arranging elements in order
+- [🔍 Binary Search](Topics/binary-search.md) - O(log n) search on sorted/monotonic data
 - [💰 Greedy](Topics/greedy.md) - Local optimal choices
 - [🔁 Recursion](Topics/recursion.md) - Self-referential problem solving
 - [🧠 Dynamic Programming](Topics/dynamic-programming.md) - Optimal substructure problems
@@ -179,8 +180,11 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 - [AlgoMonster: Runtime Complexity Summary](https://algo.monster/problems/runtime_summary) - Quick lookup guide
 - [AlgoMonster: Keyword to Algo](https://algo.monster/problems/keyword_to_algo) - Problem pattern recognition
 - [AlgoMaster DSA Patterns](https://algomaster.io/practice/dsa-patterns) - Pattern-based learning
+- [Pirate King: LeetCode Cheat Sheet](https://www.piratekingdom.com/leetcode/cheat-sheet) - Input-to-algorithm mapping for quick pattern recognition
+- [Sean Prashad: LeetCode Patterns](https://seanprashad.com/leetcode-patterns/) - 178 curated questions grouped by pattern with constraint-based heuristics
 
 ### 🛠️ **Technical Resources**
+- [AlgoMaster DSA Animations](https://algomaster.io/animations/dsa) - 600+ interactive visualizations for data structures and algorithms
 - [Tech Interview Handbook](https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/) - Comprehensive study guide
 - [Python `collections` module](https://www.geeksforgeeks.org/python-collections-module/) - Built-in data structures
 - [CP Algorithms - Bit Manipulation](https://cp-algorithms.com/algebra/bit-manipulation.html) - Advanced bit tricks

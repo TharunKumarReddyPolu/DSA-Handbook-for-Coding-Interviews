@@ -13,7 +13,7 @@ Dynamic Programming (DP) is a method for solving complex problems by breaking th
 ### Related Topics
 - **Builds on**: [Recursion](recursion.md) (memoization), [Math](math.md) (optimal substructure)
 - **Compare with**: [Greedy](greedy.md) (when greedy choice property doesn't hold)
-- **Often combined with**: [Strings](strings.md) (LCS, edit distance), [Graph](graph.md) (shortest paths), [Tree](tree.md) (tree DP)
+- **Often combined with**: [Strings](strings.md) (LCS, edit distance), [Graph](graph.md) (shortest paths), [Tree](tree.md) (tree DP), [Binary Search](binary-search.md) (LIS in O(n log n))
 - **See also**: [Bit Manipulation](bit-manipulation.md) (bitmask DP), [Matrix](matrix.md) (grid DP)
 
 ## Pattern Recognition Guide
@@ -506,7 +506,7 @@ bool canPartition(vector<int>& nums) {
    - Number range problems
    - Digit counting
 5. **Connection with Other Techniques**:
-   - DP with binary search
+   - DP with [Binary Search](binary-search.md) (e.g., LIS in O(n log n))
    - DP with segment trees
 
 ## Important Resources
