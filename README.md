@@ -1,4 +1,6 @@
-# 📘 DSA Handbook for Coding Interviews
+# DSA Handbook for Coding Interviews
+
+Last-minute DSA notes for coding interviews: LeetCode patterns, complexity tables, edge cases, and Python, Java, and C++ implementations.
 
 <div align="center">
 
@@ -11,8 +13,6 @@
 [![Last Updated](https://img.shields.io/badge/last%20updated-January%202026-blue)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)
 
 </div>
-
-**_This handbook is a curated guide to Data Structures and Algorithms (DSA) designed for last-minute coding interview preparation at top tech companies. It includes each topic in a concise, high-impact format covering: key definitions, time complexities, multi-language implementations (Python, Java, C++), edge cases, common patterns, FAQs, and the most relevant problems & resources to help you revise DSA smarter, not harder._**
 
 ---
 
