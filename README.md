@@ -180,6 +180,7 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 - [AlgoMonster: Runtime Complexity Summary](https://algo.monster/problems/runtime_summary) - Quick lookup guide
 - [AlgoMonster: Keyword to Algo](https://algo.monster/problems/keyword_to_algo) - Problem pattern recognition
 - [AlgoMaster DSA Patterns](https://algomaster.io/practice/dsa-patterns) - Pattern-based learning
+- [PracHub: Coding Interview Patterns by Company](https://prachub.com/resources/most-common-coding-interview-patterns-by-company-analysis-of-prachub-question-data) - Original analysis of 2,818 PracHub question records with company-level pattern shares
 - [Pirate King: LeetCode Cheat Sheet](https://www.piratekingdom.com/leetcode/cheat-sheet) - Input-to-algorithm mapping for quick pattern recognition
 - [Sean Prashad: LeetCode Patterns](https://seanprashad.com/leetcode-patterns/) - 178 curated questions grouped by pattern with constraint-based heuristics
 
