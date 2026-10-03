@@ -10,7 +10,7 @@ Last-minute DSA notes for coding interviews: LeetCode patterns, complexity table
 [![GitHub forks](https://img.shields.io/github/forks/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews?style=social)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/issues)
 [![GitHub license](https://img.shields.io/github/license/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews/blob/main/LICENSE)
-[![Last Updated](https://img.shields.io/badge/last%20updated-January%202026-blue)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)
+[![Last Updated](https://img.shields.io/badge/last%20updated-October%202026-blue)](https://github.com/TharunKumarReddyPolu/DSA-Handbook-for-Coding-Interviews)
 
 </div>
 
@@ -175,29 +175,19 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 
 ## 📖 Must-Know References
 
-### 📚 **Essential Cheatsheets**
-- [Big-O Cheatsheet](https://www.bigocheatsheet.com/) - Complete complexity reference
-- [AlgoMonster: Runtime Complexity Summary](https://algo.monster/problems/runtime_summary) - Quick lookup guide
-- [AlgoMonster: Keyword to Algo](https://algo.monster/problems/keyword_to_algo) - Problem pattern recognition
-- [AlgoMaster DSA Patterns](https://algomaster.io/practice/dsa-patterns) - Pattern-based learning
-- [Pirate King: LeetCode Cheat Sheet](https://www.piratekingdom.com/leetcode/cheat-sheet) - Input-to-algorithm mapping for quick pattern recognition
-- [Sean Prashad: LeetCode Patterns](https://seanprashad.com/leetcode-patterns/) - 178 curated questions grouped by pattern with constraint-based heuristics
+Moved to its own page to keep this README scannable: **[RESOURCES.md](RESOURCES.md)**
 
-### 🛠️ **Technical Resources**
-- [AlgoMaster DSA Animations](https://algomaster.io/animations/dsa) - 600+ interactive visualizations for data structures and algorithms
-- [Tech Interview Handbook](https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/) - Comprehensive study guide
-- [Python `collections` module](https://www.geeksforgeeks.org/python-collections-module/) - Built-in data structures
-- [CP Algorithms - Bit Manipulation](https://cp-algorithms.com/algebra/bit-manipulation.html) - Advanced bit tricks
-- [Python Sorted Containers](https://www.geeksforgeeks.org/python-sorted-containers-an-introduction/) - Efficient sorted data structures
-- [Dunder Methods in Python](https://www.geeksforgeeks.org/dunder-magic-methods-python/) - Python magic methods
+- 🗺️ Study plans & problem sheets (NeetCode Roadmap, Blind 75, Grind 75, Top Interview 150, Striver's sheets)
+- 📚 Essential cheat sheets (Big-O, AlgoMonster, AlgoMaster, Sean Prashad, and more)
+- 🛠️ Technical resources (animations, Tech Interview Handbook, Python internals)
+- 📕 Books (CLRS, Grokking Algorithms, The Algorithm Design Manual)
+- 🎤 Mock interview platforms
 
 ---
 
 ## 📺 Video Resources
 
-### 🎥 **Comprehensive Tutorials**
-- [70 Leetcode problems in 5+ hours (every data structure)](https://youtu.be/lvO88XxNAzs) - Rapid-fire problem solving
-- [Neetcode 150 Youtube Playlist](https://www.youtube.com/watch?v=3OamzN90kPg&list=PLPe9IkX86X3y5m_MvtNu2ughxsvkqUNKr) - Detailed explanations for 150 Most asked problems
+Tutorials and YouTube channels moved to **[RESOURCES.md](RESOURCES.md)** - all external links now live in one file.
 
 ---
 
