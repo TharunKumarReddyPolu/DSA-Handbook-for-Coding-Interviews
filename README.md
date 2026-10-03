@@ -24,7 +24,6 @@ Last-minute DSA notes for coding interviews: LeetCode patterns, complexity table
 - [📚 DSA Topics Covered](#-dsa-topics-covered)
 - [🎯 What You'll Learn](#-what-youll-learn)
 - [📖 Must-Know References](#-must-know-references)
-- [📺 Video Resources](#-video-resources)
 - [🤝 Contributing](#-contributing)
 - [⭐ Support the Project](#-support-the-project)
 
@@ -185,19 +184,14 @@ This handbook is a **curated guide to Data Structures and Algorithms (DSA)** des
 
 ## 📖 Must-Know References
 
-Moved to its own page to keep this README scannable: **[RESOURCES.md](RESOURCES.md)**
+All external links now live in **[RESOURCES.md](RESOURCES.md)** to keep this README scannable:
 
 - 🗺️ Study plans & problem sheets (NeetCode Roadmap, Blind 75, Grind 75, Top Interview 150, Striver's sheets)
 - 📚 Essential cheat sheets (Big-O, AlgoMonster, AlgoMaster, Sean Prashad, and more)
 - 🛠️ Technical resources (animations, Tech Interview Handbook, Python internals)
 - 📕 Books (CLRS, Grokking Algorithms, The Algorithm Design Manual)
 - 🎤 Mock interview platforms
-
----
-
-## 📺 Video Resources
-
-Tutorials and YouTube channels moved to **[RESOURCES.md](RESOURCES.md)** - all external links now live in one file.
+- 📺 Video resources (tutorials and top YouTube channels)
 
 ---
 
