@@ -25,6 +25,7 @@ Curated study plans, cheat sheets, books, videos, and mock-interview tools for l
 
 ## 🛠️ **Technical Resources**
 
+- [VisuAlgo](https://visualgo.net/) - Interactive visualizations for data structures and algorithms
 - [AlgoMaster DSA Animations](https://algomaster.io/animations/dsa) - 600+ interactive visualizations for data structures and algorithms
 - [Tech Interview Handbook](https://www.techinterviewhandbook.org/algorithms/study-cheatsheet/) - Comprehensive study guide
 - [Python `collections` module](https://www.geeksforgeeks.org/python-collections-module/) - Built-in data structures
