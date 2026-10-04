@@ -36,6 +36,7 @@ Hashing is a technique that maps data of arbitrary size to fixed-size values. Ha
 | Duplicate Detection | "contains duplicate", "find duplicate" | Contains Duplicate, Find Duplicate |
 | Subarray Sum | "subarray with sum k", "continuous sum" | Subarray Sum Equals K |
 | Sliding Window + Hash | "distinct in window", "anagram in string" | Longest Substring Without Repeating |
+| LRU Cache | "least recently used", O(1) cache eviction | LRU Cache |
 
 ### ❌ When NOT to Use
 - Need sorted order → use [Sorting](sorting.md) or [Tree](tree.md)-based structures
@@ -569,6 +570,183 @@ class DynamicHashTable:
                     self.insert(key, value)
 ```
 
+### 3. LRU Cache
+
+An LRU (Least Recently Used) cache evicts the entry that has gone the longest without being accessed. Combine a hash map for O(1) lookup with a doubly linked list for O(1) recency updates. The front is most recently used; the back is least recently used. Here, `get` returns `-1` when a key is missing, matching the common interview interface.
+
+**Pseudocode:**
+```
+get(key):
+1. If key is absent from map, return -1
+2. Move its node to the front of the list
+3. Return its value
+
+put(key, value):
+1. If capacity is 0, do nothing
+2. If key exists, update its value and move it to the front
+3. Otherwise, if full, remove the back node and its key from the map
+4. Insert the new node at the front and add it to the map
+
+Both get and put take O(1) average time; storage is O(capacity).
+```
+
+```python
+class _Node:
+    def __init__(self, key=0, value=0):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = max(0, capacity)
+        self.nodes = {}
+        self.head, self.tail = _Node(), _Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _remove(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def _add_to_front(self, node):
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def get(self, key):
+        node = self.nodes.get(key)
+        if node is None:
+            return -1
+        self._remove(node)
+        self._add_to_front(node)
+        return node.value
+
+    def put(self, key, value):
+        if self.capacity == 0:
+            return
+        if key in self.nodes:
+            node = self.nodes[key]
+            node.value = value
+            self._remove(node)
+            self._add_to_front(node)
+            return
+        if len(self.nodes) == self.capacity:
+            least_recent = self.tail.prev
+            self._remove(least_recent)
+            del self.nodes[least_recent.key]
+        node = _Node(key, value)
+        self.nodes[key] = node
+        self._add_to_front(node)
+```
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+class LRUCache {
+    private static class Node {
+        int key, value;
+        Node prev, next;
+        Node(int key, int value) { this.key = key; this.value = value; }
+    }
+
+    private final int capacity;
+    private final Map<Integer, Node> nodes = new HashMap<>();
+    private final Node head = new Node(0, 0); // most-recent sentinel
+    private final Node tail = new Node(0, 0); // least-recent sentinel
+
+    public LRUCache(int capacity) {
+        this.capacity = Math.max(0, capacity);
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void remove(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void addToFront(Node node) {
+        node.prev = head;
+        node.next = head.next;
+        head.next.prev = node;
+        head.next = node;
+    }
+
+    public int get(int key) {
+        Node node = nodes.get(key);
+        if (node == null) return -1;
+        remove(node);
+        addToFront(node);
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        if (capacity == 0) return;
+        Node node = nodes.get(key);
+        if (node != null) {
+            node.value = value;
+            remove(node);
+            addToFront(node);
+            return;
+        }
+        if (nodes.size() == capacity) {
+            Node leastRecent = tail.prev;
+            remove(leastRecent);
+            nodes.remove(leastRecent.key);
+        }
+        node = new Node(key, value);
+        nodes.put(key, node);
+        addToFront(node);
+    }
+}
+```
+
+```cpp
+#include <algorithm>
+#include <list>
+#include <unordered_map>
+#include <utility>
+using namespace std;
+
+class LRUCache {
+    int capacity;
+    list<pair<int, int>> order; // front = most recent, back = least recent
+    unordered_map<int, list<pair<int, int>>::iterator> nodes;
+
+public:
+    explicit LRUCache(int capacity) : capacity(max(0, capacity)) {}
+
+    int get(int key) {
+        auto it = nodes.find(key);
+        if (it == nodes.end()) return -1;
+        order.splice(order.begin(), order, it->second);
+        return it->second->second;
+    }
+
+    void put(int key, int value) {
+        if (capacity == 0) return;
+        auto it = nodes.find(key);
+        if (it != nodes.end()) {
+            it->second->second = value;
+            order.splice(order.begin(), order, it->second);
+            return;
+        }
+        if (static_cast<int>(order.size()) == capacity) {
+            nodes.erase(order.back().first);
+            order.pop_back();
+        }
+        order.emplace_front(key, value);
+        nodes[key] = order.begin();
+    }
+};
+```
+
+**LRU cache edge cases:** zero capacity (stores nothing), updates to existing keys (move them to most-recent), and a cache hit changing which key is evicted next.
+
 ## Edge Cases to Consider
 1. Empty hash table
 2. Single entry
@@ -603,6 +781,7 @@ class DynamicHashTable:
 2. [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) (LC #347)
 3. [Design HashMap](https://leetcode.com/problems/design-hashmap/) (LC #706)
 4. [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) (LC #560)
+5. [LRU Cache](https://leetcode.com/problems/lru-cache/) (LC #146)
 
 ### Hard
 1. [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) (LC #128)

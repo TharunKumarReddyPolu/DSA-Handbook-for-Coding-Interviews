@@ -74,6 +74,7 @@ Sorting is the process of arranging elements in a specific order, typically in a
 | Merge Sort    | O(n log n) | O(n log n)| O(n log n) | O(n)      | Yes     | No       |
 | Quick Sort    | O(n log n) | O(n log n)| O(n²)      | O(log n)  | No      | Yes      |
 | Heap Sort     | O(n log n) | O(n log n)| O(n log n) | O(1)      | No      | Yes      |
+| Quickselect  | O(n)       | O(n)      | O(n²)      | O(1)      | N/A     | Yes      |
 | Counting Sort | O(n + k)   | O(n + k)  | O(n + k)   | O(k)      | Yes     | No       |
 | Radix Sort    | O(d(n + k))| O(d(n + k))| O(d(n + k))| O(n + k) | Yes     | No       |
 | Shell Sort    | O(n log n) | O(n^1.3)  | O(n²)      | O(1)      | No      | Yes      |
@@ -444,7 +445,113 @@ void sortColors(vector<int>& nums) {
 }
 ```
 
-### 2. Custom Comparator
+### 2. Quickselect (K-th Element)
+
+Quickselect finds the element at zero-based index `k` in the sorted order without sorting the whole array. It mutates the array. For the `k`-th largest element using one-based `k`, select index `len(nums) - k`.
+
+**Pseudocode (randomized three-way partition):**
+```
+1. Set left = 0, right = n - 1
+2. While left <= right:
+   a. Choose a random pivot value from nums[left..right]
+   b. Partition into values < pivot, == pivot, and > pivot
+   c. If k is left of the equal range, continue in the left partition
+   d. If k is right of the equal range, continue in the right partition
+   e. Otherwise return pivot
+3. Expected O(n) time; worst case O(n²). Extra space O(1)
+```
+
+```python
+import random
+
+def quickselect(nums, k):
+    """Return the k-th smallest value (zero-based k); rearranges nums."""
+    if not 0 <= k < len(nums):
+        raise ValueError("k must be a valid zero-based index")
+
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        pivot = nums[random.randrange(left, right + 1)]
+        lt = i = left
+        gt = right
+        while i <= gt:
+            if nums[i] < pivot:
+                nums[lt], nums[i] = nums[i], nums[lt]
+                lt += 1
+                i += 1
+            elif nums[i] > pivot:
+                nums[i], nums[gt] = nums[gt], nums[i]
+                gt -= 1
+            else:
+                i += 1
+
+        if k < lt:
+            right = lt - 1
+        elif k > gt:
+            left = gt + 1
+        else:
+            return pivot
+```
+
+```java
+import java.util.concurrent.ThreadLocalRandom;
+
+public int quickselect(int[] nums, int k) {
+    if (k < 0 || k >= nums.length) {
+        throw new IllegalArgumentException("k must be a valid zero-based index");
+    }
+    int left = 0, right = nums.length - 1;
+    while (left <= right) {
+        int pivot = nums[ThreadLocalRandom.current().nextInt(left, right + 1)];
+        int lt = left, i = left, gt = right;
+        while (i <= gt) {
+            if (nums[i] < pivot) {
+                int temp = nums[lt]; nums[lt++] = nums[i]; nums[i++] = temp;
+            } else if (nums[i] > pivot) {
+                int temp = nums[i]; nums[i] = nums[gt]; nums[gt--] = temp;
+            } else {
+                i++;
+            }
+        }
+        if (k < lt) right = lt - 1;
+        else if (k > gt) left = gt + 1;
+        else return pivot;
+    }
+    throw new IllegalStateException("unreachable");
+}
+```
+
+```cpp
+#include <algorithm>
+#include <random>
+#include <stdexcept>
+#include <vector>
+using namespace std;
+
+int quickselect(vector<int>& nums, int k) {
+    if (k < 0 || k >= static_cast<int>(nums.size()))
+        throw invalid_argument("k must be a valid zero-based index");
+
+    mt19937 rng(random_device{}());
+    int left = 0, right = static_cast<int>(nums.size()) - 1;
+    while (left <= right) {
+        uniform_int_distribution<int> choose(left, right);
+        int pivot = nums[choose(rng)];
+        int lt = left, i = left, gt = right;
+        while (i <= gt) {
+            if (nums[i] < pivot) swap(nums[lt++], nums[i++]);
+            else if (nums[i] > pivot) swap(nums[i], nums[gt--]);
+            else i++;
+        }
+        if (k < lt) right = lt - 1;
+        else if (k > gt) left = gt + 1;
+        else return pivot;
+    }
+    throw logic_error("unreachable");
+}
+```
+
+### 3. Custom Comparator
 
 **Pseudocode:**
 ```
@@ -513,9 +620,10 @@ sort(strings.begin(), strings.end(), [](const string& a, const string& b) {
 
 ### Medium
 1. [Sort Colors](https://leetcode.com/problems/sort-colors/) (LC #75)
-2. [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/) (LC #451)
-3. [Custom Sort String](https://leetcode.com/problems/custom-sort-string/) (LC #791)
-4. [Sort the Matrix Diagonally](https://leetcode.com/problems/sort-the-matrix-diagonally/) (LC #1329)
+2. [Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/) (LC #215)
+3. [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/) (LC #451)
+4. [Custom Sort String](https://leetcode.com/problems/custom-sort-string/) (LC #791)
+5. [Sort the Matrix Diagonally](https://leetcode.com/problems/sort-the-matrix-diagonally/) (LC #1329)
 
 ### Hard
 1. [First Missing Positive](https://leetcode.com/problems/first-missing-positive/) (LC #41)
