@@ -371,12 +371,12 @@ def can_partition(nums):
         return False
     
     target = total // 2
-    dp = 1 << target
+    dp = 1  # Bit j is set exactly when sum j is reachable; initially only sum 0.
     
     for num in nums:
         dp |= (dp << num) & ((1 << (target + 1)) - 1)
     
-    return dp & (1 << target)
+    return bool(dp & (1 << target))
 ```
 
 ```java

@@ -438,21 +438,24 @@ def dijkstra(graph, start):
 ```
 
 ```java
-public int[] dijkstra(int[][] graph, int start) {
+// Use -1 for no edge; zero-weight edges are valid. Assumes non-negative weights.
+public long[] dijkstra(int[][] graph, int start) {
     int n = graph.length;
-    int[] dist = new int[n];
-    Arrays.fill(dist, Integer.MAX_VALUE);
+    long[] dist = new long[n];
+    Arrays.fill(dist, Long.MAX_VALUE);
     dist[start] = 0;
-    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-    pq.offer(new int[]{start, 0});
+    PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[1], b[1]));
+    pq.offer(new long[]{start, 0});
     while (!pq.isEmpty()) {
-        int[] curr = pq.poll();
-        int u = curr[0], d = curr[1];
+        long[] curr = pq.poll();
+        int u = (int) curr[0];
+        long d = curr[1];
         if (d > dist[u]) continue;
         for (int v = 0; v < n; v++) {
-            if (graph[u][v] > 0 && dist[u] + graph[u][v] < dist[v]) {
-                dist[v] = dist[u] + graph[u][v];
-                pq.offer(new int[]{v, dist[v]});
+            int weight = graph[u][v];
+            if (weight != -1 && d + weight < dist[v]) {
+                dist[v] = d + weight;
+                pq.offer(new long[]{v, dist[v]});
             }
         }
     }
@@ -579,8 +582,17 @@ class UnionFind:
         return self.parent[item]
     
     def union(self, x, y):
-        rootX = self.find(x)
-        rootY = self.find(y)
+        root_x = self.find(x)
+        root_y = self.find(y)
+        if root_x == root_y:
+            return False
+
+        if self.rank[root_x] < self.rank[root_y]:
+            root_x, root_y = root_y, root_x
+        self.parent[root_y] = root_x
+        if self.rank[root_x] == self.rank[root_y]:
+            self.rank[root_x] += 1
+        return True
 ```
 
 ```java
@@ -623,20 +635,6 @@ public:
         else { parent[py] = px; rank[px]++; }
     }
 };
-```
-
-```python
-    # Continuation of union method
-    def union(self, x, y):
-        rootX = self.find(x)
-        rootY = self.find(y)
-        
-        if rootX != rootY:
-            if self.rank[rootX] < self.rank[rootY]:
-                rootX, rootY = rootY, rootX
-            self.parent[rootY] = rootX
-            if self.rank[rootX] == self.rank[rootY]:
-                self.rank[rootX] += 1
 ```
 
 ## Common Patterns
