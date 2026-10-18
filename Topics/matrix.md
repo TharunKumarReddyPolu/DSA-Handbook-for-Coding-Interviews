@@ -109,6 +109,41 @@ def get_dimensions(matrix):
     return len(matrix), len(matrix[0]) if matrix else 0
 ```
 
+```java
+public int[][] createMatrix(int rows, int cols, int defaultValue) {
+    int[][] matrix = new int[rows][cols];
+    if (defaultValue != 0) {
+        for (int[] row : matrix) Arrays.fill(row, defaultValue);
+    }
+    return matrix;
+}
+
+public int[][] transposeMatrix(int[][] matrix) {
+    int rows = matrix.length, cols = matrix[0].length;
+    int[][] transposed = new int[cols][rows];
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            transposed[j][i] = matrix[i][j];
+    return transposed;
+}
+```
+
+```cpp
+vector<vector<int>> createMatrix(int rows, int cols, int defaultValue = 0) {
+    return vector<vector<int>>(rows, vector<int>(cols, defaultValue));
+}
+
+vector<vector<int>> transposeMatrix(const vector<vector<int>>& matrix) {
+    if (matrix.empty()) return {};
+    int rows = matrix.size(), cols = matrix[0].size();
+    vector<vector<int>> transposed(cols, vector<int>(rows));
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            transposed[j][i] = matrix[i][j];
+    return transposed;
+}
+```
+
 ### 2. Matrix Rotation
 
 **Pseudocode:**
@@ -134,19 +169,30 @@ def rotate_90_clockwise(matrix):
     # Reverse each row
     for i in range(n):
         matrix[i].reverse()
+
+def rotate_90_counterclockwise(matrix):
+    n = len(matrix)
+
+    # Transpose
+    for i in range(n):
+        for j in range(i, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+    # Reverse each column
+    for j in range(n):
+        for i in range(n // 2):
+            matrix[i][j], matrix[n - 1 - i][j] = matrix[n - 1 - i][j], matrix[i][j]
 ```
 
 ```java
-public void rotate(int[][] matrix) {
+public void rotateClockwise(int[][] matrix) {
     int n = matrix.length;
-    // Transpose
     for (int i = 0; i < n; i++)
         for (int j = i; j < n; j++) {
             int temp = matrix[i][j];
             matrix[i][j] = matrix[j][i];
             matrix[j][i] = temp;
         }
-    // Reverse each row
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n / 2; j++) {
             int temp = matrix[i][j];
@@ -154,34 +200,43 @@ public void rotate(int[][] matrix) {
             matrix[i][n - 1 - j] = temp;
         }
 }
-```
 
-```cpp
-void rotate(vector<vector<int>>& matrix) {
-    int n = matrix.size();
-    // Transpose
+public void rotateCounterClockwise(int[][] matrix) {
+    int n = matrix.length;
     for (int i = 0; i < n; i++)
-        for (int j = i; j < n; j++)
-            swap(matrix[i][j], matrix[j][i]);
-    // Reverse each row
-    for (int i = 0; i < n; i++)
-        reverse(matrix[i].begin(), matrix[i].end());
+        for (int j = i; j < n; j++) {
+            int temp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = temp;
+        }
+    for (int j = 0; j < n; j++)
+        for (int i = 0; i < n / 2; i++) {
+            int temp = matrix[i][j];
+            matrix[i][j] = matrix[n - 1 - i][j];
+            matrix[n - 1 - i][j] = temp;
+        }
 }
 ```
 
-```python
-def rotate_90_counterclockwise(matrix):
-    n = len(matrix)
-    
-    # Transpose
-    for i in range(n):
-        for j in range(i, n):
-            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
-    
-    # Reverse each column
-    for j in range(n):
-        for i in range(n//2):
-            matrix[i][j], matrix[n-1-i][j] = matrix[n-1-i][j], matrix[i][j]
+```cpp
+void rotateClockwise(vector<vector<int>>& matrix) {
+    int n = matrix.size();
+    for (int i = 0; i < n; i++)
+        for (int j = i; j < n; j++)
+            swap(matrix[i][j], matrix[j][i]);
+    for (int i = 0; i < n; i++)
+        reverse(matrix[i].begin(), matrix[i].end());
+}
+
+void rotateCounterClockwise(vector<vector<int>>& matrix) {
+    int n = matrix.size();
+    for (int i = 0; i < n; i++)
+        for (int j = i; j < n; j++)
+            swap(matrix[i][j], matrix[j][i]);
+    for (int j = 0; j < n; j++)
+        for (int i = 0; i < n / 2; i++)
+            swap(matrix[i][j], matrix[n - 1 - i][j]);
+}
 ```
 
 ### 3. Spiral Traversal

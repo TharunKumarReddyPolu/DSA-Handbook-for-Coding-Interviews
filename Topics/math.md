@@ -596,15 +596,16 @@ int eulerTotient(int n) {
     if (n > 1) result -= result / n;
     return result;
 }
-long long modularInverse(long long a, long long m) {
-    auto ext = extendedGcd(a, m);
-    if (get<0>(ext) != 1) throw runtime_error("Inverse doesn't exist");
-    return (get<1>(ext) % m + m) % m;
-}
+long long modularInverse(long long a, long long m);
 tuple<long long, long long, long long> extendedGcd(long long a, long long b) {
     if (a == 0) return {b, 0, 1};
     auto [g, x1, y1] = extendedGcd(b % a, a);
     return {g, y1 - (b / a) * x1, x1};
+}
+long long modularInverse(long long a, long long m) {
+    auto ext = extendedGcd(a, m);
+    if (get<0>(ext) != 1) throw runtime_error("Inverse doesn't exist");
+    return (get<1>(ext) % m + m) % m;
 }
 ```
 
@@ -612,18 +613,31 @@ tuple<long long, long long, long long> extendedGcd(long long a, long long b) {
 
 ### 1. Modular Arithmetic Properties
 ```python
-def modular_operations():
-    # Addition
-    (a + b) % m = ((a % m) + (b % m)) % m
-    
-    # Subtraction
-    (a - b) % m = ((a % m) - (b % m) + m) % m
-    
-    # Multiplication
-    (a * b) % m = ((a % m) * (b % m)) % m
-    
-    # Power
-    (a ^ b) % m = ((a % m) ^ b) % m
+def mod_add(a: int, b: int, m: int) -> int:
+    return ((a % m) + (b % m)) % m
+
+def mod_sub(a: int, b: int, m: int) -> int:
+    return ((a % m) - (b % m) + m) % m
+
+def mod_mul(a: int, b: int, m: int) -> int:
+    return ((a % m) * (b % m)) % m
+
+def mod_div(a: int, b: int, m: int) -> int:
+    return mod_mul(a, modular_inverse(b, m), m)
+```
+
+```java
+public long modAdd(long a, long b, long m) { return ((a % m) + (b % m)) % m; }
+public long modSub(long a, long b, long m) { return ((a % m) - (b % m) + m) % m; }
+public long modMul(long a, long b, long m) { return ((a % m) * (b % m)) % m; }
+public long modDiv(long a, long b, long m) { return modMul(a, modularInverse(b, m), m); }
+```
+
+```cpp
+long long modAdd(long long a, long long b, long long m) { return ((a % m) + (b % m)) % m; }
+long long modSub(long long a, long long b, long long m) { return ((a % m) - (b % m) + m) % m; }
+long long modMul(long long a, long long b, long long m) { return ((a % m) * (b % m)) % m; }
+long long modDiv(long long a, long long b, long long m) { return modMul(a, modularInverse(b, m), m); }
 ```
 
 ### 2. Chinese Remainder Theorem

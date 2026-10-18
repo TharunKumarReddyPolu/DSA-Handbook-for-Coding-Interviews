@@ -188,7 +188,7 @@ def merge_intervals(intervals):
 ```java
 public int[][] merge(int[][] intervals) {
     if (intervals.length <= 1) return intervals;
-    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
     List<int[]> result = new ArrayList<>();
     int[] current = intervals[0];
     result.add(current);
@@ -261,7 +261,7 @@ def min_meeting_rooms(intervals):
 ```java
 public int minMeetingRooms(int[][] intervals) {
     if (intervals.length == 0) return 0;
-    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
     PriorityQueue<Integer> heap = new PriorityQueue<>();
     heap.offer(intervals[0][1]);
     for (int i = 1; i < intervals.length; i++) {
@@ -395,7 +395,7 @@ def erase_overlap_intervals(intervals):
 ```java
 public int eraseOverlapIntervals(int[][] intervals) {
     if (intervals.length == 0) return 0;
-    Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
     int count = 1, end = intervals[0][1];
     for (int i = 1; i < intervals.length; i++) {
         if (intervals[i][0] >= end) { count++; end = intervals[i][1]; }
@@ -458,7 +458,7 @@ public int sweepLine(int[][] intervals) {
         events.add(new int[]{interval[0], 1});  // start
         events.add(new int[]{interval[1], -1}); // end
     }
-    events.sort((a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+    events.sort((a, b) -> a[0] != b[0] ? Integer.compare(a[0], b[0]) : Integer.compare(a[1], b[1]));
     int current = 0, maxOverlap = 0;
     for (int[] event : events) {
         current += event[1];

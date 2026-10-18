@@ -484,10 +484,11 @@ vector<int> dijkstra(vector<vector<pair<int,int>>>& graph, int start) {
 }
 ```
 
-### 4. Topological Sort
+### 4. Topological Sort (DFS & Kahn's BFS)
 
 **Pseudocode:**
 ```
+DFS Post-Order Approach:
 1. Create visited set and result stack
 2. For each vertex in graph:
    a. If not visited: call DFS on it
@@ -495,21 +496,31 @@ vector<int> dijkstra(vector<vector<pair<int,int>>>& graph, int start) {
    a. Mark vertex as visited
    b. For each neighbor: if not visited, DFS(neighbor)
    c. After processing all neighbors: push vertex to stack
-4. Return reversed stack (or pop elements one by one)
+4. Return reversed stack
+
+Kahn's Algorithm (In-Degree BFS — also detects cycles):
+1. Compute in_degree[v] for all vertices
+2. Enqueue all vertices with in_degree == 0
+3. While queue not empty:
+   a. Pop u, append u to order
+   b. For each neighbor v of u:
+      - Decrement in_degree[v]
+      - If in_degree[v] == 0: enqueue v
+4. If len(order) < V: graph has a cycle; else return order
 ```
 
 ```python
+from collections import deque
+
 def topological_sort(graph):
     visited = set()
     stack = []
     
     def dfs(vertex):
         visited.add(vertex)
-        
-        for neighbor in graph[vertex]:
+        for neighbor in graph.get(vertex, []):
             if neighbor not in visited:
                 dfs(neighbor)
-        
         stack.append(vertex)
     
     for vertex in graph:
@@ -517,6 +528,25 @@ def topological_sort(graph):
             dfs(vertex)
     
     return stack[::-1]
+
+def kahns_topological_sort(num_nodes, edges):
+    adj = [[] for _ in range(num_nodes)]
+    in_degree = [0] * num_nodes
+    for u, v in edges:
+        adj[u].append(v)
+        in_degree[v] += 1
+
+    queue = deque(i for i in range(num_nodes) if in_degree[i] == 0)
+    order = []
+    while queue:
+        u = queue.popleft()
+        order.append(u)
+        for v in adj[u]:
+            in_degree[v] -= 1
+            if in_degree[v] == 0:
+                queue.append(v)
+
+    return order if len(order) == num_nodes else []  # Empty if cycle exists
 ```
 
 ```java
@@ -534,6 +564,28 @@ private void dfs(Map<Integer, List<Integer>> graph, int v, Set<Integer> visited,
         if (!visited.contains(neighbor)) dfs(graph, neighbor, visited, stack);
     stack.push(v);
 }
+
+public int[] kahnsTopologicalSort(int numNodes, int[][] edges) {
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < numNodes; i++) adj.add(new ArrayList<>());
+    int[] inDegree = new int[numNodes];
+    for (int[] e : edges) {
+        adj.get(e[0]).add(e[1]);
+        inDegree[e[1]]++;
+    }
+    Queue<Integer> q = new ArrayDeque<>();
+    for (int i = 0; i < numNodes; i++)
+        if (inDegree[i] == 0) q.offer(i);
+    int[] order = new int[numNodes];
+    int idx = 0;
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        order[idx++] = u;
+        for (int v : adj.get(u))
+            if (--inDegree[v] == 0) q.offer(v);
+    }
+    return idx == numNodes ? order : new int[0];
+}
 ```
 
 ```cpp
@@ -550,6 +602,26 @@ vector<int> topologicalSort(unordered_map<int, vector<int>>& graph) {
         if (!visited.count(vertex)) dfs(vertex);
     reverse(result.begin(), result.end());
     return result;
+}
+
+vector<int> kahnsTopologicalSort(int numNodes, const vector<pair<int, int>>& edges) {
+    vector<vector<int>> adj(numNodes);
+    vector<int> inDegree(numNodes, 0);
+    for (auto [u, v] : edges) {
+        adj[u].push_back(v);
+        inDegree[v]++;
+    }
+    queue<int> q;
+    for (int i = 0; i < numNodes; i++)
+        if (inDegree[i] == 0) q.push(i);
+    vector<int> order;
+    while (!q.empty()) {
+        int u = q.front(); q.pop();
+        order.push_back(u);
+        for (int v : adj[u])
+            if (--inDegree[v] == 0) q.push(v);
+    }
+    return static_cast<int>(order.size()) == numNodes ? order : vector<int>{};
 }
 ```
 
@@ -637,6 +709,170 @@ public:
 };
 ```
 
+### 6. Minimum Spanning Tree (Kruskal's & Prim's)
+
+A Minimum Spanning Tree (MST) connects all $V$ vertices in a weighted undirected graph with $V - 1$ edges and minimum total weight. Use **Kruskal's** ($O(E \log E)$) with edge lists and Union-Find, or **Prim's** ($O(E \log V)$) with adjacency lists and a min-heap.
+
+**Pseudocode:**
+```
+Kruskal's Algorithm:
+1. Sort all edges by weight ascending
+2. Initialize Union-Find with V vertices, mst_weight = 0, edges_used = 0
+3. For each edge (u, v, w):
+   a. If union(u, v) succeeds (no cycle formed):
+      - mst_weight += w, edges_used += 1
+      - If edges_used == V - 1: break
+4. Return mst_weight if edges_used == V - 1 else -1 (disconnected)
+
+Prim's Algorithm:
+1. Initialize visited set, min_heap = [(0, 0)], mst_weight = 0
+2. While min_heap not empty and len(visited) < V:
+   a. Pop (w, u); if u in visited: continue
+   b. Add u to visited, mst_weight += w
+   c. For each (v, weight) of u:
+      - If v not in visited: push (weight, v) to min_heap
+3. Return mst_weight if len(visited) == V else -1
+```
+
+```python
+import heapq
+
+def kruskal_mst(n, edges):
+    """edges: list of (u, v, weight) with 0 <= u, v < n."""
+    if n <= 1:
+        return 0
+    parent = list(range(n))
+    rank = [0] * n
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(x, y):
+        rx, ry = find(x), find(y)
+        if rx == ry:
+            return False
+        if rank[rx] < rank[ry]:
+            rx, ry = ry, rx
+        parent[ry] = rx
+        if rank[rx] == rank[ry]:
+            rank[rx] += 1
+        return True
+
+    total_weight = 0
+    edges_used = 0
+    for u, v, w in sorted(edges, key=lambda e: e[2]):
+        if union(u, v):
+            total_weight += w
+            edges_used += 1
+            if edges_used == n - 1:
+                return total_weight
+    return -1
+
+def prim_mst(n, adj):
+    """adj[u]: list of (v, weight)."""
+    if n <= 1:
+        return 0
+    visited = [False] * n
+    pq = [(0, 0)]  # (weight, vertex)
+    total_weight = 0
+    visited_count = 0
+
+    while pq and visited_count < n:
+        w, u = heapq.heappop(pq)
+        if visited[u]:
+            continue
+        visited[u] = True
+        total_weight += w
+        visited_count += 1
+        for v, weight in adj[u]:
+            if not visited[v]:
+                heapq.heappush(pq, (weight, v))
+
+    return total_weight if visited_count == n else -1
+```
+
+```java
+public long kruskalMst(int n, int[][] edges) {
+    if (n <= 1) return 0;
+    Arrays.sort(edges, (a, b) -> Integer.compare(a[2], b[2]));
+    UnionFind uf = new UnionFind(n);
+    long totalWeight = 0;
+    int edgesUsed = 0;
+    for (int[] e : edges) {
+        int rx = uf.find(e[0]), ry = uf.find(e[1]);
+        if (rx != ry) {
+            uf.union(rx, ry);
+            totalWeight += e[2];
+            if (++edgesUsed == n - 1) return totalWeight;
+        }
+    }
+    return -1;
+}
+
+public long primMst(int n, List<List<int[]>> adj) {
+    if (n <= 1) return 0;
+    boolean[] visited = new boolean[n];
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+    pq.offer(new int[]{0, 0}); // {weight, vertex}
+    long totalWeight = 0;
+    int count = 0;
+    while (!pq.isEmpty() && count < n) {
+        int[] curr = pq.poll();
+        int w = curr[0], u = curr[1];
+        if (visited[u]) continue;
+        visited[u] = true;
+        totalWeight += w;
+        count++;
+        for (int[] next : adj.get(u)) {
+            if (!visited[next[0]]) pq.offer(new int[]{next[1], next[0]});
+        }
+    }
+    return count == n ? totalWeight : -1;
+}
+```
+
+```cpp
+long long kruskalMst(int n, vector<tuple<int, int, int>> edges) {
+    if (n <= 1) return 0;
+    sort(edges.begin(), edges.end(),
+         [](const auto& a, const auto& b) { return get<2>(a) < get<2>(b); });
+    UnionFind uf(n);
+    long long totalWeight = 0;
+    int edgesUsed = 0;
+    for (auto [u, v, w] : edges) {
+        if (uf.find(u) != uf.find(v)) {
+            uf.unite(u, v);
+            totalWeight += w;
+            if (++edgesUsed == n - 1) return totalWeight;
+        }
+    }
+    return -1;
+}
+
+long long primMst(int n, const vector<vector<pair<int, int>>>& adj) {
+    if (n <= 1) return 0;
+    vector<bool> visited(n, false);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    pq.push({0, 0}); // {weight, vertex}
+    long long totalWeight = 0;
+    int count = 0;
+    while (!pq.empty() && count < n) {
+        auto [w, u] = pq.top(); pq.pop();
+        if (visited[u]) continue;
+        visited[u] = true;
+        totalWeight += w;
+        count++;
+        for (auto [v, weight] : adj[u]) {
+            if (!visited[v]) pq.push({weight, v});
+        }
+    }
+    return count == n ? totalWeight : -1;
+}
+```
+
 ## Common Patterns
 
 ### 1. Cycle Detection
@@ -680,6 +916,45 @@ def has_cycle(graph):
     return False
 ```
 
+```java
+public boolean hasCycle(int n, List<List<Integer>> adj) {
+    int[] state = new int[n]; // 0 = unvisited, 1 = visiting, 2 = visited
+    for (int i = 0; i < n; i++) {
+        if (state[i] == 0 && dfsCycle(i, adj, state)) return true;
+    }
+    return false;
+}
+private boolean dfsCycle(int u, List<List<Integer>> adj, int[] state) {
+    state[u] = 1;
+    for (int v : adj.get(u)) {
+        if (state[v] == 1) return true;
+        if (state[v] == 0 && dfsCycle(v, adj, state)) return true;
+    }
+    state[u] = 2;
+    return false;
+}
+```
+
+```cpp
+bool dfsCycle(int u, const vector<vector<int>>& adj, vector<int>& state) {
+    state[u] = 1; // visiting
+    for (int v : adj[u]) {
+        if (state[v] == 1) return true;
+        if (state[v] == 0 && dfsCycle(v, adj, state)) return true;
+    }
+    state[u] = 2; // visited
+    return false;
+}
+
+bool hasCycle(int n, const vector<vector<int>>& adj) {
+    vector<int> state(n, 0);
+    for (int i = 0; i < n; i++) {
+        if (state[i] == 0 && dfsCycle(i, adj, state)) return true;
+    }
+    return false;
+}
+```
+
 ### 2. Connected Components
 
 **Pseudocode:**
@@ -713,6 +988,51 @@ def find_connected_components(graph):
             components.append(component)
     
     return components
+```
+
+```java
+public List<List<Integer>> findConnectedComponents(int n, List<List<Integer>> adj) {
+    boolean[] visited = new boolean[n];
+    List<List<Integer>> components = new ArrayList<>();
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            List<Integer> comp = new ArrayList<>();
+            dfsComponent(i, adj, visited, comp);
+            components.add(comp);
+        }
+    }
+    return components;
+}
+private void dfsComponent(int u, List<List<Integer>> adj, boolean[] visited, List<Integer> comp) {
+    visited[u] = true;
+    comp.add(u);
+    for (int v : adj.get(u)) {
+        if (!visited[v]) dfsComponent(v, adj, visited, comp);
+    }
+}
+```
+
+```cpp
+void dfsComponent(int u, const vector<vector<int>>& adj, vector<bool>& visited, vector<int>& comp) {
+    visited[u] = true;
+    comp.push_back(u);
+    for (int v : adj[u]) {
+        if (!visited[v]) dfsComponent(v, adj, visited, comp);
+    }
+}
+
+vector<vector<int>> findConnectedComponents(int n, const vector<vector<int>>& adj) {
+    vector<bool> visited(n, false);
+    vector<vector<int>> components;
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            vector<int> comp;
+            dfsComponent(i, adj, visited, comp);
+            components.push_back(move(comp));
+        }
+    }
+    return components;
+}
 ```
 
 ## Edge Cases to Consider

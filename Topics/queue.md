@@ -85,16 +85,18 @@ Queue operations (FIFO):
 ```
 
 ```python
+from collections import deque
+
 class Queue:
     def __init__(self):
-        self.items = []
+        self.items = deque()
     
     def enqueue(self, item):
         self.items.append(item)
     
     def dequeue(self):
         if not self.is_empty():
-            return self.items.pop(0)
+            return self.items.popleft()
         raise IndexError("Dequeue from empty queue")
     
     def front(self):
@@ -554,6 +556,7 @@ def task_scheduling(tasks, n):
     counter = Counter(tasks)
     max_freq = max(counter.values())
     max_freq_tasks = sum(1 for v in counter.values() if v == max_freq)
+    return max(len(tasks), (max_freq - 1) * (n + 1) + max_freq_tasks)
 ```
 
 ```java
@@ -574,12 +577,6 @@ int leastInterval(vector<char>& tasks, int n) {
     int maxCount = count_if(count.begin(), count.end(), [maxFreq](int c) { return c == maxFreq; });
     return max((int)tasks.size(), (maxFreq - 1) * (n + 1) + maxCount);
 }
-```
-
-```python
-def task_scheduling_continued(tasks, n):
-    
-    return max(len(tasks), (max_freq - 1) * (n + 1) + max_freq_tasks)
 ```
 
 ## Edge Cases to Consider

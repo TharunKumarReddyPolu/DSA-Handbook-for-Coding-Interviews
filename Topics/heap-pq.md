@@ -290,7 +290,7 @@ class PriorityQueue:
 
 ```java
 class PriorityQueueWrapper<T> {
-    private PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+    private PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
     private Map<Integer, T> items = new HashMap<>();
     private int index = 0;
     

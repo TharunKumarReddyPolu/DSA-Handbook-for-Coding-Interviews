@@ -408,7 +408,7 @@ Map<String, Object> frequencyAnalysis(int[] items) {
     // Find most common
     List<int[]> sorted = new ArrayList<>();
     for (var e : freq.entrySet()) sorted.add(new int[]{e.getKey(), e.getValue()});
-    sorted.sort((a, b) -> b[1] - a[1]);
+    sorted.sort((a, b) -> Integer.compare(b[1], a[1]));
     
     // Find unique and duplicates
     List<Integer> unique = new ArrayList<>(), duplicates = new ArrayList<>();
@@ -535,6 +535,59 @@ class HashTableWithChaining:
         chain.append((key, value))
 ```
 
+```java
+class HashTableWithChaining {
+    private static class Entry {
+        String key;
+        int value;
+        Entry(String key, int value) { this.key = key; this.value = value; }
+    }
+
+    private final List<Entry>[] table;
+    private final int size = 1000;
+
+    @SuppressWarnings("unchecked")
+    public HashTableWithChaining() {
+        table = new List[size];
+        for (int i = 0; i < size; i++) table[i] = new ArrayList<>();
+    }
+
+    private int hash(String key) {
+        return Math.floorMod(key.hashCode(), size);
+    }
+
+    public void insert(String key, int value) {
+        List<Entry> chain = table[hash(key)];
+        for (Entry e : chain) {
+            if (e.key.equals(key)) { e.value = value; return; }
+        }
+        chain.add(new Entry(key, value));
+    }
+}
+```
+
+```cpp
+class HashTableWithChaining {
+    static const int SIZE = 1000;
+    vector<list<pair<string, int>>> table;
+
+    int hash(const string& key) const {
+        return std::hash<string>{}(key) % SIZE;
+    }
+
+public:
+    HashTableWithChaining() : table(SIZE) {}
+
+    void insert(const string& key, int value) {
+        auto& chain = table[hash(key)];
+        for (auto& [k, v] : chain) {
+            if (k == key) { v = value; return; }
+        }
+        chain.emplace_back(key, value);
+    }
+};
+```
+
 ### 2. Load Factor Management
 
 **Pseudocode:**
@@ -568,6 +621,79 @@ class DynamicHashTable:
             for chain in old_table:
                 for key, value in chain:
                     self.insert(key, value)
+```
+
+```java
+class DynamicHashTable {
+    private List<int[]>[] table;
+    private int size;
+    private int count = 0;
+
+    @SuppressWarnings("unchecked")
+    public DynamicHashTable(int initialSize) {
+        this.size = Math.max(1, initialSize);
+        this.table = new List[this.size];
+        for (int i = 0; i < this.size; i++) this.table[i] = new ArrayList<>();
+    }
+
+    public double loadFactor() { return (double) count / size; }
+
+    public void insert(int key, int value) {
+        if (loadFactor() >= 0.75) resize();
+        List<int[]> chain = table[Math.floorMod(key, size)];
+        for (int[] pair : chain) {
+            if (pair[0] == key) { pair[1] = value; return; }
+        }
+        chain.add(new int[]{key, value});
+        count++;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize() {
+        List<int[]>[] oldTable = table;
+        size *= 2;
+        table = new List[size];
+        for (int i = 0; i < size; i++) table[i] = new ArrayList<>();
+        count = 0;
+        for (List<int[]> chain : oldTable)
+            for (int[] pair : chain) insert(pair[0], pair[1]);
+    }
+}
+```
+
+```cpp
+class DynamicHashTable {
+    vector<vector<pair<int, int>>> table;
+    int size;
+    int count = 0;
+
+    int hash(int key) const { return ((key % size) + size) % size; }
+
+    void resize() {
+        auto oldTable = move(table);
+        size *= 2;
+        table.assign(size, {});
+        count = 0;
+        for (const auto& chain : oldTable)
+            for (const auto& [k, v] : chain) insert(k, v);
+    }
+
+public:
+    explicit DynamicHashTable(int initialSize = 8)
+        : table(max(1, initialSize)), size(max(1, initialSize)) {}
+
+    double loadFactor() const { return static_cast<double>(count) / size; }
+
+    void insert(int key, int value) {
+        if (loadFactor() >= 0.75) resize();
+        auto& chain = table[hash(key)];
+        for (auto& [k, v] : chain) {
+            if (k == key) { v = value; return; }
+        }
+        chain.emplace_back(key, value);
+        count++;
+    }
+};
 ```
 
 ### 3. LRU Cache

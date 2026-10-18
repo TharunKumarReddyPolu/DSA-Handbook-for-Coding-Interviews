@@ -84,33 +84,38 @@ This project and everyone participating in it is governed by our Code of Conduct
 - Include line breaks between sections
 
 ### Content Structure
-Each topic file should follow this structure:
+Each topic file should follow the standard handbook structure:
 ```markdown
-# Topic Name
+# Topic Name 🎯
 
-## Overview
+## Introduction
 Brief introduction to the topic
 
-## Key Concepts
-- Concept 1
-- Concept 2
+## Prerequisites & Related Topics
+### Prerequisites
+### Related Topics
 
-## Time Complexity
-| Operation | Average | Worst |
-|-----------|---------|-------|
-| Operation1| O(n)    | O(n)  |
+## Pattern Recognition Guide
+### 🎯 When to Use
+### 🔑 Problem Indicators
+### ❌ When NOT to Use
 
-## Common Patterns
-Common problem-solving patterns
+## Core Concepts
+### Important Terminologies
+### Time and Space Complexity Analysis
 
-## Edge Cases
-Important edge cases to consider
+## Implementation / Common Techniques
+- Step-by-step **Pseudocode**
+- Multi-language implementations (**Python**, **Java**, and **C++**)
 
-## Practice Problems
-Curated list of problems
-
-## Additional Resources
-Helpful links and references
+## Edge Cases to Consider
+## Common Pitfalls
+## Practice Problems by Difficulty (Easy / Medium / Hard)
+## Real-World Applications
+## Advanced Topics
+## Important Resources
+## ❓ FAQ Section
+## Interview Tips
 ```
 
 ### Code Examples

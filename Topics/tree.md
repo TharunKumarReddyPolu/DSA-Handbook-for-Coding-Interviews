@@ -508,6 +508,199 @@ bool isValidBST(TreeNode* root, long minVal = LONG_MIN, long maxVal = LONG_MAX) 
 }
 ```
 
+### 4. Range Query Trees (Fenwick Tree & Segment Tree)
+
+When an array is updated dynamically and you need fast prefix or range queries (such as *Range Sum Query - Mutable*, LC #307), a **Fenwick Tree (Binary Indexed Tree)** supports point updates and prefix sums in $O(\log n)$ time with $O(n)$ space, while a **Segment Tree** generalizes to any associative range operation (sum, min, max, GCD) in $O(\log n)$ time.
+
+**Pseudocode:**
+```
+Fenwick Tree (1-indexed internal array bit[1..n]):
+- add(i, delta): while i <= n: bit[i] += delta; i += i & -i
+- prefix_sum(i): sum = 0; while i > 0: sum += bit[i]; i -= i & -i; return sum
+- range_sum(left, right): return prefix_sum(right + 1) - prefix_sum(left)
+
+Iterative Segment Tree (size 2n, leaves at [n..2n-1]):
+- build: copy nums to tree[n..2n-1]; for i = n-1 down to 1: tree[i] = tree[2i] + tree[2i+1]
+- update(i, val): set i += n, tree[i] = val; while i > 1: i //= 2, tree[i] = tree[2i] + tree[2i+1]
+- query(left, right) inclusive:
+  Shift left += n, right += n; accumulate tree[left++] when left is right child,
+  and tree[right--] when right is left child; halve both each step
+```
+
+```python
+class FenwickTree:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.bit = [0] * (self.n + 1)
+        for i, x in enumerate(nums, 1):
+            self.bit[i] += x
+            parent = i + (i & -i)
+            if parent <= self.n:
+                self.bit[parent] += self.bit[i]
+
+    def add(self, index, delta):
+        i = index + 1
+        while i <= self.n:
+            self.bit[i] += delta
+            i += i & -i
+
+    def prefix_sum(self, index):
+        total = 0
+        i = index + 1
+        while i > 0:
+            total += self.bit[i]
+            i -= i & -i
+        return total
+
+    def range_sum(self, left, right):
+        return self.prefix_sum(right) - (self.prefix_sum(left - 1) if left > 0 else 0)
+
+
+class SegmentTree:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.tree = [0] * (2 * self.n)
+        self.tree[self.n:2 * self.n] = nums
+        for i in range(self.n - 1, 0, -1):
+            self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+
+    def update(self, index, val):
+        i = index + self.n
+        self.tree[i] = val
+        while i > 1:
+            i //= 2
+            self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+
+    def range_sum(self, left, right):
+        total = 0
+        l, r = left + self.n, right + self.n
+        while l <= r:
+            if l & 1:
+                total += self.tree[l]
+                l += 1
+            if not (r & 1):
+                total += self.tree[r]
+                r -= 1
+            l //= 2
+            r //= 2
+        return total
+```
+
+```java
+class FenwickTree {
+    private final long[] bit;
+
+    public FenwickTree(int[] nums) {
+        bit = new long[nums.length + 1];
+        for (int i = 1; i <= nums.length; i++) {
+            bit[i] += nums[i - 1];
+            int parent = i + (i & -i);
+            if (parent <= nums.length) bit[parent] += bit[i];
+        }
+    }
+
+    public void add(int index, long delta) {
+        for (int i = index + 1; i < bit.length; i += i & -i) bit[i] += delta;
+    }
+
+    public long prefixSum(int index) {
+        long sum = 0;
+        for (int i = index + 1; i > 0; i -= i & -i) sum += bit[i];
+        return sum;
+    }
+
+    public long rangeSum(int left, int right) {
+        return prefixSum(right) - (left > 0 ? prefixSum(left - 1) : 0);
+    }
+}
+
+class SegmentTree {
+    private final int n;
+    private final long[] tree;
+
+    public SegmentTree(int[] nums) {
+        n = nums.length;
+        tree = new long[2 * n];
+        for (int i = 0; i < n; i++) tree[n + i] = nums[i];
+        for (int i = n - 1; i > 0; i--) tree[i] = tree[2 * i] + tree[2 * i + 1];
+    }
+
+    public void update(int index, long val) {
+        int i = index + n;
+        tree[i] = val;
+        while (i > 1) {
+            i /= 2;
+            tree[i] = tree[2 * i] + tree[2 * i + 1];
+        }
+    }
+
+    public long rangeSum(int left, int right) {
+        long sum = 0;
+        for (int l = left + n, r = right + n; l <= r; l /= 2, r /= 2) {
+            if ((l & 1) == 1) sum += tree[l++];
+            if ((r & 1) == 0) sum += tree[r--];
+        }
+        return sum;
+    }
+}
+```
+
+```cpp
+class FenwickTree {
+    vector<long long> bit;
+public:
+    explicit FenwickTree(const vector<int>& nums) : bit(nums.size() + 1, 0) {
+        for (size_t i = 1; i <= nums.size(); i++) {
+            bit[i] += nums[i - 1];
+            size_t parent = i + (i & -i);
+            if (parent <= nums.size()) bit[parent] += bit[i];
+        }
+    }
+
+    void add(int index, long long delta) {
+        for (size_t i = index + 1; i < bit.size(); i += i & -i) bit[i] += delta;
+    }
+
+    long long prefixSum(int index) const {
+        long long sum = 0;
+        for (int i = index + 1; i > 0; i -= i & -i) sum += bit[i];
+        return sum;
+    }
+
+    long long rangeSum(int left, int right) const {
+        return prefixSum(right) - (left > 0 ? prefixSum(left - 1) : 0);
+    }
+};
+
+class SegmentTree {
+    int n;
+    vector<long long> tree;
+public:
+    explicit SegmentTree(const vector<int>& nums) : n(nums.size()), tree(2 * nums.size(), 0) {
+        for (int i = 0; i < n; i++) tree[n + i] = nums[i];
+        for (int i = n - 1; i > 0; i--) tree[i] = tree[2 * i] + tree[2 * i + 1];
+    }
+
+    void update(int index, long long val) {
+        int i = index + n;
+        tree[i] = val;
+        while (i > 1) {
+            i /= 2;
+            tree[i] = tree[2 * i] + tree[2 * i + 1];
+        }
+    }
+
+    long long rangeSum(int left, int right) const {
+        long long sum = 0;
+        for (int l = left + n, r = right + n; l <= r; l /= 2, r /= 2) {
+            if (l & 1) sum += tree[l++];
+            if (!(r & 1)) sum += tree[r--];
+        }
+        return sum;
+    }
+};
+```
+
 ## Edge Cases to Consider
 1. Empty tree
 2. Single node tree

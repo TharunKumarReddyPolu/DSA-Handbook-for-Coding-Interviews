@@ -112,7 +112,7 @@ def activity_selection(start, finish):
 
 ```java
 public int activitySelection(int[][] activities) {
-    Arrays.sort(activities, (a, b) -> a[1] - b[1]);
+    Arrays.sort(activities, (a, b) -> Integer.compare(a[1], b[1]));
     int count = 1, lastFinish = activities[0][1];
     for (int i = 1; i < activities.length; i++) {
         if (activities[i][0] >= lastFinish) {
@@ -323,7 +323,7 @@ def interval_scheduling(intervals):
 ```java
 public int eraseOverlapIntervals(int[][] intervals) {
     if (intervals.length == 0) return 0;
-    Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
     int count = 1, end = intervals[0][1];
     for (int i = 1; i < intervals.length; i++) {
         if (intervals[i][0] >= end) { count++; end = intervals[i][1]; }
@@ -371,11 +371,13 @@ def job_sequencing(jobs, deadlines, profits):
             if slot[j] == -1:
                 slot[j] = job
                 break
+
+    return [x for x in slot if x != -1]
 ```
 
 ```java
 public int jobSequencing(int[][] jobs) { // jobs[i] = {deadline, profit}
-    Arrays.sort(jobs, (a, b) -> b[1] - a[1]); // Sort by profit desc
+    Arrays.sort(jobs, (a, b) -> Integer.compare(b[1], a[1])); // Sort by profit desc
     int maxDeadline = Arrays.stream(jobs).mapToInt(j -> j[0]).max().orElse(0);
     boolean[] slot = new boolean[maxDeadline + 1];
     int totalProfit = 0;
@@ -402,8 +404,6 @@ int jobSequencing(vector<pair<int,int>>& jobs) { // {deadline, profit}
     }
     return totalProfit;
 }
-    
-    return [x for x in slot if x != -1]
 ```
 
 ## Common Techniques
