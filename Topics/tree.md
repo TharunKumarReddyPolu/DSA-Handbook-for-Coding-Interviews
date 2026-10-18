@@ -263,7 +263,6 @@ def postorder(root):  # Left -> Right -> Root
 ```
 
 ```java
-// Inorder Traversal
 public List<Integer> inorder(TreeNode root) {
     List<Integer> result = new ArrayList<>();
     inorderHelper(root, result);
@@ -275,20 +274,67 @@ private void inorderHelper(TreeNode node, List<Integer> result) {
     result.add(node.val);
     inorderHelper(node.right, result);
 }
+
+public List<Integer> preorder(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    preorderHelper(root, result);
+    return result;
+}
+private void preorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    result.add(node.val);
+    preorderHelper(node.left, result);
+    preorderHelper(node.right, result);
+}
+
+public List<Integer> postorder(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    postorderHelper(root, result);
+    return result;
+}
+private void postorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    postorderHelper(node.left, result);
+    postorderHelper(node.right, result);
+    result.add(node.val);
+}
 ```
 
 ```cpp
-// Inorder Traversal
-vector<int> inorder(TreeNode* root) {
-    vector<int> result;
-    inorderHelper(root, result);
-    return result;
-}
 void inorderHelper(TreeNode* node, vector<int>& result) {
     if (!node) return;
     inorderHelper(node->left, result);
     result.push_back(node->val);
     inorderHelper(node->right, result);
+}
+vector<int> inorder(TreeNode* root) {
+    vector<int> result;
+    inorderHelper(root, result);
+    return result;
+}
+
+void preorderHelper(TreeNode* node, vector<int>& result) {
+    if (!node) return;
+    result.push_back(node->val);
+    preorderHelper(node->left, result);
+    preorderHelper(node->right, result);
+}
+vector<int> preorder(TreeNode* root) {
+    vector<int> result;
+    preorderHelper(root, result);
+    return result;
+}
+
+void postorderHelper(TreeNode* node, vector<int>& result) {
+    if (!node) return;
+    postorderHelper(node->left, result);
+    postorderHelper(node->right, result);
+    result.push_back(node->val);
+}
+vector<int> postorder(TreeNode* root) {
+    vector<int> result;
+    postorderHelper(root, result);
+    return result;
 }
 ```
 

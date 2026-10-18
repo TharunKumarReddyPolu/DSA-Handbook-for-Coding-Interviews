@@ -136,6 +136,15 @@ def fib_tab(n):
 ```
 
 ```java
+// Top-down (Memoization)
+public int fibMemo(int n, Map<Integer, Integer> memo) {
+    if (n <= 1) return n;
+    if (memo.containsKey(n)) return memo.get(n);
+    int res = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+    memo.put(n, res);
+    return res;
+}
+
 // Bottom-up (Tabulation)
 public int fib(int n) {
     if (n <= 1) return n;
@@ -149,6 +158,13 @@ public int fib(int n) {
 ```
 
 ```cpp
+// Top-down (Memoization)
+int fibMemo(int n, unordered_map<int, int>& memo) {
+    if (n <= 1) return n;
+    if (memo.count(n)) return memo[n];
+    return memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+}
+
 // Bottom-up (Tabulation)
 int fib(int n) {
     if (n <= 1) return n;

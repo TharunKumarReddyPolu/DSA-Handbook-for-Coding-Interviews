@@ -121,6 +121,7 @@ def update_bit(num: int, i: int, value: bool) -> int:
 public int getBit(int num, int i) { return (num >> i) & 1; }
 public int setBit(int num, int i) { return num | (1 << i); }
 public int clearBit(int num, int i) { return num & ~(1 << i); }
+public int updateBit(int num, int i, boolean val) { return (num & ~(1 << i)) | ((val ? 1 : 0) << i); }
 ```
 
 ```cpp
@@ -128,6 +129,7 @@ public int clearBit(int num, int i) { return num & ~(1 << i); }
 int getBit(int num, int i) { return (num >> i) & 1; }
 int setBit(int num, int i) { return num | (1 << i); }
 int clearBit(int num, int i) { return num & ~(1 << i); }
+int updateBit(int num, int i, bool val) { return (num & ~(1 << i)) | ((val ? 1 : 0) << i); }
 ```
 
 ### 2. Counting Set Bits
@@ -220,11 +222,23 @@ def next_power_of_two(n: int) -> int:
 public boolean isPowerOfTwo(int n) {
     return n > 0 && (n & (n - 1)) == 0;
 }
+public int nextPowerOfTwo(int n) {
+    if (n <= 0) return 1;
+    n--;
+    n |= n >> 1; n |= n >> 2; n |= n >> 4; n |= n >> 8; n |= n >> 16;
+    return n + 1;
+}
 ```
 
 ```cpp
 bool isPowerOfTwo(int n) {
     return n > 0 && (n & (n - 1)) == 0;
+}
+int nextPowerOfTwo(int n) {
+    if (n <= 0) return 1;
+    n--;
+    n |= n >> 1; n |= n >> 2; n |= n >> 4; n |= n >> 8; n |= n >> 16;
+    return n + 1;
 }
 ```
 
@@ -429,7 +443,7 @@ int clearMsbToI(int x, int i) { return x & ((1 << i) - 1); }
 ```cpp
 // Bit Masking Operations
 int createMask(int n) { return (1 << n) - 1; }
-int clearRightmostBits(int x, int n) { return x & (-1 << n); }
+int clearRightmostBits(int x, int n) { return x & ~((1 << n) - 1); }
 int clearMsbToI(int x, int i) { return x & ((1 << i) - 1); }
 ```
 

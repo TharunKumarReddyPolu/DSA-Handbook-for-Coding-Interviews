@@ -346,6 +346,25 @@ public boolean isPalindrome(String s) {
     }
     return true;
 }
+
+public String longestPalindromeSubstring(String s) {
+    if (s == null || s.isEmpty()) return "";
+    int start = 0, end = 0;
+    for (int i = 0; i < s.length(); i++) {
+        int len = Math.max(expand(s, i, i), expand(s, i, i + 1));
+        if (len > end - start) {
+            start = i - (len - 1) / 2;
+            end = i + len / 2;
+        }
+    }
+    return s.substring(start, end + 1);
+}
+private int expand(String s, int left, int right) {
+    while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+        left--; right++;
+    }
+    return right - left - 1;
+}
 ```
 
 ```cpp
@@ -358,6 +377,25 @@ bool isPalindrome(string s) {
         left++; right--;
     }
     return true;
+}
+
+string longestPalindromeSubstring(const string& s) {
+    if (s.empty()) return "";
+    auto expand = [&](int left, int right) {
+        while (left >= 0 && right < static_cast<int>(s.size()) && s[left] == s[right]) {
+            left--; right++;
+        }
+        return right - left - 1;
+    };
+    int start = 0, end = 0;
+    for (int i = 0; i < static_cast<int>(s.size()); i++) {
+        int len = max(expand(i, i), expand(i, i + 1));
+        if (len > end - start) {
+            start = i - (len - 1) / 2;
+            end = i + len / 2;
+        }
+    }
+    return s.substr(start, end - start + 1);
 }
 ```
 
